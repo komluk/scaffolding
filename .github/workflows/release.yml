@@ -53,14 +53,14 @@ jobs:
           done
       - name: placeholder sanity
         run: |
-          leaked=$(grep -rln '__CLAUDE_HOME_[A-Z_]*__' . \
+          leaked=$(grep -rln '__CLAUDE_SCAFFOLDING_[A-Z_]*__' . \
             --exclude-dir=.git \
             --exclude-dir=templates \
             --exclude-dir=docs \
             --exclude-dir=.github \
             --exclude=install.sh \
             --exclude=uninstall.sh \
-            --exclude=.claude-home.env.example \
+            --exclude=.claude-scaffolding.env.example \
             --exclude=README.md \
             --exclude=CHANGELOG.md \
             || true)
@@ -90,4 +90,4 @@ jobs:
             --generate-notes \
             install.sh \
             uninstall.sh \
-            .claude-home.env.example
+            .claude-scaffolding.env.example

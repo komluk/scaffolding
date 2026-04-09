@@ -138,14 +138,14 @@ jobs:
       - name: Ensure no unrendered placeholders outside templates
         run: |
           set -e
-          leaked=$(grep -rln '__CLAUDE_HOME_[A-Z_]*__' . \
+          leaked=$(grep -rln '__CLAUDE_SCAFFOLDING_[A-Z_]*__' . \
             --exclude-dir=.git \
             --exclude-dir=templates \
             --exclude-dir=docs \
             --exclude-dir=.github \
             --exclude=install.sh \
             --exclude=uninstall.sh \
-            --exclude=.claude-home.env.example \
+            --exclude=.claude-scaffolding.env.example \
             --exclude=README.md \
             --exclude=CHANGELOG.md \
             || true)
@@ -160,31 +160,31 @@ jobs:
     name: install.sh idempotency
     runs-on: ubuntu-latest
     env:
-      CLAUDE_HOME_TEST_BACKEND_CMD: "pytest"
-      CLAUDE_HOME_TEST_FRONTEND_CMD: "npm test"
-      CLAUDE_HOME_SONAR_PROJECT_KEY: ""
-      CLAUDE_HOME_SCHEMAS_DIR: "./schemas"
-      CLAUDE_HOME_PROJECT_NAME: "(project)"
-      CLAUDE_HOME_BACKEND_EXAMPLE_PATH: "./backend"
+      CLAUDE_SCAFFOLDING_TEST_BACKEND_CMD: "pytest"
+      CLAUDE_SCAFFOLDING_TEST_FRONTEND_CMD: "npm test"
+      CLAUDE_SCAFFOLDING_SONAR_PROJECT_KEY: ""
+      CLAUDE_SCAFFOLDING_SCHEMAS_DIR: "./schemas"
+      CLAUDE_SCAFFOLDING_PROJECT_NAME: "(project)"
+      CLAUDE_SCAFFOLDING_BACKEND_EXAMPLE_PATH: "./backend"
     steps:
       - uses: actions/checkout@v4
       - name: Prepare config file
         run: |
           mkdir -p "$HOME"
-          cat > "$HOME/.claude-home.env" <<EOF
-          CLAUDE_HOME_TEST_BACKEND_CMD=${CLAUDE_HOME_TEST_BACKEND_CMD}
-          CLAUDE_HOME_TEST_FRONTEND_CMD=${CLAUDE_HOME_TEST_FRONTEND_CMD}
-          CLAUDE_HOME_SONAR_PROJECT_KEY=${CLAUDE_HOME_SONAR_PROJECT_KEY}
-          CLAUDE_HOME_SCHEMAS_DIR=${CLAUDE_HOME_SCHEMAS_DIR}
-          CLAUDE_HOME_PROJECT_NAME=${CLAUDE_HOME_PROJECT_NAME}
-          CLAUDE_HOME_BACKEND_EXAMPLE_PATH=${CLAUDE_HOME_BACKEND_EXAMPLE_PATH}
+          cat > "$HOME/.claude-scaffolding.env" <<EOF
+          CLAUDE_SCAFFOLDING_TEST_BACKEND_CMD=${CLAUDE_SCAFFOLDING_TEST_BACKEND_CMD}
+          CLAUDE_SCAFFOLDING_TEST_FRONTEND_CMD=${CLAUDE_SCAFFOLDING_TEST_FRONTEND_CMD}
+          CLAUDE_SCAFFOLDING_SONAR_PROJECT_KEY=${CLAUDE_SCAFFOLDING_SONAR_PROJECT_KEY}
+          CLAUDE_SCAFFOLDING_SCHEMAS_DIR=${CLAUDE_SCAFFOLDING_SCHEMAS_DIR}
+          CLAUDE_SCAFFOLDING_PROJECT_NAME=${CLAUDE_SCAFFOLDING_PROJECT_NAME}
+          CLAUDE_SCAFFOLDING_BACKEND_EXAMPLE_PATH=${CLAUDE_SCAFFOLDING_BACKEND_EXAMPLE_PATH}
           EOF
-          chmod 600 "$HOME/.claude-home.env"
+          chmod 600 "$HOME/.claude-scaffolding.env"
       - name: Run 1
-        run: ./install.sh --target /tmp/ch-ci-a --refresh
+        run: ./install.sh --target /tmp/cs-ci-a --refresh
       - name: Run 2
-        run: ./install.sh --target /tmp/ch-ci-b --refresh
+        run: ./install.sh --target /tmp/cs-ci-b --refresh
       - name: Diff
         run: |
-          diff -r /tmp/ch-ci-a /tmp/ch-ci-b
+          diff -r /tmp/cs-ci-a /tmp/cs-ci-b
           echo "idempotency OK"
