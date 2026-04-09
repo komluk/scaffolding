@@ -195,17 +195,26 @@ if [[ "$CLAUDE_HOME_ROOT" != "$TARGET" ]]; then
   fi
 fi
 
-# Step 2: render templates in-place in target (overwrites unrendered copies)
+# Step 2: render templates from templates/*.tmpl (source of truth) into target.
+#
+# Phase B model (Strategy C): source files in `skills/`, `agents/`, `commands/`,
+# `settings.json`, `CLAUDE.md` are pre-rendered with sensible defaults (pytest,
+# npm test, (project), ./backend, ./schemas, empty sonar key) so that the
+# plugin install flow (`/plugin install claude-home@komluk-tools`) is
+# zero-config. For the Phase A install.sh flow we still want full
+# parametrization, so the canonical placeholder form is kept in
+# `templates/<rel>.tmpl` and rendered over the pre-rendered copies in --target.
 render_file() {
   local rel="$1"
+  local src="$CLAUDE_HOME_ROOT/templates/$rel.tmpl"
   local dst="$TARGET/$rel"
-  if [[ ! -f "$dst" ]]; then
-    echo "[warn] template missing in target: $rel" >&2
+  if [[ ! -f "$src" ]]; then
+    echo "[warn] template source missing: templates/$rel.tmpl" >&2
     return 0
   fi
 
   local rendered
-  rendered="$(python3 - "$dst" <<'PYEOF'
+  rendered="$(python3 - "$src" <<'PYEOF'
 import os, sys
 src = sys.argv[1]
 with open(src, 'r', encoding='utf-8') as f:
@@ -218,8 +227,9 @@ PYEOF
 )" || { echo "[error] render failed for $rel" >&2; exit 3; }
 
   if $DRY_RUN; then
-    echo "[dry-run] would render $dst ($(wc -l <<< "$rendered" | tr -d ' ') lines)"
+    echo "[dry-run] would render templates/$rel.tmpl -> $dst ($(wc -l <<< "$rendered" | tr -d ' ') lines)"
   else
+    mkdir -p "$(dirname "$dst")"
     printf '%s' "$rendered" > "$dst" || { echo "[error] write failed: $dst" >&2; exit 3; }
   fi
 }

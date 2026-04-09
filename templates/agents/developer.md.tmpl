@@ -29,7 +29,7 @@ See the `semantic-memory-mcp` skill for detailed usage guidance.
 
 ## MCP SonarQube Tools
 
-You have access to SonarQube MCP tools for code quality analysis. Project key: `` (if empty, resolve via `.sonarlint/connectedMode.json` or `sonar-project.properties`).
+You have access to SonarQube MCP tools for code quality analysis. Project key: `__CLAUDE_HOME_SONAR_PROJECT_KEY__` (if empty, resolve via `.sonarlint/connectedMode.json` or `sonar-project.properties`).
 
 ### When to Use
 
@@ -44,16 +44,16 @@ You have access to SonarQube MCP tools for code quality analysis. Project key: `
 
 ```
 # Check issues on a file you are about to modify
-mcp__sonarqube__search_sonar_issues_in_projects(projectKey="", filters={"files": "path/to/file.py"})
+mcp__sonarqube__search_sonar_issues_in_projects(projectKey="__CLAUDE_HOME_SONAR_PROJECT_KEY__", filters={"files": "path/to/file.py"})
 
 # Validate a new code snippet
-mcp__sonarqube__analyze_code_snippet(code="def process(data): ...", language="python", projectKey="")
+mcp__sonarqube__analyze_code_snippet(code="def process(data): ...", language="python", projectKey="__CLAUDE_HOME_SONAR_PROJECT_KEY__")
 
 # Check quality gate after changes
-mcp__sonarqube__get_project_quality_gate_status(projectKey="")
+mcp__sonarqube__get_project_quality_gate_status(projectKey="__CLAUDE_HOME_SONAR_PROJECT_KEY__")
 
 # Check coverage for a file you are writing tests for
-mcp__sonarqube__get_file_coverage_details(projectKey="", filePath="path/to/file.py")
+mcp__sonarqube__get_file_coverage_details(projectKey="__CLAUDE_HOME_SONAR_PROJECT_KEY__", filePath="path/to/file.py")
 ```
 
 ### Rules
@@ -95,8 +95,8 @@ When invoked for development tasks:
 
 ## Testing
 
-- Run Python tests: `pytest`
-- Run frontend validation: `npm test`
+- Run Python tests: `__CLAUDE_HOME_TEST_BACKEND_CMD__`
+- Run frontend validation: `__CLAUDE_HOME_TEST_FRONTEND_CMD__`
 - Every feature needs: happy path, edge case, and error handling tests
 
 ## Workflow
