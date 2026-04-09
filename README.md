@@ -22,12 +22,25 @@ Cele:
 
 ## Szybki start
 
-Sa dwa wspolzyjace sposoby instalacji. Wybierz jeden per maszyna.
+### Ktery flow instalacji wybrac?
+
+| Flow | Kiedy uzywac | Przestrzen nazw agentow |
+|------|-------------|------------------------|
+| `/plugin install claude-scaffolding@komluk-scaffolding` | Wiekszos uzytkownikow, zero-config, natywny marketplace Claude Code | `claude-scaffolding:developer` (z prefixem) |
+| `./install.sh --target /path/to/repo` | Chcesz pliki skopiowane do drzewa repo, wlasna konfiguracja przez `~/.claude-scaffolding.env` | `developer` (bare -- install.sh usuwa prefix automatycznie) |
+
+Dodatkowe wskazowki:
+
+| Potrzeba | Flow |
+|----------|------|
+| Upgrade przez `/plugin update` | Opcja A (Plugin) |
+| Wlasny `__CLAUDE_SCAFFOLDING_PROJECT_NAME__`, klucz Sonar, test commands | Opcja B (install.sh) |
+| Integracja per-project `.claude/` vs user-level | Opcja B (install.sh --target) |
+| Rozwoj/edycja komponentow claude-scaffolding | Opcja B (klon repo) |
+
+---
 
 ### Opcja A -- Plugin Claude Code (zalecana dla szybkiego startu)
-
-Zero-config, instalacja natywna przez marketplace. Komponenty ladowane sa z
-prefixem `claude-scaffolding:` (np. `claude-scaffolding:developer`, `/claude-scaffolding:workflow`).
 
 **Wymaganie:** `komluk/claude-scaffolding` jest repozytorium prywatnym, wiec Claude
 Code CLI musi byc zalogowane do konta GitHub z dostepem do tego repo. Przed
@@ -38,23 +51,25 @@ gh auth login
 # Wybierz: GitHub.com, HTTPS, login with web browser, scope: repo
 ```
 
-Nastepnie w sesji Claude Code:
+**Kroki po instalacji (WSZYSTKIE wymagane):**
 
 ```
-/plugin marketplace add komluk/claude-scaffolding
-/plugin install claude-scaffolding@komluk-scaffolding
+1. /plugin marketplace add komluk/claude-scaffolding
+2. /plugin install claude-scaffolding@komluk-scaffolding
+3. /reload-plugins                       ← WYMAGANE: Claude Code nie hot-reloaduje rejestru agentow
+4. (opcjonalnie) /init-claude-scaffolding   ← patrz: "Czy potrzebujesz /init-claude-scaffolding?" ponizej
+5. Task(subagent_type="claude-scaffolding:developer", prompt="...")
 ```
 
-> **Po instalacji (WAZNE):** Po `/plugin install` musisz uruchomic `/reload-plugins`
-> LUB zaczac nowa sesje `claude` zanim agenci beda dostepni. To jest quirk Claude Code:
-> rejestr `subagent_type` nie hot-reloaduje sie po instalacji pluginu. Bez tego kroku
-> `Task(subagent_type="developer")` zwroci `Agent type 'developer' not found`.
+> **Bez `/reload-plugins`** rejestr `subagent_type` nie zostaje odswiezone po instalacji
+> pluginu -- `Task(subagent_type="claude-scaffolding:developer")` zwroci blad
+> `Agent type not found`. Mozna tez zamiast `/reload-plugins` zrestartowac cala sesje `claude`.
 
+Plugin trafi do `~/.claude/plugins/cache/komluk-scaffolding/claude-scaffolding/<version>/`.
+Parametry sa zaszyte jako sensowne defaulty (`pytest`, `npm test`, `./backend`, itd.) --
+jesli potrzebujesz wlasnych wartosci, uzyj Opcji B.
 
-Plugin trafi do `~/.claude/plugins/cache/komluk-scaffolding/claude-scaffolding/<version>/`
-i jego komponenty sa natychmiast dostepne. Parametry sa zaszyte jako
-sensowne defaulty (`pytest`, `npm test`, `./backend`, itd.) -- jesli
-potrzebujesz wlasnych wartosci, uzyj Opcji B.
+---
 
 ### Opcja B -- Klon + install.sh (pelna parametryzacja)
 
@@ -83,48 +98,48 @@ zmienic wartosci edytujac `~/.claude-scaffolding.env` i uruchamiajac:
 co jest idempotentne -- kazde kolejne wywolanie daje identyczny wynik bez
 interakcji.
 
-### CLAUDE.md i routing protokol
+`install.sh` automatycznie kopiuje `CLAUDE.md` i `settings.json` do katalogu
+docelowego oraz usuwa prefix `claude-scaffolding:` z wyrenderowanych plikow.
+Nie trzeba zadnych dodatkowych krokow -- agenci sa od razu dostepni jako bare names
+(np. `Task(subagent_type="developer")`).
 
-> **WAZNE:** Claude Code czyta `CLAUDE.md` tylko z `$CWD/CLAUDE.md`, `~/.claude/CLAUDE.md`
-> i katalogow nadrzednych. Plik zainstalowany przez plugin NIE jest automatycznie
-> ladowany do kontekstu projektu.
->
-> **Flow 1 (Plugin `/plugin install`)** -- CLAUDE.md musi byc skopiowany recznie:
-> ```
-> /init-claude-scaffolding
-> ```
-> Ta komenda kopiuje `CLAUDE.md` i `settings.json` do biezacego projektu (bez nadpisywania).
-> Po tym Claude beqdzie respektowal routing agentow i protokol delegacji w kazdym projekcie.
->
-> **Flow 2 (`./install.sh --target /path/to/repo`)** -- `install.sh` kopiuje `CLAUDE.md`
-> automatycznie razem ze wszystkimi innymi komponentami. Nie trzeba zadnych dodatkowych krokow.
+---
 
-### Przestrzen nazw agentow: Plugin vs install.sh
+### Czy potrzebujesz `/init-claude-scaffolding`? (tylko Opcja A)
 
-Dwa flow roznia sie sposobem wywolywania agentow:
+Ta komenda kopiuje `CLAUDE.md` i `settings.json` do `$CWD` projektu (bez nadpisywania).
+Dotyczy wylacznie flow z pluginem -- install.sh robi to automatycznie.
 
-| Flow | Jak wywolac agenta | Przyklad |
-|------|--------------------|---------|
-| **Plugin (`/plugin install`)** | Z prefixem `claude-scaffolding:` | `Task(subagent_type="claude-scaffolding:developer")` |
-| **install.sh (`--target`)** | Bez prefiksu (bare name) | `Task(subagent_type="developer")` |
+| Scenariusz | Uruchomic init? | Dlaczego |
+|-----------|----------------|---------|
+| Projekt solo, plugin zawsze zainstalowany | Nie | Hook SessionStart wstrzykuje protokol przy kazdym starcie sesji |
+| Repo zespolowe, inni klonuja bez pluginu | Tak | `CLAUDE.md` w repo = protokol podrozuje razem z kodem |
+| CI/automatyzacja czyta repo | Tak | Scommitowany `CLAUDE.md` = reproducible context |
+| Jednorazowy/PoC projekt | Nie | Hook wystarczy, nie zasmiecaj repo |
 
-`CLAUDE.md` i dokumentacja w tym repozytorium uzywa formy z prefixem (kanonicznej).
-`install.sh` automatycznie usuwa prefix `claude-scaffolding:` z wyrenderowanych plikow
-w katalogu docelowym, wiec po `install.sh --target /path/to/repo` agenci sa
-wywolywani jako bare names.
+**Roznica mechaniczna:**
 
-> **Tldr:** Jesli uzywasz pluginu -- uzyj `claude-scaffolding:developer`.
-> Jesli uzywasz install.sh -- uzyj `developer`. Install.sh zajmuje sie konwersja automatycznie.
+- **Hook-based** (domyslnie po install + reload): protokol zyje w SessionStart hook output,
+  jest efemeryczny, per-sesyjny, wymaga aktywnego pluginu.
+- **Init-based** (po `/init-claude-scaffolding`): `CLAUDE.md` zapisany w `$CWD`,
+  persistentny, wersjonowany w git, dziala nawet bez pluginu.
 
-### Kiedy ktorego flow uzyc?
+---
 
-| Potrzeba | Flow |
-|----------|------|
-| Szybka instalacja z defaultami | Opcja A (Plugin) + `/init-claude-scaffolding` |
-| Upgrade przez `/plugin update` | Opcja A (Plugin) |
-| Wlasny `__CLAUDE_SCAFFOLDING_PROJECT_NAME__`, klucz Sonar, test commands | Opcja B (install.sh) |
-| Integracja per-project `.claude/` vs user-level | Opcja B (install.sh --target) |
-| Rozwoj/edycja komponentow claude-scaffolding | Opcja B (klon repo) |
+### Czeste problemy (gotchas)
+
+**"Agent type 'developer' not found"**
+- Zapomniałeś uruchomic `/reload-plugins` po instalacji, LUB
+- Uzywasz bare name `developer` w flow z pluginem -- uzyj `claude-scaffolding:developer`.
+
+**"Claude ignoruje protokol delegacji"**
+- Plugin zaladowany, ale `/reload-plugins` nie byl uruchomiony po instalacji, LUB
+- Uzywasz starszej wersji hooka (przed `45cb106`) ktora uzywala plain echo zamiast
+  `hookSpecificOutput.additionalContext`.
+
+**"Zainstalowalem plugin, ale nic nie dziala w nowej sesji"**
+- Zrestartuj Claude Code w calosci (nie tylko otwiera nowa sesje) -- cache pluginow
+  moze byc przeterminowany. `/reload-plugins` jest szybszym rozwiazaniem jezeli sesja jest aktywna.
 
 ## Wymagania
 
