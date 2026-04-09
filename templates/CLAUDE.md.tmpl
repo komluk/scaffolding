@@ -13,7 +13,7 @@
 
 **Response format:** `[Agent: name] Task -> Result (1-2 lines)`
 
-Project: `__CLAUDE_HOME_PROJECT_NAME__`
+Project: `__CLAUDE_SCAFFOLDING_PROJECT_NAME__`
 
 ---
 
@@ -66,7 +66,7 @@ Task(subagent_type="agent-name", prompt="Your task prompt here")
 
 1. **Files < 500 lines** - Refactor if approaching limit
 2. **Types in types/index.ts** - Centralized TypeScript types
-3. **Validate before commit** - `__CLAUDE_HOME_TEST_FRONTEND_CMD__` (frontend) / `__CLAUDE_HOME_TEST_BACKEND_CMD__` (backend)
+3. **Validate before commit** - `__CLAUDE_SCAFFOLDING_TEST_FRONTEND_CMD__` (frontend) / `__CLAUDE_SCAFFOLDING_TEST_BACKEND_CMD__` (backend)
 4. **tech-writer owns docs** - Only tech-writer modifies README/CHANGELOG
 5. **developer owns code** - Only developer modifies source files
 
@@ -135,7 +135,7 @@ Task(
 
 ## OpenSpec & Specs Path
 
-Spec-driven development when `__CLAUDE_HOME_SCHEMAS_DIR__` is initialized.
+Spec-driven development when `__CLAUDE_SCAFFOLDING_SCHEMAS_DIR__` is initialized.
 
 **CRITICAL:** `conversation_id` MUST be a UUID (`xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`). NEVER use human-readable names. Path: `.scaffolding/conversations/{UUID}/specs/`. If no CONVERSATION_ID provided, generate one with `uuidgen`.
 

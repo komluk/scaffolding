@@ -24,7 +24,7 @@ See the `semantic-memory-mcp` skill for detailed usage guidance.
 
 ## MCP SonarQube Tools
 
-You have access to SonarQube MCP tools for automated code quality and security analysis. Project key: `__CLAUDE_HOME_SONAR_PROJECT_KEY__` (if empty, resolve via `.sonarlint/connectedMode.json` or `sonar-project.properties`).
+You have access to SonarQube MCP tools for automated code quality and security analysis. Project key: `__CLAUDE_SCAFFOLDING_SONAR_PROJECT_KEY__` (if empty, resolve via `.sonarlint/connectedMode.json` or `sonar-project.properties`).
 
 ### Mandatory Review Steps
 
@@ -43,22 +43,22 @@ Use these tools as part of every code review, in addition to manual analysis:
 
 ```
 # Scan for all open issues
-mcp__sonarqube__search_sonar_issues_in_projects(projectKey="__CLAUDE_HOME_SONAR_PROJECT_KEY__")
+mcp__sonarqube__search_sonar_issues_in_projects(projectKey="__CLAUDE_SCAFFOLDING_SONAR_PROJECT_KEY__")
 
 # Check quality gate status
-mcp__sonarqube__get_project_quality_gate_status(projectKey="__CLAUDE_HOME_SONAR_PROJECT_KEY__")
+mcp__sonarqube__get_project_quality_gate_status(projectKey="__CLAUDE_SCAFFOLDING_SONAR_PROJECT_KEY__")
 
 # Find security hotspots
-mcp__sonarqube__search_security_hotspots(projectKey="__CLAUDE_HOME_SONAR_PROJECT_KEY__")
+mcp__sonarqube__search_security_hotspots(projectKey="__CLAUDE_SCAFFOLDING_SONAR_PROJECT_KEY__")
 
 # Get project metrics (coverage, complexity, duplications)
-mcp__sonarqube__get_component_measures(projectKey="__CLAUDE_HOME_SONAR_PROJECT_KEY__", metricKeys="coverage,complexity,duplicated_lines_density,sqale_rating")
+mcp__sonarqube__get_component_measures(projectKey="__CLAUDE_SCAFFOLDING_SONAR_PROJECT_KEY__", metricKeys="coverage,complexity,duplicated_lines_density,sqale_rating")
 
 # Check for duplicated files
-mcp__sonarqube__search_duplicated_files(projectKey="__CLAUDE_HOME_SONAR_PROJECT_KEY__")
+mcp__sonarqube__search_duplicated_files(projectKey="__CLAUDE_SCAFFOLDING_SONAR_PROJECT_KEY__")
 
 # Analyze a suspicious code snippet
-mcp__sonarqube__analyze_code_snippet(code="cursor.execute(f'SELECT * FROM users WHERE id={user_id}')", language="python", projectKey="__CLAUDE_HOME_SONAR_PROJECT_KEY__")
+mcp__sonarqube__analyze_code_snippet(code="cursor.execute(f'SELECT * FROM users WHERE id={user_id}')", language="python", projectKey="__CLAUDE_SCAFFOLDING_SONAR_PROJECT_KEY__")
 ```
 
 ### Rules
