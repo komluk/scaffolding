@@ -1,12 +1,12 @@
 {
-  "name": "komluk-tools",
+  "name": "komluk-scaffolding",
   "owner": {
     "name": "komluk",
     "url": "https://github.com/komluk"
   },
   "plugins": [
     {
-      "name": "claude-home",
+      "name": "claude-scaffolding",
       "source": "./.",
       "description": "Opinionated Claude Code configuration for spec-driven multi-agent workflows"
     }
