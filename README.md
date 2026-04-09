@@ -99,6 +99,23 @@ interakcji.
 > **Flow 2 (`./install.sh --target /path/to/repo`)** -- `install.sh` kopiuje `CLAUDE.md`
 > automatycznie razem ze wszystkimi innymi komponentami. Nie trzeba zadnych dodatkowych krokow.
 
+### Przestrzen nazw agentow: Plugin vs install.sh
+
+Dwa flow roznia sie sposobem wywolywania agentow:
+
+| Flow | Jak wywolac agenta | Przyklad |
+|------|--------------------|---------|
+| **Plugin (`/plugin install`)** | Z prefixem `claude-scaffolding:` | `Task(subagent_type="claude-scaffolding:developer")` |
+| **install.sh (`--target`)** | Bez prefiksu (bare name) | `Task(subagent_type="developer")` |
+
+`CLAUDE.md` i dokumentacja w tym repozytorium uzywa formy z prefixem (kanonicznej).
+`install.sh` automatycznie usuwa prefix `claude-scaffolding:` z wyrenderowanych plikow
+w katalogu docelowym, wiec po `install.sh --target /path/to/repo` agenci sa
+wywolywani jako bare names.
+
+> **Tldr:** Jesli uzywasz pluginu -- uzyj `claude-scaffolding:developer`.
+> Jesli uzywasz install.sh -- uzyj `developer`. Install.sh zajmuje sie konwersja automatycznie.
+
 ### Kiedy ktorego flow uzyc?
 
 | Potrzeba | Flow |

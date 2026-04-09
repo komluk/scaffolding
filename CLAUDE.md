@@ -21,22 +21,22 @@ Project: `(project)`
 
 Route via Task tool with subagent_type:
 ```
-Task(subagent_type="agent-name", prompt="Your task prompt here")
+Task(subagent_type="claude-scaffolding:agent-name", prompt="Your task prompt here")
 ```
 
 | Agent | When to Use |
 |-------|-------------|
-| **analyst** | Ambiguous requests, requirements, scope assessment, feasibility, proposal writing |
-| **architect** | System design, API design, implementation planning, multi-file refactoring, agent orchestration |
-| **researcher** | New API integration, library questions, best practices (gate: score >= 80) |
-| **developer** | Implementation, bug fixes, features, tests, UI/styling (gate: validation passes) |
-| **debugger** | Bug reports, unexpected behavior, errors |
-| **reviewer** | After code changes, security analysis, threat modeling (gate: no criticals) |
-| **performance-optimizer** | Performance issues, database design, schema, migrations, queries |
-| **tech-writer** | Documentation, CHANGELOG updates |
-| **devops** | CI/CD, deployment, infrastructure |
-| **gitops** | Branch management, conflict resolution, git history, worktree recovery, push to remote |
-| **coordinator** | Analyzes tasks, decomposes into agent step sequences for dynamic execution |
+| **claude-scaffolding:analyst** | Ambiguous requests, requirements, scope assessment, feasibility, proposal writing |
+| **claude-scaffolding:architect** | System design, API design, implementation planning, multi-file refactoring, agent orchestration |
+| **claude-scaffolding:researcher** | New API integration, library questions, best practices (gate: score >= 80) |
+| **claude-scaffolding:developer** | Implementation, bug fixes, features, tests, UI/styling (gate: validation passes) |
+| **claude-scaffolding:debugger** | Bug reports, unexpected behavior, errors |
+| **claude-scaffolding:reviewer** | After code changes, security analysis, threat modeling (gate: no criticals) |
+| **claude-scaffolding:performance-optimizer** | Performance issues, database design, schema, migrations, queries |
+| **claude-scaffolding:tech-writer** | Documentation, CHANGELOG updates |
+| **claude-scaffolding:devops** | CI/CD, deployment, infrastructure |
+| **claude-scaffolding:gitops** | Branch management, conflict resolution, git history, worktree recovery, push to remote |
+| **claude-scaffolding:coordinator** | Analyzes tasks, decomposes into agent step sequences for dynamic execution |
 
 ---
 
@@ -44,21 +44,21 @@ Task(subagent_type="agent-name", prompt="Your task prompt here")
 
 **NEVER answer directly. ALWAYS delegate.**
 
-- Bug fix -> debugger -> developer
-- Complex feature -> analyst (proposal) -> architect (design) -> developer
-- Simple feature / tests / UI -> developer
-- Code/implementation question -> developer
-- Architecture/technical question -> architect
-- Requirements / scope / feasibility -> analyst
-- Docs / usage / library -> researcher -> tech-writer
-- Planning / ambiguous request -> analyst
-- Review / security -> reviewer
-- CI/CD -> devops
-- Database / performance -> performance-optimizer
-- Git operations / worktree / commit / merge / push -> gitops
-- After ANY worktree agent completes -> gitops (commit + merge + push)
-- Multi-agent coordination / dynamic task decomposition -> coordinator
-- Default -> analyst
+- Bug fix -> claude-scaffolding:debugger -> claude-scaffolding:developer
+- Complex feature -> claude-scaffolding:analyst (proposal) -> claude-scaffolding:architect (design) -> claude-scaffolding:developer
+- Simple feature / tests / UI -> claude-scaffolding:developer
+- Code/implementation question -> claude-scaffolding:developer
+- Architecture/technical question -> claude-scaffolding:architect
+- Requirements / scope / feasibility -> claude-scaffolding:analyst
+- Docs / usage / library -> claude-scaffolding:researcher -> claude-scaffolding:tech-writer
+- Planning / ambiguous request -> claude-scaffolding:analyst
+- Review / security -> claude-scaffolding:reviewer
+- CI/CD -> claude-scaffolding:devops
+- Database / performance -> claude-scaffolding:performance-optimizer
+- Git operations / worktree / commit / merge / push -> claude-scaffolding:gitops
+- After ANY worktree agent completes -> claude-scaffolding:gitops (commit + merge + push)
+- Multi-agent coordination / dynamic task decomposition -> claude-scaffolding:coordinator
+- Default -> claude-scaffolding:analyst
 
 ---
 
@@ -78,15 +78,15 @@ Use Task tool with subagent_type parameter:
 
 ```python
 Task(
-    subagent_type="developer",
+    subagent_type="claude-scaffolding:developer",
     prompt="Update Button.tsx to add onClick handler",
     description="Add click handler"
 )
 ```
 
 **Available subagent_type values:**
-- analyst, architect, researcher, developer
-- debugger, reviewer, performance-optimizer, tech-writer, devops, gitops, coordinator
+- claude-scaffolding:analyst, claude-scaffolding:architect, claude-scaffolding:researcher, claude-scaffolding:developer
+- claude-scaffolding:debugger, claude-scaffolding:reviewer, claude-scaffolding:performance-optimizer, claude-scaffolding:tech-writer, claude-scaffolding:devops, claude-scaffolding:gitops, claude-scaffolding:coordinator
 
 ---
 
@@ -94,11 +94,11 @@ Task(
 
 **CRITICAL: When spawning agents in worktrees (`isolation: "worktree"`), the orchestrator MUST follow this sequence:**
 
-1. **Spawn developer/architect** in worktree — they write code and run tests. They do NOT commit.
+1. **Spawn claude-scaffolding:developer/claude-scaffolding:architect** in worktree — they write code and run tests. They do NOT commit.
 2. **After agent completes**, check the worktree result for `worktreePath` and `worktreeBranch`.
-3. **Spawn gitops** (NOT in worktree) to commit + merge + push:
+3. **Spawn claude-scaffolding:gitops** (NOT in worktree) to commit + merge + push:
    ```
-   Agent(subagent_type="gitops", prompt="
+   Agent(subagent_type="claude-scaffolding:gitops", prompt="
      Worktree at {worktreePath} on branch {worktreeBranch} has uncommitted changes from developer.
      1. cd into worktree, git add -A, git commit -m '...'
      2. cd back to main repo, git merge {worktreeBranch} --no-edit

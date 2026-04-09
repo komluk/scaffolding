@@ -28,6 +28,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README: added prominent note explaining the two install flows and why
   `/init-claude-scaffolding` must be run after `/plugin install` to get `CLAUDE.md`
   into the target repo.
+- **Prefixed all agent `subagent_type` references** with `claude-scaffolding:` as the
+  canonical form throughout `CLAUDE.md`, `hooks/session-start-protocol.sh`,
+  `agents/architect.md`, and `docs/locked-to-project/workflow-command.md`. Fixes
+  "Agent type 'developer' not found" errors when the plugin is installed via the
+  marketplace (`/plugin install claude-scaffolding@komluk-scaffolding`) and agents
+  are loaded under the `claude-scaffolding:` namespace.
+- `install.sh`: added Step 3 that strips the `claude-scaffolding:` prefix from all
+  rendered `.md` and `.sh` files in the target directory when `--target` differs from
+  the repo root. The copy-to-target flow produces bare names (e.g. `developer`)
+  as before; only the plugin flow uses the prefixed form.
+- README: added "Przestrzen nazw agentow: Plugin vs install.sh" subsection documenting
+  both forms and explaining that `install.sh` handles the conversion automatically.
 
 ---
 

@@ -238,6 +238,21 @@ for f in "${TEMPLATES[@]}"; do
   render_file "$f"
 done
 
+# Step 3: strip namespace prefix from agent references in target (copy-to-target flow only).
+# The canonical form in the plugin repo uses "claude-scaffolding:" prefix so that
+# marketplace-install users get the correct subagent_type. When install.sh copies
+# to a different target the prefix must be removed because project-level agents
+# are not namespaced.
+if [[ "$CLAUDE_SCAFFOLDING_ROOT" != "$TARGET" ]]; then
+  if $DRY_RUN; then
+    echo "[dry-run] would strip claude-scaffolding: prefix from agent references in $TARGET"
+  else
+    find "$TARGET" -type f \( -name "*.md" -o -name "*.sh" -o -name "CLAUDE.md" \) \
+      -exec sed -i 's/claude-scaffolding:\(analyst\|architect\|researcher\|developer\|debugger\|reviewer\|performance-optimizer\|tech-writer\|devops\|gitops\|coordinator\)/\1/g' {} +
+    echo "[info] stripped claude-scaffolding: prefix from agent references in target"
+  fi
+fi
+
 # --- sanity check: no placeholder left in rendered template files ---
 # Only the TEMPLATES list is scanned; documentation files (README, CHANGELOG,
 # docs/, install.sh) legitimately mention `__CLAUDE_SCAFFOLDING_*__` names as
