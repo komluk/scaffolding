@@ -1,3 +1,4 @@
+.claude-home.env
 *.rendered
 /tmp/
 .DS_Store
