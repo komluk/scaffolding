@@ -37,7 +37,7 @@ description: "MCP tool decision tree and plugin reference. Agents follow MCP-fir
 ## Semantic Memory MCP
 
 - **Transport**: stdio (Python, `venv/bin/python -m mcp_servers.semantic_memory`)
-- **Source**: `app/backend/mcp_servers/semantic_memory/server.py` (internal, built on `fastmcp`)
+- **Source**: MCP servers in your backend directory (internal, built on `fastmcp`)
 - **Auth**: `DATABASE_URL` (PostgreSQL connection string), `SEMANTIC_MEMORY_ENABLED=true`
 - **Config**: `.mcp.json` at project root
 

@@ -6,7 +6,7 @@ description: "Git command patterns, branching strategies, and safety protocols. 
 # Git Operations Skill
 
 ## Purpose
-Core git command patterns, branching strategies, and safety protocols for the scaffolding.tool platform.
+Core git command patterns, branching strategies, and safety protocols for a project.
 
 ## Branching Convention
 

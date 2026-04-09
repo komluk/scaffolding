@@ -1,5 +1,5 @@
 # Minimal docker-compose for a FastAPI + Postgres + Redis stack
-# Based on scaffolding.tool infrastructure patterns
+# Based on typical infrastructure patterns
 #
 # Usage: docker compose up -d
 

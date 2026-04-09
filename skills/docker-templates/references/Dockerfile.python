@@ -1,5 +1,5 @@
 # Python/FastAPI multi-stage Dockerfile
-# Based on scaffolding.tool backend patterns
+# Based on Python backend best practices
 #
 # Build: docker build -t myapi -f Dockerfile.python .
 # Run:   docker run -p 8000:8000 myapi

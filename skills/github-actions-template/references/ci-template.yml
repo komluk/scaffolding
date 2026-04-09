@@ -1,4 +1,4 @@
-# CI Pipeline Template - Based on scaffolding.tool patterns
+# CI Pipeline Template - Based on common CI patterns
 # Adapt paths, languages, and deploy steps for your project
 name: CI Pipeline
 

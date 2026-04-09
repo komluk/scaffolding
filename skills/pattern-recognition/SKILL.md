@@ -1,6 +1,6 @@
 ---
 name: pattern-recognition
-description: "Identify and apply existing codebase patterns for consistency. Use when writing new code to match established conventions in the scaffolding.tool project."
+description: "Identify and apply existing codebase patterns for consistency. Use when writing new code to match established conventions in a project."
 ---
 
 # Pattern Recognition Skill

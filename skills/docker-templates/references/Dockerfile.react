@@ -1,5 +1,5 @@
 # React + nginx multi-stage Dockerfile
-# Based on scaffolding.tool project patterns
+# Based on typical React project patterns
 #
 # Build: docker build -t myapp -f Dockerfile.react .
 # Run:   docker run -p 3000:80 myapp
