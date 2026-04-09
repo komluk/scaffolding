@@ -22,6 +22,36 @@ Cele:
 
 ## Szybki start
 
+Sa dwa wspolzyjace sposoby instalacji. Wybierz jeden per maszyna.
+
+### Opcja A -- Plugin Claude Code (zalecana dla szybkiego startu)
+
+Zero-config, instalacja natywna przez marketplace. Komponenty ladowane sa z
+prefixem `claude-home:` (np. `claude-home:developer`, `/claude-home:workflow`).
+
+**Wymaganie:** `komluk/claude-home` jest repozytorium prywatnym, wiec Claude
+Code CLI musi byc zalogowane do konta GitHub z dostepem do tego repo. Przed
+pierwszym uzyciem uruchom:
+
+```bash
+gh auth login
+# Wybierz: GitHub.com, HTTPS, login with web browser, scope: repo
+```
+
+Nastepnie w sesji Claude Code:
+
+```
+/plugin marketplace add komluk/claude-home
+/plugin install claude-home@komluk-tools
+```
+
+Plugin trafi do `~/.claude/plugins/cache/komluk-tools/claude-home/<version>/`
+i jego komponenty sa natychmiast dostepne. Parametry sa zaszyte jako
+sensowne defaulty (`pytest`, `npm test`, `./backend`, itd.) -- jesli
+potrzebujesz wlasnych wartosci, uzyj Opcji B.
+
+### Opcja B -- Klon + install.sh (pelna parametryzacja)
+
 ```bash
 # 1. Klon prosto do ~/.claude/ (user-level)
 git clone https://github.com/komluk/claude-home ~/.claude
@@ -36,9 +66,9 @@ cd ~/src/claude-home
 
 Install.sh pyta o kilka wartosci (komenda testow backendu, komenda walidacji
 frontendu, klucz SonarQube, nazwa projektu, itp.), zapisuje je w
-`~/.claude-home.env` i podmienia placeholdery `__CLAUDE_HOME_*__` w plikach
-docelowych. Po pierwszym uruchomieniu mozna zmienic wartosci edytujac
-`~/.claude-home.env` i uruchamiajac:
+`~/.claude-home.env` i renderuje placeholdery `__CLAUDE_HOME_*__` z
+`templates/*.tmpl` do plikow docelowych. Po pierwszym uruchomieniu mozna
+zmienic wartosci edytujac `~/.claude-home.env` i uruchamiajac:
 
 ```bash
 ./install.sh --refresh
@@ -46,6 +76,16 @@ docelowych. Po pierwszym uruchomieniu mozna zmienic wartosci edytujac
 
 co jest idempotentne -- kazde kolejne wywolanie daje identyczny wynik bez
 interakcji.
+
+### Kiedy ktorego flow uzyc?
+
+| Potrzeba | Flow |
+|----------|------|
+| Szybka instalacja z defaultami | Opcja A (Plugin) |
+| Upgrade przez `/plugin update` | Opcja A (Plugin) |
+| Wlasny `__CLAUDE_HOME_PROJECT_NAME__`, klucz Sonar, test commands | Opcja B (install.sh) |
+| Integracja per-project `.claude/` vs user-level | Opcja B (install.sh --target) |
+| Rozwoj/edycja komponentow claude-home | Opcja B (klon repo) |
 
 ## Wymagania
 
@@ -134,6 +174,24 @@ pomijac enterem i wrocic do tego pozniej przez `~/.claude-home.env`.
   jak dodac do istniejacego projektu ze swoim `.claude/`
 - [docs/locked-to-project/](docs/locked-to-project/README.md) -- Tier C
 - [CHANGELOG.md](CHANGELOG.md) -- historia zmian
+
+## Wersjonowanie
+
+Projekt trzyma sie [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
+
+| Bump | Kiedy |
+|------|-------|
+| **MAJOR** (X.0.0) | Breaking changes: usuniecie agenta/skilla/command, zmiana API `install.sh`, niekompatybilne zmiany `plugin.json` schema |
+| **MINOR** (x.Y.0) | Nowy agent/skill/command/hook, nowa opcja `install.sh`, nowa feature w CI (backward compatible) |
+| **PATCH** (x.y.Z) | Bug fix, typo, poprawki dokumentacji |
+
+Source of truth dla wersji: `.claude-plugin/plugin.json` (`version` field).
+Git tag MUSI pasowac (`v${version}`) -- jest to wymuszone przez
+`release.yml` w GitHub Actions. Kazdy tag `v*` automatycznie tworzy
+GitHub Release z assetami `install.sh`, `uninstall.sh`,
+`.claude-home.env.example`.
+
+Historia wersji: [CHANGELOG.md](CHANGELOG.md).
 
 ## Licencja
 
