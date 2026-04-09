@@ -70,9 +70,9 @@ Continue with unblocked tasks. Do not stop the entire chain.
 ```markdown
 ## 2. Core Implementation
 
-- [x] 2.1 Implement service in `__CLAUDE_HOME_BACKEND_EXAMPLE_PATH__service.py`
-- [x] 2.2 Add Pydantic schemas in `__CLAUDE_HOME_BACKEND_EXAMPLE_PATH__schemas.py`
-- [ ] 2.3 Add router in `__CLAUDE_HOME_BACKEND_EXAMPLE_PATH__router.py`
+- [x] 2.1 Implement service in `__CLAUDE_HOME_BACKEND_EXAMPLE_PATH__/service.py`
+- [x] 2.2 Add Pydantic schemas in `__CLAUDE_HOME_BACKEND_EXAMPLE_PATH__/schemas.py`
+- [ ] 2.3 Add router in `__CLAUDE_HOME_BACKEND_EXAMPLE_PATH__/router.py`
   > BLOCKED: Waiting for auth middleware decision
 - [x] 2.4 Run validation: `__CLAUDE_HOME_TEST_BACKEND_CMD__`
 ```

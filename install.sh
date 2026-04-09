@@ -157,6 +157,15 @@ COPY_ITEMS=(
   "settings.json"
 )
 
+# Normalize path-like entries: strip trailing slash so templates that append
+# `/filename` (e.g. `__CLAUDE_HOME_BACKEND_EXAMPLE_PATH__/service.py`) render
+# with a single slash regardless of whether the user supplied `./backend` or
+# `./backend/`. Reason: template uses explicit `/` separator, so any trailing
+# slash in the value would produce a double slash (`./backend//service.py`).
+if [[ -n "${CONFIG[CLAUDE_HOME_BACKEND_EXAMPLE_PATH]:-}" ]]; then
+  CONFIG[CLAUDE_HOME_BACKEND_EXAMPLE_PATH]="${CONFIG[CLAUDE_HOME_BACKEND_EXAMPLE_PATH]%/}"
+fi
+
 # Export CONFIG entries so the python substitution script can read them
 for k in "${!CONFIG[@]}"; do
   export "$k=${CONFIG[$k]}"

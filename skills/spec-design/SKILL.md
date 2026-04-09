@@ -95,9 +95,9 @@ Write to: `{specs_path}/tasks.md`
 - [ ] 1.2 Add dependencies to `requirements.txt`
 
 ## 2. Core Implementation
-- [ ] 2.1 Implement service in `__CLAUDE_HOME_BACKEND_EXAMPLE_PATH__service.py`
-- [ ] 2.2 Add Pydantic schemas in `__CLAUDE_HOME_BACKEND_EXAMPLE_PATH__schemas.py`
-- [ ] 2.3 Add router in `__CLAUDE_HOME_BACKEND_EXAMPLE_PATH__router.py`
+- [ ] 2.1 Implement service in `__CLAUDE_HOME_BACKEND_EXAMPLE_PATH__/service.py`
+- [ ] 2.2 Add Pydantic schemas in `__CLAUDE_HOME_BACKEND_EXAMPLE_PATH__/schemas.py`
+- [ ] 2.3 Add router in `__CLAUDE_HOME_BACKEND_EXAMPLE_PATH__/router.py`
 - [ ] 2.4 Run validation: `__CLAUDE_HOME_TEST_BACKEND_CMD__`
 
 ## 3. Frontend + Tests
