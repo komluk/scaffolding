@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# install.sh -- claude-home installer
-# Renders __CLAUDE_HOME_*__ placeholder files into a target directory.
-# Idempotent: re-running with same ~/.claude-home.env produces identical output.
+# install.sh -- claude-scaffolding installer
+# Renders __CLAUDE_SCAFFOLDING_*__ placeholder files into a target directory.
+# Idempotent: re-running with same ~/.claude-scaffolding.env produces identical output.
 #
 # Exit codes:
 #   0 ok (including --dry-run)
@@ -12,8 +12,8 @@
 
 set -euo pipefail
 
-CLAUDE_HOME_ROOT="$(cd "$(dirname "$0")" && pwd)"
-CONFIG_FILE="${HOME}/.claude-home.env"
+CLAUDE_SCAFFOLDING_ROOT="$(cd "$(dirname "$0")" && pwd)"
+CONFIG_FILE="${HOME}/.claude-scaffolding.env"
 TARGET=""
 DRY_RUN=false
 REFRESH=false
@@ -24,7 +24,7 @@ Usage: install.sh [--target PATH] [--refresh] [--dry-run] [--help]
 
 Options:
   --target PATH   Where to render files (default: in-place in repo)
-  --refresh       Re-render using values from ~/.claude-home.env (no prompts)
+  --refresh       Re-render using values from ~/.claude-scaffolding.env (no prompts)
   --dry-run       Show what would be done, don't touch files
   --help          This help
 
@@ -49,7 +49,7 @@ command -v git >/dev/null || { echo "[error] git required" >&2; exit 1; }
 
 # --- determine target ---
 if [[ -z "$TARGET" ]]; then
-  TARGET="$CLAUDE_HOME_ROOT"
+  TARGET="$CLAUDE_SCAFFOLDING_ROOT"
   echo "[info] no --target, rendering in place: $TARGET"
 fi
 
@@ -71,24 +71,24 @@ prompt_for() {
   # Auto-detect hooks per variable (only if no default from config file)
   if [[ -z "${CONFIG[$key]:-}" ]]; then
     case "$key" in
-      CLAUDE_HOME_TEST_BACKEND_CMD)
+      CLAUDE_SCAFFOLDING_TEST_BACKEND_CMD)
         for venv in venv .venv app/backend/venv backend/venv; do
           if [[ -f "$venv/bin/activate" ]]; then
             default_val="source $venv/bin/activate && pytest"
             break
           fi
         done ;;
-      CLAUDE_HOME_TEST_FRONTEND_CMD)
+      CLAUDE_SCAFFOLDING_TEST_FRONTEND_CMD)
         if [[ -f "package.json" ]] && grep -q '"validate"' package.json 2>/dev/null; then
           default_val="npm run validate"
         elif [[ -f "tsconfig.json" ]]; then
           default_val="npx tsc --noEmit"
         fi ;;
-      CLAUDE_HOME_SONAR_PROJECT_KEY)
+      CLAUDE_SCAFFOLDING_SONAR_PROJECT_KEY)
         if [[ -f ".sonarlint/connectedMode.json" ]]; then
           default_val="$(python3 -c 'import json; print(json.load(open(".sonarlint/connectedMode.json"))["projectKey"])' 2>/dev/null || echo '')"
         fi ;;
-      CLAUDE_HOME_PROJECT_NAME)
+      CLAUDE_SCAFFOLDING_PROJECT_NAME)
         default_val="$(basename "$PWD")" ;;
     esac
   fi
@@ -111,17 +111,17 @@ if $REFRESH; then
   echo "[info] refresh mode: using values from $CONFIG_FILE"
 else
   load_config_from_file  # pre-fill from file, user can accept with enter
-  prompt_for CLAUDE_HOME_TEST_BACKEND_CMD "Backend test command" "${CONFIG[CLAUDE_HOME_TEST_BACKEND_CMD]:-echo '[claude-home] no backend tests configured' && true}"
-  prompt_for CLAUDE_HOME_TEST_FRONTEND_CMD "Frontend validate command" "${CONFIG[CLAUDE_HOME_TEST_FRONTEND_CMD]:-echo '[claude-home] no frontend validation configured' && true}"
-  prompt_for CLAUDE_HOME_SONAR_PROJECT_KEY "SonarQube project key (empty to skip)" "${CONFIG[CLAUDE_HOME_SONAR_PROJECT_KEY]:-}"
-  prompt_for CLAUDE_HOME_SCHEMAS_DIR "OpenSpec schemas dir" "${CONFIG[CLAUDE_HOME_SCHEMAS_DIR]:-./.scaffolding/openspec/schemas}"
-  prompt_for CLAUDE_HOME_PROJECT_NAME "Project name" "${CONFIG[CLAUDE_HOME_PROJECT_NAME]:-$(basename "$PWD")}"
-  prompt_for CLAUDE_HOME_BACKEND_EXAMPLE_PATH "Example backend feature path" "${CONFIG[CLAUDE_HOME_BACKEND_EXAMPLE_PATH]:-app/backend/app/feature/}"
+  prompt_for CLAUDE_SCAFFOLDING_TEST_BACKEND_CMD "Backend test command" "${CONFIG[CLAUDE_SCAFFOLDING_TEST_BACKEND_CMD]:-echo '[claude-scaffolding] no backend tests configured' && true}"
+  prompt_for CLAUDE_SCAFFOLDING_TEST_FRONTEND_CMD "Frontend validate command" "${CONFIG[CLAUDE_SCAFFOLDING_TEST_FRONTEND_CMD]:-echo '[claude-scaffolding] no frontend validation configured' && true}"
+  prompt_for CLAUDE_SCAFFOLDING_SONAR_PROJECT_KEY "SonarQube project key (empty to skip)" "${CONFIG[CLAUDE_SCAFFOLDING_SONAR_PROJECT_KEY]:-}"
+  prompt_for CLAUDE_SCAFFOLDING_SCHEMAS_DIR "OpenSpec schemas dir" "${CONFIG[CLAUDE_SCAFFOLDING_SCHEMAS_DIR]:-./.scaffolding/openspec/schemas}"
+  prompt_for CLAUDE_SCAFFOLDING_PROJECT_NAME "Project name" "${CONFIG[CLAUDE_SCAFFOLDING_PROJECT_NAME]:-$(basename "$PWD")}"
+  prompt_for CLAUDE_SCAFFOLDING_BACKEND_EXAMPLE_PATH "Example backend feature path" "${CONFIG[CLAUDE_SCAFFOLDING_BACKEND_EXAMPLE_PATH]:-app/backend/app/feature/}"
 
   # --- persist config ---
   if ! $DRY_RUN; then
     {
-      echo "# claude-home config -- generated $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+      echo "# claude-scaffolding config -- generated $(date -u +%Y-%m-%dT%H:%M:%SZ)"
       for k in "${!CONFIG[@]}"; do
         echo "$k=${CONFIG[$k]}"
       done
@@ -158,12 +158,12 @@ COPY_ITEMS=(
 )
 
 # Normalize path-like entries: strip trailing slash so templates that append
-# `/filename` (e.g. `__CLAUDE_HOME_BACKEND_EXAMPLE_PATH__/service.py`) render
+# `/filename` (e.g. `__CLAUDE_SCAFFOLDING_BACKEND_EXAMPLE_PATH__/service.py`) render
 # with a single slash regardless of whether the user supplied `./backend` or
 # `./backend/`. Reason: template uses explicit `/` separator, so any trailing
 # slash in the value would produce a double slash (`./backend//service.py`).
-if [[ -n "${CONFIG[CLAUDE_HOME_BACKEND_EXAMPLE_PATH]:-}" ]]; then
-  CONFIG[CLAUDE_HOME_BACKEND_EXAMPLE_PATH]="${CONFIG[CLAUDE_HOME_BACKEND_EXAMPLE_PATH]%/}"
+if [[ -n "${CONFIG[CLAUDE_SCAFFOLDING_BACKEND_EXAMPLE_PATH]:-}" ]]; then
+  CONFIG[CLAUDE_SCAFFOLDING_BACKEND_EXAMPLE_PATH]="${CONFIG[CLAUDE_SCAFFOLDING_BACKEND_EXAMPLE_PATH]%/}"
 fi
 
 # Export CONFIG entries so the python substitution script can read them
@@ -172,9 +172,9 @@ for k in "${!CONFIG[@]}"; do
 done
 
 # Step 1: copy entire tree from repo to target (only when target differs from repo root)
-if [[ "$CLAUDE_HOME_ROOT" != "$TARGET" ]]; then
+if [[ "$CLAUDE_SCAFFOLDING_ROOT" != "$TARGET" ]]; then
   for item in "${COPY_ITEMS[@]}"; do
-    src="$CLAUDE_HOME_ROOT/$item"
+    src="$CLAUDE_SCAFFOLDING_ROOT/$item"
     dst="$TARGET/$item"
     [[ ! -e "$src" ]] && continue
     if $DRY_RUN; then
@@ -200,13 +200,13 @@ fi
 # Phase B model (Strategy C): source files in `skills/`, `agents/`, `commands/`,
 # `settings.json`, `CLAUDE.md` are pre-rendered with sensible defaults (pytest,
 # npm test, (project), ./backend, ./schemas, empty sonar key) so that the
-# plugin install flow (`/plugin install claude-home@komluk-tools`) is
+# plugin install flow (`/plugin install claude-scaffolding@komluk-scaffolding`) is
 # zero-config. For the Phase A install.sh flow we still want full
 # parametrization, so the canonical placeholder form is kept in
 # `templates/<rel>.tmpl` and rendered over the pre-rendered copies in --target.
 render_file() {
   local rel="$1"
-  local src="$CLAUDE_HOME_ROOT/templates/$rel.tmpl"
+  local src="$CLAUDE_SCAFFOLDING_ROOT/templates/$rel.tmpl"
   local dst="$TARGET/$rel"
   if [[ ! -f "$src" ]]; then
     echo "[warn] template source missing: templates/$rel.tmpl" >&2
@@ -220,7 +220,7 @@ src = sys.argv[1]
 with open(src, 'r', encoding='utf-8') as f:
     content = f.read()
 for key, value in os.environ.items():
-    if key.startswith('CLAUDE_HOME_'):
+    if key.startswith('CLAUDE_SCAFFOLDING_'):
         content = content.replace(f"__{key}__", value)
 sys.stdout.write(content)
 PYEOF
@@ -240,14 +240,14 @@ done
 
 # --- sanity check: no placeholder left in rendered template files ---
 # Only the TEMPLATES list is scanned; documentation files (README, CHANGELOG,
-# docs/, install.sh) legitimately mention `__CLAUDE_HOME_*__` names as
+# docs/, install.sh) legitimately mention `__CLAUDE_SCAFFOLDING_*__` names as
 # reference and must not trigger this check.
 if ! $DRY_RUN; then
   leftover=""
   for rel in "${TEMPLATES[@]}"; do
     dst="$TARGET/$rel"
     [[ ! -f "$dst" ]] && continue
-    if grep -Hn "__CLAUDE_HOME_" "$dst" 2>/dev/null; then
+    if grep -Hn "__CLAUDE_SCAFFOLDING_" "$dst" 2>/dev/null; then
       leftover="found"
     fi
   done
@@ -255,7 +255,7 @@ if ! $DRY_RUN; then
     echo "[error] unreplaced placeholders found in rendered templates (see above)" >&2
     exit 2
   fi
-  echo "[ok] claude-home installed to $TARGET"
+  echo "[ok] claude-scaffolding installed to $TARGET"
 else
   echo "[ok] dry-run complete, no files modified"
 fi

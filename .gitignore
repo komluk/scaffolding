@@ -1,4 +1,4 @@
-.claude-home.env
+.claude-scaffolding.env
 *.rendered
 /tmp/
 .DS_Store

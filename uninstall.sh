@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# uninstall.sh -- remove claude-home-rendered files from target directory
-# Does NOT touch agent-memory/, projects/, sessions/ or ~/.claude-home.env.
+# uninstall.sh -- remove claude-scaffolding-rendered files from target directory
+# Does NOT touch agent-memory/, projects/, sessions/ or ~/.claude-scaffolding.env.
 set -euo pipefail
 
 TARGET="${1:-$HOME/.claude}"
 
-echo "[warn] This will remove claude-home-rendered files from $TARGET"
+echo "[warn] This will remove claude-scaffolding-rendered files from $TARGET"
 echo "[warn] Backups: agent-memory/, projects/, sessions/ are NOT touched"
 if [[ -t 0 ]]; then
   read -r -p "Continue? (yes/no) " ans
@@ -23,4 +23,4 @@ for item in "${REMOVE[@]}"; do
     rm -rf "$TARGET/$item" && echo "[ok] removed $item"
   fi
 done
-echo "[ok] uninstall done. ~/.claude-home.env preserved -- remove manually if desired."
+echo "[ok] uninstall done. ~/.claude-scaffolding.env preserved -- remove manually if desired."
