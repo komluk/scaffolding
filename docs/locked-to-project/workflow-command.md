@@ -8,7 +8,7 @@ orchestrated by a FastAPI backend in the origin repo. It reads
 `.claude/workflows/*.yaml` to find the workflow definition, spawns Claude CLI
 subprocesses for each step, and tracks progress in Postgres + Redis.
 
-## Why not in claude-home
+## Why not in claude-scaffolding
 
 The command entry point is a markdown file that references
 `app/backend/workflows/cli_helper.py`. That helper requires:
@@ -49,6 +49,6 @@ This is what the `CLAUDE.md` Decision Tree documents as the fallback.
 
 ## Shipped alternatives
 
-`claude-home` still includes `coordinator` agent which can LLM-plan a
+`claude-scaffolding` still includes `coordinator` agent which can LLM-plan a
 dynamic multi-step pipeline without the backend; this is the Tier A
 alternative to `/workflow`.

@@ -11,7 +11,7 @@ An MCP (Model Context Protocol) server that provides three tools to agents:
 It runs as a Python process launched via stdio by Claude Code (see `.mcp.json`
 in the origin repo) and stores vectors in Postgres with pgvector.
 
-## Why not in claude-home
+## Why not in claude-scaffolding
 
 Three hard dependencies:
 
@@ -23,7 +23,7 @@ Three hard dependencies:
 
 Shipping the markdown skill (`skills/semantic-memory-mcp/SKILL.md`) without
 this server would mean agents reference MCP tools that do not exist. The
-SKILL.md in claude-home has a defensive note telling the agent to skip the
+SKILL.md in claude-scaffolding has a defensive note telling the agent to skip the
 section if `mcp__semantic-memory__*` tools are unavailable.
 
 ## How to enable in your project

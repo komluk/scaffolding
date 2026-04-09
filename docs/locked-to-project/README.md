@@ -2,7 +2,7 @@
 
 These components depend on runtime infrastructure that cannot be shipped as
 portable markdown. They stay in the origin repository (`scaffolding.tool`) and
-are intentionally excluded from `claude-home`. Each is documented below with
+are intentionally excluded from `claude-scaffolding`. Each is documented below with
 its rationale and an adoption path.
 
 ## Index
@@ -17,7 +17,7 @@ its rationale and an adoption path.
 
 ## General principle
 
-`claude-home` ships only **agent knowledge** (markdown), not **agent runtime**.
+`claude-scaffolding` ships only **agent knowledge** (markdown), not **agent runtime**.
 If a capability requires a long-running service, a database, or generated code,
 it is Tier C by definition.
 

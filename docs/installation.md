@@ -4,25 +4,25 @@ Trzy typowe scenariusze. Wybierz jeden i przejdz dalej.
 
 ## Opcja A -- klon bezposrednio do `~/.claude/`
 
-Najprostszy przypadek. `claude-home` staje sie twoim user-level `.claude/`.
+Najprostszy przypadek. `claude-scaffolding` staje sie twoim user-level `.claude/`.
 
 ```bash
-git clone https://github.com/komluk/claude-home ~/.claude
+git clone https://github.com/komluk/claude-scaffolding ~/.claude
 cd ~/.claude
 ./install.sh
 ```
 
-`install.sh` zapyta o wartosci, zapisze `~/.claude-home.env`, i podmieni
+`install.sh` zapyta o wartosci, zapisze `~/.claude-scaffolding.env`, i podmieni
 placeholdery w miejscu. Po tym wszystkie projekty na tej maszynie automatycznie
 dostaja te agenty, skile, hooki.
 
 ## Opcja B -- klon obok + render do project-level `.claude/`
 
-Gdy chcesz miec claude-home tylko w jednym projekcie (nie user-level).
+Gdy chcesz miec claude-scaffolding tylko w jednym projekcie (nie user-level).
 
 ```bash
-git clone https://github.com/komluk/claude-home ~/src/claude-home
-cd ~/src/claude-home
+git clone https://github.com/komluk/claude-scaffolding ~/src/claude-scaffolding
+cd ~/src/claude-scaffolding
 ./install.sh --target /path/to/your/project/.claude
 ```
 
@@ -34,7 +34,7 @@ chcesz).
 ## Opcja C -- overlay na istniejacym projekcie
 
 Jesli projekt juz ma `.claude/` z wlasnymi agentami i chcesz dolozyc
-claude-home na wierzchu: sprawdz najpierw `docs/adopting-in-legacy-repo.md`.
+claude-scaffolding na wierzchu: sprawdz najpierw `docs/adopting-in-legacy-repo.md`.
 
 ## Pierwsze uruchomienie
 
@@ -74,12 +74,12 @@ Jesli uruchamiasz z non-interactive terminal (CI, pipe), wszystkie prompty
 automatycznie przyjmuja default. Jesli chcesz w pelni unattended instalacje:
 
 ```bash
-./install.sh --target /path --refresh  # wymaga istniejacego ~/.claude-home.env
+./install.sh --target /path --refresh  # wymaga istniejacego ~/.claude-scaffolding.env
 ```
 
 ### "unreplaced placeholders found" (exit 2)
 
-Znaczy ze jeden z plikow w target ma `__CLAUDE_HOME_*__` ktore nie zostaly
+Znaczy ze jeden z plikow w target ma `__CLAUDE_SCAFFOLDING_*__` ktore nie zostaly
 zastapione. To bug w install.sh -- zgłos issue z output installera. Workaround:
 uruchom `./install.sh --refresh` ponownie.
 

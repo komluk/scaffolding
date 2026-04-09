@@ -1,4 +1,4 @@
-# claude-home
+# claude-scaffolding
 
 Przenosna konfiguracja Claude Code: agenci, skille, komendy, hooki, workflow.
 Repozytorium mozna sklonowac do kazdego projektu i uzywac natychmiast, bez
@@ -6,7 +6,7 @@ zadnych bibliotek Pythona ani backendu.
 
 ## Wprowadzenie
 
-`claude-home` to wydzielony, samodzielny `~/.claude/` wyciety z repozytorium
+`claude-scaffolding` to wydzielony, samodzielny `~/.claude/` wyciety z repozytorium
 `scaffolding.tool`. Zawiera wylacznie to, co da sie przewiezc jako markdown --
 czyli wiedze agentow, skile i konfiguracje. Wszystko, co wymaga backendu,
 bazy danych lub dlugotrwalego procesu, zostaje w origin repo i jest
@@ -27,9 +27,9 @@ Sa dwa wspolzyjace sposoby instalacji. Wybierz jeden per maszyna.
 ### Opcja A -- Plugin Claude Code (zalecana dla szybkiego startu)
 
 Zero-config, instalacja natywna przez marketplace. Komponenty ladowane sa z
-prefixem `claude-home:` (np. `claude-home:developer`, `/claude-home:workflow`).
+prefixem `claude-scaffolding:` (np. `claude-scaffolding:developer`, `/claude-scaffolding:workflow`).
 
-**Wymaganie:** `komluk/claude-home` jest repozytorium prywatnym, wiec Claude
+**Wymaganie:** `komluk/claude-scaffolding` jest repozytorium prywatnym, wiec Claude
 Code CLI musi byc zalogowane do konta GitHub z dostepem do tego repo. Przed
 pierwszym uzyciem uruchom:
 
@@ -41,11 +41,11 @@ gh auth login
 Nastepnie w sesji Claude Code:
 
 ```
-/plugin marketplace add komluk/claude-home
-/plugin install claude-home@komluk-tools
+/plugin marketplace add komluk/claude-scaffolding
+/plugin install claude-scaffolding@komluk-scaffolding
 ```
 
-Plugin trafi do `~/.claude/plugins/cache/komluk-tools/claude-home/<version>/`
+Plugin trafi do `~/.claude/plugins/cache/komluk-scaffolding/claude-scaffolding/<version>/`
 i jego komponenty sa natychmiast dostepne. Parametry sa zaszyte jako
 sensowne defaulty (`pytest`, `npm test`, `./backend`, itd.) -- jesli
 potrzebujesz wlasnych wartosci, uzyj Opcji B.
@@ -54,21 +54,21 @@ potrzebujesz wlasnych wartosci, uzyj Opcji B.
 
 ```bash
 # 1. Klon prosto do ~/.claude/ (user-level)
-git clone https://github.com/komluk/claude-home ~/.claude
+git clone https://github.com/komluk/claude-scaffolding ~/.claude
 cd ~/.claude
 ./install.sh
 
 # LUB: klon obok + render do .claude/ projektu (project-level)
-git clone https://github.com/komluk/claude-home ~/src/claude-home
-cd ~/src/claude-home
+git clone https://github.com/komluk/claude-scaffolding ~/src/claude-scaffolding
+cd ~/src/claude-scaffolding
 ./install.sh --target /path/to/your/project/.claude
 ```
 
 Install.sh pyta o kilka wartosci (komenda testow backendu, komenda walidacji
 frontendu, klucz SonarQube, nazwa projektu, itp.), zapisuje je w
-`~/.claude-home.env` i renderuje placeholdery `__CLAUDE_HOME_*__` z
+`~/.claude-scaffolding.env` i renderuje placeholdery `__CLAUDE_SCAFFOLDING_*__` z
 `templates/*.tmpl` do plikow docelowych. Po pierwszym uruchomieniu mozna
-zmienic wartosci edytujac `~/.claude-home.env` i uruchamiajac:
+zmienic wartosci edytujac `~/.claude-scaffolding.env` i uruchamiajac:
 
 ```bash
 ./install.sh --refresh
@@ -83,9 +83,9 @@ interakcji.
 |----------|------|
 | Szybka instalacja z defaultami | Opcja A (Plugin) |
 | Upgrade przez `/plugin update` | Opcja A (Plugin) |
-| Wlasny `__CLAUDE_HOME_PROJECT_NAME__`, klucz Sonar, test commands | Opcja B (install.sh) |
+| Wlasny `__CLAUDE_SCAFFOLDING_PROJECT_NAME__`, klucz Sonar, test commands | Opcja B (install.sh) |
 | Integracja per-project `.claude/` vs user-level | Opcja B (install.sh --target) |
-| Rozwoj/edycja komponentow claude-home | Opcja B (klon repo) |
+| Rozwoj/edycja komponentow claude-scaffolding | Opcja B (klon repo) |
 
 ## Wymagania
 
@@ -96,7 +96,7 @@ interakcji.
 ## Co jest w srodku
 
 ```
-claude-home/
+claude-scaffolding/
 ├── agents/         11 agentow (analyst, architect, coordinator, developer,
 │                    debugger, devops, gitops, performance-optimizer,
 │                    researcher, reviewer, tech-writer)
@@ -124,7 +124,7 @@ Komponenty zalezne od runtime scaffolding.tool NIE sa tutaj -- zostaly
 opisane w [docs/locked-to-project/](docs/locked-to-project/README.md).
 Skrocona lista:
 
-| Komponent | Dlaczego nie w claude-home |
+| Komponent | Dlaczego nie w claude-scaffolding |
 |-----------|----------------------------|
 | `semantic-memory` MCP server | Wymaga Postgres + pgvector + embedding model |
 | `semantic-memory-store` skill | Wywoluje bash do FastAPI backendu |
@@ -142,7 +142,7 @@ Repo ma ustabilizowane API plikowe -- nowe wersje dodaja agentow i skile,
 nie usuwaja ich. Aby zaktualizowac:
 
 ```bash
-cd ~/.claude  # lub gdzie skloniles claude-home
+cd ~/.claude  # lub gdzie skloniles claude-scaffolding
 git pull
 ./install.sh --refresh  # rerenderuje placeholdery z istniejacego .env
 ```
@@ -152,19 +152,19 @@ produkuja bit-identyczne pliki.
 
 ## Parametryzacja
 
-Pelna lista placeholderow `__CLAUDE_HOME_*__` znajduje sie w
+Pelna lista placeholderow `__CLAUDE_SCAFFOLDING_*__` znajduje sie w
 [docs/parametrization.md](docs/parametrization.md). Krotka wersja:
 
-- `CLAUDE_HOME_TEST_BACKEND_CMD` -- komenda do uruchomienia testow backendu
-- `CLAUDE_HOME_TEST_FRONTEND_CMD` -- komenda walidacji frontendu
-- `CLAUDE_HOME_PROJECT_NAME` -- nazwa projektu (domyslnie `basename $PWD`)
-- `CLAUDE_HOME_SONAR_PROJECT_KEY` -- klucz SonarQube (opcjonalny)
-- `CLAUDE_HOME_SCHEMAS_DIR` -- katalog schematow OpenSpec
-- `CLAUDE_HOME_BACKEND_EXAMPLE_PATH` -- przykladowa sciezka feature backendu
+- `CLAUDE_SCAFFOLDING_TEST_BACKEND_CMD` -- komenda do uruchomienia testow backendu
+- `CLAUDE_SCAFFOLDING_TEST_FRONTEND_CMD` -- komenda walidacji frontendu
+- `CLAUDE_SCAFFOLDING_PROJECT_NAME` -- nazwa projektu (domyslnie `basename $PWD`)
+- `CLAUDE_SCAFFOLDING_SONAR_PROJECT_KEY` -- klucz SonarQube (opcjonalny)
+- `CLAUDE_SCAFFOLDING_SCHEMAS_DIR` -- katalog schematow OpenSpec
+- `CLAUDE_SCAFFOLDING_BACKEND_EXAMPLE_PATH` -- przykladowa sciezka feature backendu
 
 Install.sh ma auto-detekcje dla kazdego z tych pol -- czyta `package.json`,
 szuka `venv/`, sprawdza `.sonarlint/connectedMode.json` itp. Mozna wszystko
-pomijac enterem i wrocic do tego pozniej przez `~/.claude-home.env`.
+pomijac enterem i wrocic do tego pozniej przez `~/.claude-scaffolding.env`.
 
 ## Dokumentacja
 
@@ -189,7 +189,7 @@ Source of truth dla wersji: `.claude-plugin/plugin.json` (`version` field).
 Git tag MUSI pasowac (`v${version}`) -- jest to wymuszone przez
 `release.yml` w GitHub Actions. Kazdy tag `v*` automatycznie tworzy
 GitHub Release z assetami `install.sh`, `uninstall.sh`,
-`.claude-home.env.example`.
+`.claude-scaffolding.env.example`.
 
 Historia wersji: [CHANGELOG.md](CHANGELOG.md).
 

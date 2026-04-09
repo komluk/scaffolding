@@ -1,27 +1,27 @@
-# Dolaczanie claude-home do istniejacego projektu
+# Dolaczanie claude-scaffolding do istniejacego projektu
 
 Jesli twoj projekt juz ma `.claude/` z wlasnymi agentami, skilami lub
 hookami, masz dwie opcje integracji.
 
 ## Opcja A -- user-level (rekomendowana)
 
-Renderuj `claude-home` do `~/.claude/`. Claude Code automatycznie merguje
+Renderuj `claude-scaffolding` do `~/.claude/`. Claude Code automatycznie merguje
 user-level config z project-level `.claude/`. Twoje projektowe pliki wygrywaja
 w konfliktach -- to znaczy ze project-level `agents/developer.md` przysloni
 user-level, ale user-level skile bez odpowiednika w projekcie beda nadal
 widoczne.
 
 ```bash
-git clone https://github.com/komluk/claude-home ~/.claude-home-src
-cd ~/.claude-home-src
+git clone https://github.com/komluk/claude-scaffolding ~/.claude-scaffolding-src
+cd ~/.claude-scaffolding-src
 ./install.sh --target ~/.claude
 ```
 
 Po tym kazdy projekt na tej maszynie automatycznie dostaje brakujace
-agenty i skile z `claude-home`, bez ruszania projektowego `.claude/`.
+agenty i skile z `claude-scaffolding`, bez ruszania projektowego `.claude/`.
 
 **Plus**: zero ryzyka nadpisania istniejacych plikow.
-**Minus**: claude-home jest per-user, nie per-repo. Jesli pracujesz w kilku
+**Minus**: claude-scaffolding jest per-user, nie per-repo. Jesli pracujesz w kilku
 projektach o roznych wymaganiach, musisz rozwazyc Opcje B.
 
 ## Opcja B -- overlay na project-level `.claude/`
@@ -33,7 +33,7 @@ o tej samej nazwie (np. `agents/developer.md`). Zrob backup:
 cd /path/to/your/project
 cp -r .claude .claude.backup-$(date +%Y%m%d)
 
-cd ~/.claude-home-src
+cd ~/.claude-scaffolding-src
 ./install.sh --target /path/to/your/project/.claude
 ```
 
@@ -44,9 +44,9 @@ cd /path/to/your/project
 diff -r .claude.backup-<date> .claude  # zobacz co sie zmienilo
 ```
 
-Jesli jakis plik projektowy byl lepszy niz claude-home -- przywroc go z backupu.
+Jesli jakis plik projektowy byl lepszy niz claude-scaffolding -- przywroc go z backupu.
 
-**Plus**: pelna kontrola, claude-home w gicie projektu.
+**Plus**: pelna kontrola, claude-scaffolding w gicie projektu.
 **Minus**: konflikty wymagaja manualnego rozwiazania; kazdy `--refresh`
 moze potencjalnie nadpisac lokalne zmiany.
 
@@ -66,11 +66,11 @@ fazy (T01-T11). Dokumentuje je tu dla jasnosci, ale ich realizacja wymaga
 osobnego planu:
 
 - **Krok 6** -- usuniecie `.claude/` z origin `scaffolding.tool` i zastapienie
-  go symlinkiem do `claude-home`. Wymaga weryfikacji ze zaden test nie
+  go symlinkiem do `claude-scaffolding`. Wymaga weryfikacji ze zaden test nie
   trzyma sie hardcoded path na `scaffolding.tool/.claude/`.
-- **Krok 7** -- publiczne ogloszenie `claude-home`, dokumentacja migracyjna
+- **Krok 7** -- publiczne ogloszenie `claude-scaffolding`, dokumentacja migracyjna
   dla uzytkownikow scaffolding.tool, plus ewentualny wrapper skrypt do
-  zainstalowania claude-home w place of the old `.claude/`.
+  zainstalowania claude-scaffolding w place of the old `.claude/`.
 
 Oba kroki wykraczaja poza obecny zakres i beda realizowane jako osobna
 iteracja po walidacji fazy A.

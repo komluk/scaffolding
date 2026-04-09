@@ -1,7 +1,7 @@
 #!/bin/bash
 # Pre-Commit Hook: Run validation before git commit
 #
-# Graceful runtime-detect variant (claude-home).
+# Graceful runtime-detect variant (claude-scaffolding).
 # Skips silently when tools/venv/package.json are not present.
 #
 # Detects:
