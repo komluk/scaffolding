@@ -1,0 +1,93 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  verify-version-match:
+    name: verify tag matches plugin.json version
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.check.outputs.tag }}
+      version: ${{ steps.check.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check tag vs plugin.json
+        id: check
+        run: |
+          set -e
+          TAG="${GITHUB_REF#refs/tags/}"
+          VERSION=$(jq -r .version .claude-plugin/plugin.json)
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          if [ "v${VERSION}" != "${TAG}" ]; then
+            echo "ERROR: git tag ${TAG} does not match plugin.json version v${VERSION}"
+            exit 1
+          fi
+          echo "tag and plugin.json version match: ${TAG}"
+
+  run-validation:
+    name: run validation (release gate)
+    needs: [verify-version-match]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: jq check plugin.json
+        run: jq . .claude-plugin/plugin.json > /dev/null
+      - name: jq check marketplace.json
+        run: jq . .claude-plugin/marketplace.json > /dev/null
+      - name: jq check settings.json
+        run: jq . settings.json > /dev/null
+      - name: bash -n scripts
+        run: |
+          bash -n install.sh
+          bash -n uninstall.sh
+          for f in hooks/*.sh; do
+            [ -f "$f" ] || continue
+            bash -n "$f"
+          done
+      - name: placeholder sanity
+        run: |
+          leaked=$(grep -rln '__CLAUDE_HOME_[A-Z_]*__' . \
+            --exclude-dir=.git \
+            --exclude-dir=templates \
+            --exclude-dir=docs \
+            --exclude-dir=.github \
+            --exclude=install.sh \
+            --exclude=uninstall.sh \
+            --exclude=.claude-home.env.example \
+            --exclude=README.md \
+            --exclude=CHANGELOG.md \
+            || true)
+          if [ -n "$leaked" ]; then
+            echo "ERROR: placeholder leak:"
+            echo "$leaked"
+            exit 1
+          fi
+
+  create-github-release:
+    name: create github release
+    needs: [verify-version-match, run-validation]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          gh release create "${TAG}" \
+            --title "${TAG}" \
+            --generate-notes \
+            install.sh \
+            uninstall.sh \
+            .claude-home.env.example

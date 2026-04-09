@@ -1,0 +1,190 @@
+name: validate
+
+on:
+  push:
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-json:
+    name: lint JSON manifests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: jq check plugin.json
+        run: jq . .claude-plugin/plugin.json > /dev/null
+      - name: jq check marketplace.json
+        run: jq . .claude-plugin/marketplace.json > /dev/null
+      - name: jq check settings.json
+        run: jq . settings.json > /dev/null
+
+  lint-yaml-frontmatter:
+    name: lint YAML frontmatter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install PyYAML
+        run: python -m pip install --quiet pyyaml
+      - name: Validate frontmatter in agents, skills, commands
+        run: |
+          python3 <<'PY'
+          import os
+          import sys
+          import yaml
+
+          targets = []
+          for d, subdirs, files in os.walk('agents'):
+              for f in files:
+                  if f.endswith('.md'):
+                      targets.append(os.path.join(d, f))
+          for d, subdirs, files in os.walk('skills'):
+              for f in files:
+                  if f == 'SKILL.md':
+                      targets.append(os.path.join(d, f))
+          for d, subdirs, files in os.walk('commands'):
+              for f in files:
+                  if f.endswith('.md'):
+                      targets.append(os.path.join(d, f))
+
+          failed = []
+          for path in sorted(targets):
+              with open(path, 'r', encoding='utf-8') as fh:
+                  text = fh.read()
+              if not text.startswith('---'):
+                  continue
+              end = text.find('\n---', 4)
+              if end == -1:
+                  failed.append(f'{path}: unterminated frontmatter')
+                  continue
+              fm = text[4:end]
+              try:
+                  yaml.safe_load(fm)
+              except yaml.YAMLError as e:
+                  failed.append(f'{path}: {e}')
+
+          if failed:
+              print('frontmatter errors:')
+              for line in failed:
+                  print('  ' + line)
+              sys.exit(1)
+          print(f'checked {len(targets)} files, all frontmatter OK')
+          PY
+
+  lint-bash:
+    name: lint bash scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: bash -n install.sh
+        run: bash -n install.sh
+      - name: bash -n uninstall.sh
+        run: bash -n uninstall.sh
+      - name: bash -n hooks/*.sh
+        run: |
+          for f in hooks/*.sh; do
+            [ -f "$f" ] || continue
+            bash -n "$f"
+          done
+
+  shellcheck:
+    name: shellcheck (informational)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install shellcheck
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
+      - name: shellcheck install.sh uninstall.sh hooks/*.sh
+        run: |
+          shellcheck install.sh uninstall.sh || true
+          for f in hooks/*.sh; do
+            [ -f "$f" ] || continue
+            shellcheck "$f" || true
+          done
+
+  claude-plugin-validate:
+    name: claude plugin validate (conditional)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Try install claude-code CLI
+        id: cli
+        continue-on-error: true
+        run: |
+          if command -v npm >/dev/null 2>&1; then
+            if npm install -g @anthropic-ai/claude-code 2>/dev/null; then
+              echo "installed=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "installed=false" >> "$GITHUB_OUTPUT"
+              echo "claude-code CLI not installable; skipping plugin validate"
+            fi
+          else
+            echo "installed=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: claude plugin validate .
+        if: steps.cli.outputs.installed == 'true'
+        run: claude plugin validate . || true
+
+  placeholder-sanity:
+    name: placeholder sanity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ensure no unrendered placeholders outside templates
+        run: |
+          set -e
+          leaked=$(grep -rln '__CLAUDE_HOME_[A-Z_]*__' . \
+            --exclude-dir=.git \
+            --exclude-dir=templates \
+            --exclude-dir=docs \
+            --exclude-dir=.github \
+            --exclude=install.sh \
+            --exclude=uninstall.sh \
+            --exclude=.claude-home.env.example \
+            --exclude=README.md \
+            --exclude=CHANGELOG.md \
+            || true)
+          if [ -n "$leaked" ]; then
+            echo "ERROR: placeholder leak in pre-rendered files:"
+            echo "$leaked"
+            exit 1
+          fi
+          echo "no placeholder leaks"
+
+  install-idempotency:
+    name: install.sh idempotency
+    runs-on: ubuntu-latest
+    env:
+      CLAUDE_HOME_TEST_BACKEND_CMD: "pytest"
+      CLAUDE_HOME_TEST_FRONTEND_CMD: "npm test"
+      CLAUDE_HOME_SONAR_PROJECT_KEY: ""
+      CLAUDE_HOME_SCHEMAS_DIR: "./schemas"
+      CLAUDE_HOME_PROJECT_NAME: "(project)"
+      CLAUDE_HOME_BACKEND_EXAMPLE_PATH: "./backend"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare config file
+        run: |
+          mkdir -p "$HOME"
+          cat > "$HOME/.claude-home.env" <<EOF
+          CLAUDE_HOME_TEST_BACKEND_CMD=${CLAUDE_HOME_TEST_BACKEND_CMD}
+          CLAUDE_HOME_TEST_FRONTEND_CMD=${CLAUDE_HOME_TEST_FRONTEND_CMD}
+          CLAUDE_HOME_SONAR_PROJECT_KEY=${CLAUDE_HOME_SONAR_PROJECT_KEY}
+          CLAUDE_HOME_SCHEMAS_DIR=${CLAUDE_HOME_SCHEMAS_DIR}
+          CLAUDE_HOME_PROJECT_NAME=${CLAUDE_HOME_PROJECT_NAME}
+          CLAUDE_HOME_BACKEND_EXAMPLE_PATH=${CLAUDE_HOME_BACKEND_EXAMPLE_PATH}
+          EOF
+          chmod 600 "$HOME/.claude-home.env"
+      - name: Run 1
+        run: ./install.sh --target /tmp/ch-ci-a --refresh
+      - name: Run 2
+        run: ./install.sh --target /tmp/ch-ci-b --refresh
+      - name: Diff
+        run: |
+          diff -r /tmp/ch-ci-a /tmp/ch-ci-b
+          echo "idempotency OK"
