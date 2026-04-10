@@ -38,6 +38,25 @@ git pull
 
 ---
 
+## Reinstalling / updating
+
+### Reinstalling (plugin method)
+
+```bash
+/plugin uninstall scaffolding@komluk-scaffolding
+/plugin install scaffolding@komluk-scaffolding
+```
+
+### Updating (install.sh method)
+
+```bash
+cd claude-scaffolding
+git pull
+./install.sh --refresh
+```
+
+---
+
 ## What's inside
 
 ```
