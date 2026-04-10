@@ -26,15 +26,6 @@ That's it. Open Claude Code in your project and start talking.
 
 The installer auto-detects your test commands, project name, and other settings. Hit Enter to accept defaults, or customize anything. Your choices are saved to `~/.claude-scaffolding.env` and can be changed later.
 
-### Method B — Plugin marketplace
-
-```bash
-/plugin marketplace add komluk/claude-scaffolding
-/plugin install scaffolding@komluk-scaffolding
-```
-
-Zero-config. Note: plugin-based loading of CLAUDE.md is experimental — if routing doesn't kick in, use Method A.
-
 ---
 
 ## Updating
