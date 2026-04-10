@@ -1,6 +1,6 @@
 {
   "name": "komluk-scaffolding",
-  "version": "1.4.2",
+  "description": "Scaffolding plugin marketplace — multi-agent orchestration for Claude Code",
   "owner": {
     "name": "komluk",
     "url": "https://github.com/komluk"
