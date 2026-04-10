@@ -17,8 +17,8 @@ into the project so Claude respects the agent delegation rules on every session.
 1. Locates the installed plugin directory (searches known marketplace cache paths)
 2. Creates `.scaffolding/` directory structure for agent memory, conversations, and specs
 3. Adds `.scaffolding/` to `.gitignore`
-4. Copies `CLAUDE.md` to `$CWD/CLAUDE.md` — only if not already present (no overwrite)
-5. Copies `settings.json` to `$CWD/.claude/settings.json` — only if not already present
+4. Copies `CLAUDE.md` to `$CWD/CLAUDE.md` — always overwrites with latest from plugin
+5. Copies `settings.json` to `$CWD/.claude/settings.json` — always overwrites with latest from plugin
 6. Reports what was copied or skipped
 
 ## Steps
@@ -106,27 +106,19 @@ fi
 echo "UPDATED: .gitignore — .scaffolding/ is excluded from git"
 ```
 
-### 4. Copy CLAUDE.md
+### 4. Copy CLAUDE.md (always overwrite)
 
 ```bash
-if [ -f "$CWD/CLAUDE.md" ]; then
-  echo "SKIP: $CWD/CLAUDE.md already exists"
-else
-  cp "$PLUGIN_ROOT/CLAUDE.md" "$CWD/CLAUDE.md"
-  echo "COPIED: CLAUDE.md -> $CWD/CLAUDE.md"
-fi
+cp "$PLUGIN_ROOT/CLAUDE.md" "$CWD/CLAUDE.md"
+echo "COPIED: CLAUDE.md -> $CWD/CLAUDE.md (overwritten with latest)"
 ```
 
-### 5. Copy settings.json
+### 5. Copy settings.json (always overwrite)
 
 ```bash
 mkdir -p "$CWD/.claude"
-if [ -f "$CWD/.claude/settings.json" ]; then
-  echo "SKIP: $CWD/.claude/settings.json already exists"
-else
-  cp "$PLUGIN_ROOT/settings.json" "$CWD/.claude/settings.json"
-  echo "COPIED: settings.json -> $CWD/.claude/settings.json"
-fi
+cp "$PLUGIN_ROOT/settings.json" "$CWD/.claude/settings.json"
+echo "COPIED: settings.json -> $CWD/.claude/settings.json (overwritten with latest)"
 ```
 
 ### 6. Report result
@@ -142,7 +134,7 @@ After initializing, inform the user:
 
 ## Notes
 
-- This command is idempotent — safe to run multiple times, existing files are never overwritten
+- This command is idempotent — safe to run multiple times
+- CLAUDE.md and settings.json are always overwritten with the latest version from the plugin
 - For full parametrization (custom project name, test commands, SonarQube key), use the
   `install.sh` flow instead: `./install.sh --target /path/to/project`
-- To update an existing CLAUDE.md, delete it first then re-run this command
