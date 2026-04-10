@@ -9,8 +9,10 @@ jobs:
   lint-json:
     name: lint JSON manifests
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: jq check plugin.json
         run: jq . .claude-plugin/plugin.json > /dev/null
       - name: jq check marketplace.json
@@ -21,8 +23,10 @@ jobs:
   lint-yaml-frontmatter:
     name: lint YAML frontmatter
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -77,8 +81,10 @@ jobs:
   lint-bash:
     name: lint bash scripts
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: bash -n install.sh
         run: bash -n install.sh
       - name: bash -n uninstall.sh
@@ -94,8 +100,10 @@ jobs:
     name: shellcheck (informational)
     runs-on: ubuntu-latest
     continue-on-error: true
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install shellcheck
         run: sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
       - name: shellcheck install.sh uninstall.sh hooks/*.sh
@@ -110,8 +118,10 @@ jobs:
     name: claude plugin validate (conditional)
     runs-on: ubuntu-latest
     continue-on-error: true
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Try install claude-code CLI
         id: cli
         continue-on-error: true
@@ -133,8 +143,10 @@ jobs:
   placeholder-sanity:
     name: placeholder sanity
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Ensure no unrendered placeholders outside templates
         run: |
           set -e
@@ -160,6 +172,7 @@ jobs:
     name: install.sh idempotency
     runs-on: ubuntu-latest
     env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
       CLAUDE_SCAFFOLDING_TEST_BACKEND_CMD: "pytest"
       CLAUDE_SCAFFOLDING_TEST_FRONTEND_CMD: "npm test"
       CLAUDE_SCAFFOLDING_SONAR_PROJECT_KEY: ""
@@ -167,7 +180,7 @@ jobs:
       CLAUDE_SCAFFOLDING_PROJECT_NAME: "(project)"
       CLAUDE_SCAFFOLDING_BACKEND_EXAMPLE_PATH: "./backend"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Prepare config file
         run: |
           mkdir -p "$HOME"

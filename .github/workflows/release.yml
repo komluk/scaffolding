@@ -12,11 +12,13 @@ jobs:
   verify-version-match:
     name: verify tag matches plugin.json version
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     outputs:
       tag: ${{ steps.check.outputs.tag }}
       version: ${{ steps.check.outputs.version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Check tag vs plugin.json
         id: check
         run: |
@@ -35,8 +37,10 @@ jobs:
     name: run validation (release gate)
     needs: [verify-version-match]
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: jq check plugin.json
         run: jq . .claude-plugin/plugin.json > /dev/null
       - name: jq check marketplace.json
@@ -76,8 +80,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Create release
