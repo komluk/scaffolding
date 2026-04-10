@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "scaffolding",
-      "source": "./.",
+      "source": ".claude-plugin",
       "description": "Opinionated Claude Code configuration for spec-driven multi-agent workflows"
     }
   ]
