@@ -157,7 +157,7 @@ jobs:
             --exclude-dir=.github \
             --exclude=install.sh \
             --exclude=uninstall.sh \
-            --exclude=.claude-scaffolding.env.example \
+            --exclude=.scaffolding.env.example \
             --exclude=README.md \
             --exclude=CHANGELOG.md \
             || true)
@@ -184,7 +184,7 @@ jobs:
       - name: Prepare config file
         run: |
           mkdir -p "$HOME"
-          cat > "$HOME/.claude-scaffolding.env" <<EOF
+          cat > "$HOME/.scaffolding.env" <<EOF
           CLAUDE_SCAFFOLDING_TEST_BACKEND_CMD=${CLAUDE_SCAFFOLDING_TEST_BACKEND_CMD}
           CLAUDE_SCAFFOLDING_TEST_FRONTEND_CMD=${CLAUDE_SCAFFOLDING_TEST_FRONTEND_CMD}
           CLAUDE_SCAFFOLDING_SONAR_PROJECT_KEY=${CLAUDE_SCAFFOLDING_SONAR_PROJECT_KEY}
@@ -192,7 +192,7 @@ jobs:
           CLAUDE_SCAFFOLDING_PROJECT_NAME=${CLAUDE_SCAFFOLDING_PROJECT_NAME}
           CLAUDE_SCAFFOLDING_BACKEND_EXAMPLE_PATH=${CLAUDE_SCAFFOLDING_BACKEND_EXAMPLE_PATH}
           EOF
-          chmod 600 "$HOME/.claude-scaffolding.env"
+          chmod 600 "$HOME/.scaffolding.env"
       - name: Run 1
         run: ./install.sh --target /tmp/cs-ci-a --refresh
       - name: Run 2

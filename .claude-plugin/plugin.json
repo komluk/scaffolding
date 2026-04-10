@@ -1,13 +1,13 @@
 {
   "name": "scaffolding",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "description": "Opinionated Claude Code configuration: 30 skills, 11 agents, 14 commands, 7 hooks, spec-driven workflows. Captures the scaffolding.tool orchestration patterns.",
   "author": {
     "name": "komluk",
     "url": "https://github.com/komluk"
   },
-  "homepage": "https://github.com/komluk/claude-scaffolding",
-  "repository": "https://github.com/komluk/claude-scaffolding",
+  "homepage": "https://github.com/komluk/scaffolding",
+  "repository": "https://github.com/komluk/scaffolding",
   "license": "MIT",
   "keywords": [
     "claude-code",

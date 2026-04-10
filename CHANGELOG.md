@@ -19,22 +19,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   is treated as low-priority debug context; `additionalContext` in JSON output
   is injected at full system-context weight. Both `startup` and `resume`
   matchers now call this script instead of inline `echo` commands.
-- `/init-claude-scaffolding` slash command for the marketplace-install flow:
+- `/init-scaffolding` slash command for the marketplace-install flow:
   detects the plugin directory and copies `CLAUDE.md` + `settings.json` into the
   current project (no overwrite). Closes the gap between plugin install and
   `install.sh --target` flows.
 
 ### Changed
 - README: added prominent note explaining the two install flows and why
-  `/init-claude-scaffolding` must be run after `/plugin install` to get `CLAUDE.md`
+  `/init-scaffolding` must be run after `/plugin install` to get `CLAUDE.md`
   into the target repo.
-- **Prefixed all agent `subagent_type` references** with `claude-scaffolding:` as the
+- **Prefixed all agent `subagent_type` references** with `scaffolding:` as the
   canonical form throughout `CLAUDE.md`, `hooks/session-start-protocol.sh`,
   `agents/architect.md`, and `docs/locked-to-project/workflow-command.md`. Fixes
   "Agent type 'developer' not found" errors when the plugin is installed via the
-  marketplace (`/plugin install claude-scaffolding@komluk-scaffolding`) and agents
-  are loaded under the `claude-scaffolding:` namespace.
-- `install.sh`: added Step 3 that strips the `claude-scaffolding:` prefix from all
+  marketplace (`/plugin install scaffolding@komluk-scaffolding`) and agents
+  are loaded under the `scaffolding:` namespace.
+- `install.sh`: added Step 3 that strips the `scaffolding:` prefix from all
   rendered `.md` and `.sh` files in the target directory when `--target` differs from
   the repo root. The copy-to-target flow produces bare names (e.g. `developer`)
   as before; only the plugin flow uses the prefixed form.
@@ -48,6 +48,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > file, and placeholder prefix (`__CLAUDE_HOME_*__` -> `__CLAUDE_SCAFFOLDING_*__`)
 > all updated. Historical mentions of "claude-home" in this file are preserved
 > for traceability.
+>
+> **Note:** 2026-04-10 -- Project renamed from `claude-scaffolding` to
+> `scaffolding`. Repository URL updated to `komluk/scaffolding`, command renamed
+> from `/init-claude-scaffolding` to `/init-scaffolding`, env file renamed from
+> `~/.scaffolding.env` to `~/.scaffolding.env`.
 
 ## [1.0.0] - 2026-04-09
 
@@ -60,9 +65,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   automation with version match enforcement)
 - Pre-rendered sensible defaults for the 6 `__CLAUDE_SCAFFOLDING_*__` placeholders
   (Strategy C hybrid): plugin users get a zero-config install; `install.sh`
-  users keep full parametrization via `~/.claude-scaffolding.env`
+  users keep full parametrization via `~/.scaffolding.env`
 - Semver + automatic GitHub Releases on `v*` tag push, with `install.sh`,
-  `uninstall.sh`, and `.claude-scaffolding.env.example` attached as assets
+  `uninstall.sh`, and `.scaffolding.env.example` attached as assets
 - README sections documenting both install flows (plugin + clone+install.sh)
   and when to pick each
 
@@ -75,18 +80,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Migration notes (Phase A to Phase B)
 - Phase A users: `./install.sh --target ~/.claude` still works; env vars in
-  `~/.claude-scaffolding.env` are still honored, idempotency is preserved
+  `~/.scaffolding.env` are still honored, idempotency is preserved
 - Phase B users: install with
   ```
-  /plugin marketplace add komluk/claude-scaffolding
-  /plugin install claude-scaffolding@komluk-scaffolding
+  /plugin marketplace add komluk/scaffolding
+  /plugin install scaffolding@komluk-scaffolding
   ```
-  Because `komluk/claude-scaffolding` is a **private** repository, the Claude Code
+  Because `komluk/scaffolding` is a **private** repository, the Claude Code
   CLI must be authenticated via `gh auth login` with `repo` scope before
   running the marketplace add command
 - Both flows coexist; pick one per machine, do not mix
-- Plugin components are loaded under the `claude-scaffolding:*` namespace (e.g.
-  `claude-scaffolding:developer`, `/claude-scaffolding:workflow`)
+- Plugin components are loaded under the `scaffolding:*` namespace (e.g.
+  `scaffolding:developer`, `/scaffolding:workflow`)
 
 ### Components shipped
 - 30 skills, 11 agents, 14 commands (4 general + 10 spec), 7 hooks
@@ -110,7 +115,7 @@ Initial migration from `scaffolding.tool` phase A (steps 1-5 of proposal).
 - 1 output-style (output-frontmatter) + 2 YAML workflows
 - `install.sh` with 6 `__CLAUDE_SCAFFOLDING_*__` placeholders and auto-detect
 - `uninstall.sh` for clean removal
-- `.claude-scaffolding.env.example`
+- `.scaffolding.env.example`
 - MIT license
 - Polish README + CHANGELOG + docs
 

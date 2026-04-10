@@ -1,14 +1,14 @@
-# /init-claude-scaffolding Command
+# /init-scaffolding Command
 
-Bootstrap a new project with the claude-scaffolding CLAUDE.md, settings.json, and `.scaffolding/` directory structure.
+Bootstrap a new project with the scaffolding CLAUDE.md, settings.json, and `.scaffolding/` directory structure.
 
 ## Usage
 
 ```
-/init-claude-scaffolding
+/init-scaffolding
 ```
 
-Run from the root of a project that was set up via `/plugin install claude-scaffolding@komluk-scaffolding`.
+Run from the root of a project that was set up via `/plugin install scaffolding@komluk-scaffolding`.
 This command creates the `.scaffolding/` directory structure, copies the routing protocol and settings
 into the project so Claude respects the agent delegation rules on every session.
 
@@ -79,7 +79,7 @@ fi
 echo "Plugin root: ${PLUGIN_ROOT:-NOT FOUND}"
 ```
 
-If `PLUGIN_ROOT` is empty, report that the plugin was not found and stop. The user may need to run `/plugin install claude-scaffolding@komluk-scaffolding` first.
+If `PLUGIN_ROOT` is empty, report that the plugin was not found and stop. The user may need to run `/plugin install scaffolding@komluk-scaffolding` first.
 
 ### 2. Create .scaffolding/ directory structure
 

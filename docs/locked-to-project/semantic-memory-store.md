@@ -13,7 +13,7 @@ It is a thin wrapper around the same Python module that powers the
 `semantic-memory` MCP server, but invoked synchronously via shell rather than
 via MCP stdio.
 
-## Why not in claude-scaffolding
+## Why not in scaffolding
 
 The skill embeds an absolute path to a Python venv that only exists inside
 `scaffolding.tool`. Copying it as-is to a fresh repo would produce commands
@@ -22,7 +22,7 @@ that fail at runtime.
 ## How to enable in your project
 
 **Preferred**: use the portable `semantic-memory-mcp` skill (Tier A, shipped
-in claude-scaffolding). It exposes the same capabilities via `mcp__semantic-memory__*`
+in scaffolding). It exposes the same capabilities via `mcp__semantic-memory__*`
 tools, which are discovered automatically by Claude Code when the MCP server
 is registered in `.mcp.json`.
 

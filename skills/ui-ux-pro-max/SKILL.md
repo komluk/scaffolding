@@ -92,7 +92,7 @@ Search specific domains using the CLI tool below.
 
 ## Tool Availability
 
-This skill ships with static design knowledge (styles, color palettes, font pairings, UX rules) as markdown tables embedded above. A richer interactive search is available **if** this skill is bundled with `scripts/core.py`, `scripts/search.py`, and `data/` -- which is the case in the origin `scaffolding.tool` repository but **not** in `claude-scaffolding`.
+This skill ships with static design knowledge (styles, color palettes, font pairings, UX rules) as markdown tables embedded above. A richer interactive search is available **if** this skill is bundled with `scripts/core.py`, `scripts/search.py`, and `data/` -- which is the case in the origin `scaffolding.tool` repository but **not** in `scaffolding`.
 
 ### Mode A -- Full functionality (scripts/ present)
 
@@ -104,7 +104,7 @@ python3 skills/ui-ux-pro-max/scripts/search.py "<query>" --design-system
 
 See "How to Use This Skill" below for full workflow.
 
-### Mode B -- Markdown-only fallback (scripts/ missing, e.g. claude-scaffolding)
+### Mode B -- Markdown-only fallback (scripts/ missing, e.g. scaffolding)
 
 If you are in a repo without `scripts/`, skip every `python3 .../search.py ...` command below. Use only the tables above ("Rule Categories by Priority", "Quick Reference") as your design reference. This mode is enough for most UI reviews and implementation tasks; you just lose the search CLI.
 

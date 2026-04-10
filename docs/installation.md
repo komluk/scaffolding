@@ -4,25 +4,25 @@ Trzy typowe scenariusze. Wybierz jeden i przejdz dalej.
 
 ## Opcja A -- klon bezposrednio do `~/.claude/`
 
-Najprostszy przypadek. `claude-scaffolding` staje sie twoim user-level `.claude/`.
+Najprostszy przypadek. `scaffolding` staje sie twoim user-level `.claude/`.
 
 ```bash
-git clone https://github.com/komluk/claude-scaffolding ~/.claude
+git clone https://github.com/komluk/scaffolding ~/.claude
 cd ~/.claude
 ./install.sh
 ```
 
-`install.sh` zapyta o wartosci, zapisze `~/.claude-scaffolding.env`, i podmieni
+`install.sh` zapyta o wartosci, zapisze `~/.scaffolding.env`, i podmieni
 placeholdery w miejscu. Po tym wszystkie projekty na tej maszynie automatycznie
 dostaja te agenty, skile, hooki.
 
 ## Opcja B -- klon obok + render do project-level `.claude/`
 
-Gdy chcesz miec claude-scaffolding tylko w jednym projekcie (nie user-level).
+Gdy chcesz miec scaffolding tylko w jednym projekcie (nie user-level).
 
 ```bash
-git clone https://github.com/komluk/claude-scaffolding ~/src/claude-scaffolding
-cd ~/src/claude-scaffolding
+git clone https://github.com/komluk/scaffolding ~/src/scaffolding
+cd ~/src/scaffolding
 ./install.sh --target /path/to/your/project/.claude
 ```
 
@@ -34,7 +34,7 @@ chcesz).
 ## Opcja C -- overlay na istniejacym projekcie
 
 Jesli projekt juz ma `.claude/` z wlasnymi agentami i chcesz dolozyc
-claude-scaffolding na wierzchu: sprawdz najpierw `docs/adopting-in-legacy-repo.md`.
+scaffolding na wierzchu: sprawdz najpierw `docs/adopting-in-legacy-repo.md`.
 
 ## Pierwsze uruchomienie
 
@@ -74,7 +74,7 @@ Jesli uruchamiasz z non-interactive terminal (CI, pipe), wszystkie prompty
 automatycznie przyjmuja default. Jesli chcesz w pelni unattended instalacje:
 
 ```bash
-./install.sh --target /path --refresh  # wymaga istniejacego ~/.claude-scaffolding.env
+./install.sh --target /path --refresh  # wymaga istniejacego ~/.scaffolding.env
 ```
 
 ### "unreplaced placeholders found" (exit 2)

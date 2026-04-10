@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# install.sh -- claude-scaffolding installer
+# install.sh -- scaffolding installer
 # Renders __CLAUDE_SCAFFOLDING_*__ placeholder files into a target directory.
-# Idempotent: re-running with same ~/.claude-scaffolding.env produces identical output.
+# Idempotent: re-running with same ~/.scaffolding.env produces identical output.
 #
 # Exit codes:
 #   0 ok (including --dry-run)
@@ -13,7 +13,7 @@
 set -euo pipefail
 
 CLAUDE_SCAFFOLDING_ROOT="$(cd "$(dirname "$0")" && pwd)"
-CONFIG_FILE="${HOME}/.claude-scaffolding.env"
+CONFIG_FILE="${HOME}/.scaffolding.env"
 TARGET=""
 DRY_RUN=false
 REFRESH=false
@@ -24,7 +24,7 @@ Usage: install.sh [--target PATH] [--refresh] [--dry-run] [--help]
 
 Options:
   --target PATH   Where to render files (default: in-place in repo)
-  --refresh       Re-render using values from ~/.claude-scaffolding.env (no prompts)
+  --refresh       Re-render using values from ~/.scaffolding.env (no prompts)
   --dry-run       Show what would be done, don't touch files
   --help          This help
 
@@ -111,8 +111,8 @@ if $REFRESH; then
   echo "[info] refresh mode: using values from $CONFIG_FILE"
 else
   load_config_from_file  # pre-fill from file, user can accept with enter
-  prompt_for CLAUDE_SCAFFOLDING_TEST_BACKEND_CMD "Backend test command" "${CONFIG[CLAUDE_SCAFFOLDING_TEST_BACKEND_CMD]:-echo '[claude-scaffolding] no backend tests configured' && true}"
-  prompt_for CLAUDE_SCAFFOLDING_TEST_FRONTEND_CMD "Frontend validate command" "${CONFIG[CLAUDE_SCAFFOLDING_TEST_FRONTEND_CMD]:-echo '[claude-scaffolding] no frontend validation configured' && true}"
+  prompt_for CLAUDE_SCAFFOLDING_TEST_BACKEND_CMD "Backend test command" "${CONFIG[CLAUDE_SCAFFOLDING_TEST_BACKEND_CMD]:-echo '[scaffolding] no backend tests configured' && true}"
+  prompt_for CLAUDE_SCAFFOLDING_TEST_FRONTEND_CMD "Frontend validate command" "${CONFIG[CLAUDE_SCAFFOLDING_TEST_FRONTEND_CMD]:-echo '[scaffolding] no frontend validation configured' && true}"
   prompt_for CLAUDE_SCAFFOLDING_SONAR_PROJECT_KEY "SonarQube project key (empty to skip)" "${CONFIG[CLAUDE_SCAFFOLDING_SONAR_PROJECT_KEY]:-}"
   prompt_for CLAUDE_SCAFFOLDING_SCHEMAS_DIR "OpenSpec schemas dir" "${CONFIG[CLAUDE_SCAFFOLDING_SCHEMAS_DIR]:-./.scaffolding/openspec/schemas}"
   prompt_for CLAUDE_SCAFFOLDING_PROJECT_NAME "Project name" "${CONFIG[CLAUDE_SCAFFOLDING_PROJECT_NAME]:-$(basename "$PWD")}"
@@ -121,7 +121,7 @@ else
   # --- persist config ---
   if ! $DRY_RUN; then
     {
-      echo "# claude-scaffolding config -- generated $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+      echo "# scaffolding config -- generated $(date -u +%Y-%m-%dT%H:%M:%SZ)"
       for k in "${!CONFIG[@]}"; do
         echo "$k=${CONFIG[$k]}"
       done
@@ -200,7 +200,7 @@ fi
 # Phase B model (Strategy C): source files in `skills/`, `agents/`, `commands/`,
 # `settings.json`, `CLAUDE.md` are pre-rendered with sensible defaults (pytest,
 # npm test, (project), ./backend, ./schemas, empty sonar key) so that the
-# plugin install flow (`/plugin install claude-scaffolding@komluk-scaffolding`) is
+# plugin install flow (`/plugin install scaffolding@komluk-scaffolding`) is
 # zero-config. For the Phase A install.sh flow we still want full
 # parametrization, so the canonical placeholder form is kept in
 # `templates/<rel>.tmpl` and rendered over the pre-rendered copies in --target.
@@ -256,7 +256,7 @@ if ! $DRY_RUN; then
     echo "[error] unreplaced placeholders found in rendered templates (see above)" >&2
     exit 2
   fi
-  echo "[ok] claude-scaffolding installed to $TARGET"
+  echo "[ok] scaffolding installed to $TARGET"
 else
   echo "[ok] dry-run complete, no files modified"
 fi

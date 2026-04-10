@@ -1,4 +1,4 @@
-.claude-scaffolding.env
+.scaffolding.env
 *.rendered
 /tmp/
 .DS_Store

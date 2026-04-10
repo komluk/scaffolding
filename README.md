@@ -1,4 +1,4 @@
-# claude-scaffolding
+# scaffolding
 
 Give Claude Code 11 specialized agents, 30 skills, safety hooks, and auto-routing — in one install.
 
@@ -19,7 +19,7 @@ No special commands. Just talk normally.
 First, add the marketplace (one-time setup):
 
 ```bash
-/plugin marketplace add komluk/claude-scaffolding
+/plugin marketplace add komluk/scaffolding
 ```
 
 Then install the plugin:
@@ -31,7 +31,7 @@ Then install the plugin:
 After install, initialize the project:
 
 ```bash
-/init-claude-scaffolding
+/init-scaffolding
 ```
 
 This creates the `.scaffolding/` directory, copies `CLAUDE.md` and `settings.json` to your project. **This step is required** — the plugin cannot auto-initialize due to Claude Code plugin system limitations.
@@ -39,12 +39,12 @@ This creates the `.scaffolding/` directory, copies `CLAUDE.md` and `settings.jso
 ### Method B — install.sh (manual)
 
 ```bash
-git clone https://github.com/komluk/claude-scaffolding
-cd claude-scaffolding
+git clone https://github.com/komluk/scaffolding
+cd scaffolding
 ./install.sh --target /path/to/your/project/.claude
 ```
 
-The installer auto-detects your test commands, project name, and other settings. Hit Enter to accept defaults, or customize anything. Your choices are saved to `~/.claude-scaffolding.env` and can be changed later.
+The installer auto-detects your test commands, project name, and other settings. Hit Enter to accept defaults, or customize anything. Your choices are saved to `~/.scaffolding.env` and can be changed later.
 
 ---
 
@@ -66,7 +66,7 @@ Or full reinstall:
 ### install.sh method
 
 ```bash
-cd claude-scaffolding
+cd scaffolding
 git pull
 ./install.sh --refresh
 ```

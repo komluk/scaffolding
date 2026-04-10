@@ -7,7 +7,7 @@ The `/distill` slash command analyzes past Claude Code session transcripts
 causes into a structured knowledge base. It is powered by
 `distill/cli.py` in the origin repo plus a Postgres-backed storage layer.
 
-## Why not in claude-scaffolding
+## Why not in scaffolding
 
 `distill` is specific to mining telemetry from Claude Code session logs using
 tools tightly coupled to the origin backend. Three dependencies:
@@ -30,5 +30,5 @@ Not recommended. Distill is effectively an internal tool for the
 ## Fallback
 
 None. `/distill` has no portable counterpart. If you need cross-session
-pattern discovery in claude-scaffolding, use `semantic_search` via the
+pattern discovery in scaffolding, use `semantic_search` via the
 `semantic-memory-mcp` skill instead.

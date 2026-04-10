@@ -5,13 +5,13 @@
 The `ui-ux-pro-max` skill is a design intelligence system with two parts:
 
 1. **Markdown SKILL.md** -- guidelines, rules, checklists (shipped in
-   `claude-scaffolding` at `skills/ui-ux-pro-max/SKILL.md`).
+   `scaffolding` at `skills/ui-ux-pro-max/SKILL.md`).
 2. **Python scripts + CSV database** -- `scripts/core.py`,
    `scripts/design_system.py`, `scripts/search.py` plus `data/stacks/*.csv`
    containing 96 color palettes, 57 font pairings, 67 styles, 99 UX rules
    and 25 chart types. This part stays in the origin repo.
 
-## Why not in claude-scaffolding
+## Why not in scaffolding
 
 The scripts and CSV data are tightly coupled to the origin repository:
 
@@ -19,13 +19,13 @@ The scripts and CSV data are tightly coupled to the origin repository:
   `skills/ui-ux-pro-max/data/`). Copying them into a fresh `.claude/` tree
   without the data directory produces import errors.
 - The CSV database is large (thousands of rows) and mutates independently
-  from the markdown guidelines. Embedding it in every clone of `claude-scaffolding`
+  from the markdown guidelines. Embedding it in every clone of `scaffolding`
   would bloat the repo and force users to pull irrelevant data.
 - Runtime is Python 3 with no other deps, but users need a specific invocation
   pattern (`python3 skills/ui-ux-pro-max/scripts/search.py ...`) that does
   not port cleanly to projects with different directory conventions.
 
-The markdown `SKILL.md` in `claude-scaffolding` has a "Tool Availability" section
+The markdown `SKILL.md` in `scaffolding` has a "Tool Availability" section
 that instructs the agent to degrade gracefully: if `scripts/search.py` is not
 present, the agent falls back to the rules documented inline in `SKILL.md`
 (which are a condensed version of the same knowledge).
