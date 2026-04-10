@@ -1,6 +1,6 @@
 # /init-claude-scaffolding Command
 
-Bootstrap a new project with the claude-scaffolding CLAUDE.md and settings.json.
+Bootstrap a new project with the claude-scaffolding CLAUDE.md, settings.json, and `.scaffolding/` directory structure.
 
 ## Usage
 
@@ -9,15 +9,17 @@ Bootstrap a new project with the claude-scaffolding CLAUDE.md and settings.json.
 ```
 
 Run from the root of a project that was set up via `/plugin install claude-scaffolding@komluk-scaffolding`.
-This command copies the routing protocol and settings into the project so Claude respects
-the agent delegation rules on every session.
+This command creates the `.scaffolding/` directory structure, copies the routing protocol and settings
+into the project so Claude respects the agent delegation rules on every session.
 
 ## What It Does
 
 1. Locates the installed plugin directory (searches known marketplace cache paths)
-2. Copies `CLAUDE.md` to `$CWD/CLAUDE.md` — only if not already present (no overwrite)
-3. Copies `settings.json` to `$CWD/.claude/settings.json` — only if not already present
-4. Reports what was copied or skipped
+2. Creates `.scaffolding/` directory structure for agent memory, conversations, and specs
+3. Adds `.scaffolding/` to `.gitignore`
+4. Copies `CLAUDE.md` to `$CWD/CLAUDE.md` — only if not already present (no overwrite)
+5. Copies `settings.json` to `$CWD/.claude/settings.json` — only if not already present
+6. Reports what was copied or skipped
 
 ## Steps
 
@@ -51,7 +53,32 @@ echo "Plugin root: ${PLUGIN_ROOT:-NOT FOUND}"
 
 If `PLUGIN_ROOT` is empty, report that the plugin was not found and stop. The user may need to run `/plugin install claude-scaffolding@komluk-scaffolding` first.
 
-### 2. Copy CLAUDE.md
+### 2. Create .scaffolding/ directory structure
+
+```bash
+mkdir -p .scaffolding/conversations
+mkdir -p .scaffolding/agent-memory/shared
+mkdir -p .scaffolding/agent-memory/agents
+mkdir -p .scaffolding/worktrees
+mkdir -p .scaffolding/openspec/specs
+mkdir -p .scaffolding/openspec/schemas
+mkdir -p .scaffolding/reports
+echo "CREATED: .scaffolding/ directory structure"
+```
+
+### 3. Add .scaffolding/ to .gitignore
+
+```bash
+# Check if .gitignore exists and if .scaffolding/ is already in it
+if [ -f ".gitignore" ]; then
+  grep -q "^\.scaffolding/" .gitignore || echo -e "\n# Claude Scaffolding\n.scaffolding/" >> .gitignore
+else
+  echo -e "# Claude Scaffolding\n.scaffolding/" > .gitignore
+fi
+echo "UPDATED: .gitignore — .scaffolding/ is excluded from git"
+```
+
+### 4. Copy CLAUDE.md
 
 ```bash
 if [ -f "$CWD/CLAUDE.md" ]; then
@@ -62,7 +89,7 @@ else
 fi
 ```
 
-### 3. Copy settings.json
+### 5. Copy settings.json
 
 ```bash
 mkdir -p "$CWD/.claude"
@@ -74,11 +101,13 @@ else
 fi
 ```
 
-### 4. Report result
+### 6. Report result
 
-Print a summary listing each file: COPIED or SKIPPED, and its destination path.
+Print a summary listing each action: CREATED/UPDATED/COPIED or SKIPPED, and its destination path.
 
-After copying, inform the user:
+After initializing, inform the user:
+- `.scaffolding/` directory structure is ready for agent memory, conversations, and specs
+- `.gitignore` has been updated to exclude `.scaffolding/` from version control
 - CLAUDE.md is now in the project root — Claude will load the routing protocol on every session
 - settings.json is now in `.claude/` — hooks and agent permissions are active
 - If either file was skipped (already existed), they can manually merge from the plugin root

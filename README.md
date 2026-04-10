@@ -28,11 +28,13 @@ Then install the plugin:
 /plugin install scaffolding@komluk-scaffolding
 ```
 
-The post-install hook automatically:
-- Creates `.scaffolding/` directory structure
-- Adds `.scaffolding/` to `.gitignore`
-- Copies `CLAUDE.md` (agent routing protocol) to project root
-- Copies `settings.json` (hooks + permissions) to `.claude/`
+After install, initialize the project:
+
+```bash
+/init-claude-scaffolding
+```
+
+This creates the `.scaffolding/` directory, copies `CLAUDE.md` and `settings.json` to your project. **This step is required** — the plugin cannot auto-initialize due to Claude Code plugin system limitations.
 
 ### Method B — install.sh (manual)
 

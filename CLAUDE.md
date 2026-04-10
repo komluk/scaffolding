@@ -21,22 +21,22 @@ Project: `(project)`
 
 Route via Task tool with subagent_type:
 ```
-Task(subagent_type="agent-name", prompt="Your task prompt here")
+Task(subagent_type="scaffolding:agent-name", prompt="Your task prompt here")
 ```
 
 | Agent | When to Use |
 |-------|-------------|
-| **analyst** | Ambiguous requests, requirements, scope assessment, feasibility, proposal writing |
-| **architect** | System design, API design, implementation planning, multi-file refactoring, agent orchestration |
-| **researcher** | New API integration, library questions, best practices (gate: score >= 80) |
-| **developer** | Implementation, bug fixes, features, tests, UI/styling (gate: validation passes) |
-| **debugger** | Bug reports, unexpected behavior, errors |
-| **reviewer** | After code changes, security analysis, threat modeling (gate: no criticals) |
-| **optimizer** | Performance issues, database design, schema, migrations, queries |
-| **tech-writer** | Documentation, CHANGELOG updates |
-| **devops** | CI/CD, deployment, infrastructure |
-| **gitops** | Branch management, conflict resolution, git history, worktree recovery, push to remote |
-| **coordinator** | Analyzes tasks, decomposes into agent step sequences for dynamic execution |
+| **scaffolding:analyst** | Ambiguous requests, requirements, scope assessment, feasibility, proposal writing |
+| **scaffolding:architect** | System design, API design, implementation planning, multi-file refactoring, agent orchestration |
+| **scaffolding:researcher** | New API integration, library questions, best practices (gate: score >= 80) |
+| **scaffolding:developer** | Implementation, bug fixes, features, tests, UI/styling (gate: validation passes) |
+| **scaffolding:debugger** | Bug reports, unexpected behavior, errors |
+| **scaffolding:reviewer** | After code changes, security analysis, threat modeling (gate: no criticals) |
+| **scaffolding:optimizer** | Performance issues, database design, schema, migrations, queries |
+| **scaffolding:tech-writer** | Documentation, CHANGELOG updates |
+| **scaffolding:devops** | CI/CD, deployment, infrastructure |
+| **scaffolding:gitops** | Branch management, conflict resolution, git history, worktree recovery, push to remote |
+| **scaffolding:coordinator** | Analyzes tasks, decomposes into agent step sequences for dynamic execution |
 
 ---
 
@@ -78,15 +78,15 @@ Use Task tool with subagent_type parameter:
 
 ```python
 Task(
-    subagent_type="developer",
+    subagent_type="scaffolding:developer",
     prompt="Update Button.tsx to add onClick handler",
     description="Add click handler"
 )
 ```
 
 **Available subagent_type values:**
-- analyst, architect, researcher, developer
-- debugger, reviewer, optimizer, tech-writer, devops, gitops, coordinator
+- scaffolding:analyst, scaffolding:architect, scaffolding:researcher, scaffolding:developer
+- scaffolding:debugger, scaffolding:reviewer, scaffolding:optimizer, scaffolding:tech-writer, scaffolding:devops, scaffolding:gitops, scaffolding:coordinator
 
 ---
 
@@ -98,7 +98,7 @@ Task(
 2. **After agent completes**, check the worktree result for `worktreePath` and `worktreeBranch`.
 3. **Spawn gitops** (NOT in worktree) to commit + merge + push:
    ```
-   Agent(subagent_type="gitops", prompt="
+   Agent(subagent_type="scaffolding:gitops", prompt="
      Worktree at {worktreePath} on branch {worktreeBranch} has uncommitted changes from developer.
      1. cd into worktree, git add -A, git commit -m '...'
      2. cd back to main repo, git merge {worktreeBranch} --no-edit
