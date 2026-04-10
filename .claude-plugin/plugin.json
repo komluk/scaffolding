@@ -1,5 +1,5 @@
 {
-  "name": "claude-scaffolding",
+  "name": "scaffolding",
   "version": "1.0.0",
   "description": "Opinionated Claude Code configuration: 30 skills, 11 agents, 14 commands, 7 hooks, spec-driven workflows. Captures the scaffolding.tool orchestration patterns.",
   "author": {
