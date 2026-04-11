@@ -19,7 +19,8 @@ into the project so Claude respects the agent delegation rules on every session.
 3. Adds `.scaffolding/` to `.gitignore`
 4. Copies `CLAUDE.md` to `$CWD/CLAUDE.md` — always overwrites with latest from plugin
 5. Copies `settings.json` to `$CWD/.claude/settings.json` — always overwrites with latest from plugin
-6. Reports what was copied or skipped
+6. Copies `hooks/*.sh` to `$CWD/.claude/hooks/` — always overwrites with latest from plugin
+7. Reports what was copied
 
 ## Steps
 
@@ -121,7 +122,16 @@ cp "$PLUGIN_ROOT/settings.json" "$CWD/.claude/settings.json"
 echo "COPIED: settings.json -> $CWD/.claude/settings.json (overwritten with latest)"
 ```
 
-### 6. Report result
+### 6. Copy hooks directory (always overwrite)
+
+```bash
+mkdir -p "$CWD/.claude/hooks"
+cp "$PLUGIN_ROOT/hooks/"*.sh "$CWD/.claude/hooks/"
+chmod +x "$CWD/.claude/hooks/"*.sh
+echo "COPIED: hooks/ -> $CWD/.claude/hooks/ (all hook scripts)"
+```
+
+### 7. Report result
 
 Print a summary listing each action: CREATED/UPDATED/COPIED or SKIPPED, and its destination path.
 
