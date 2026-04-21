@@ -104,7 +104,7 @@ prompt_for() {
 
 if $REFRESH; then
   load_config_from_file
-  if [[ ${#CONFIG[@]} -eq 0 ]]; then
+  if [[ -z "${CONFIG[*]+x}" || ${#CONFIG[@]} -eq 0 ]]; then
     echo "[error] --refresh but $CONFIG_FILE missing or empty" >&2
     exit 1
   fi

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.1] - 2026-04-22
+
+### Fixed
+- `install.sh:107` — guard `${#CONFIG[@]}` check with `${CONFIG[*]+x}` presence test. Prevents `CONFIG: unbound variable` error on bash 5.x when `declare -A CONFIG` receives no keys (triggered by `--refresh` against a missing config file).
+
 ## [1.7.0] - 2026-04-22
 
 ### Fixed
