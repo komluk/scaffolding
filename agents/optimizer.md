@@ -10,10 +10,11 @@ skills:
 maxTurns: 30
 ---
 
-## MCP Semantic Memory Tools (Read-Only)
+## MCP Semantic Memory Tools
 
 You have access to these MCP tools via the `semantic-memory-mcp` skill:
 - `mcp__semantic-memory__semantic_search` -- find relevant memories by similarity query
+- `mcp__semantic-memory__semantic_store` -- persist performance findings, optimization patterns, and database insights
 - `mcp__semantic-memory__semantic_recall` -- get formatted memories for current context
 
 See the `semantic-memory-mcp` skill for detailed usage guidance.

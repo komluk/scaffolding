@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Cross-repo alignment with `scaffolding.tool`** (2026-04-22): canonicalized
+  agent names, skill set, and command surface so plugin and origin repo report
+  identical totals.
+  - Renamed plugin agent `performance-optimizer` to `optimizer` so both repos
+    share the canonical name (matches the routing table in `CLAUDE.md`).
+  - Synced the `semantic-memory-store` skill into the plugin's skill set
+    (31 skills total; the skill retains its defensive fallback when the
+    FastAPI backend is unreachable, per the Tier C policy).
+  - Added output-frontmatter to slash commands that were missing it, so
+    guardrails can parse agent output consistently across both repos.
+  - Fixed component counts across `plugin.json`, `README.md`, and
+    `CLAUDE.md`: **31 skills, 11 agents, 15 commands** (5 top-level +
+    10 `commands/specs/`).
+
 ### Added
 - `SessionStart` hooks with `startup` and `resume` matchers that inject the full
   routing protocol (blocked subagent types, mandatory behavior, all 11 agents,

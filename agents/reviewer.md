@@ -11,7 +11,9 @@ skills:
   - spec-review
   - semantic-memory-mcp
 maxTurns: 30
-disallowedTools: Write, Edit
+disallowedTools:
+  - Write
+  - Edit
 ---
 
 ## MCP Semantic Memory Tools (Read-Only)

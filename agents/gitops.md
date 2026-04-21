@@ -9,7 +9,9 @@ skills:
   - agent-memory
   - semantic-memory-mcp
 maxTurns: 25
-disallowedTools: Write, Edit
+disallowedTools:
+  - Write
+  - Edit
 ---
 
 ## MCP Semantic Memory Tools (Read-Only)

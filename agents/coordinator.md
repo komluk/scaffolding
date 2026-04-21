@@ -3,6 +3,9 @@ name: coordinator
 description: Analyzes tasks and decomposes them into a sequence of agent steps for execution.
 tools: Read, Glob, Grep
 model: inherit
+skills:
+  - agent-memory
+  - semantic-memory-mcp
 maxTurns: 15
 disallowedTools:
   - Task

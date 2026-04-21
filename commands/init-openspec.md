@@ -1,3 +1,8 @@
+---
+name: init-openspec
+description: Initialize OpenSpec in a project directory with the scaffolding-workflow schema.
+---
+
 # /init-openspec Command
 
 Initialize OpenSpec in a project directory with the scaffolding-workflow schema.

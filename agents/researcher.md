@@ -8,7 +8,9 @@ skills:
   - spec-research
   - semantic-memory-mcp
 maxTurns: 30
-disallowedTools: Edit, Bash
+disallowedTools:
+  - Edit
+  - Bash
 ---
 
 ## MCP Semantic Memory Tools (Read-Only)

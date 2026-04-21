@@ -1,3 +1,8 @@
+---
+name: generate-prp
+description: Generate a complete PRP (Product Requirement Prompt) for a feature with thorough research and context.
+---
+
 # Create PRP
 
 ## Feature file: $ARGUMENTS

@@ -11,7 +11,8 @@ skills:
   - spec-design
   - semantic-memory-mcp
 maxTurns: 25
-disallowedTools: Edit
+disallowedTools:
+  - Edit
 ---
 
 ## MCP Semantic Memory Tools

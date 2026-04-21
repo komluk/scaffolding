@@ -128,7 +128,7 @@ Use thinking escalation for complex decisions:
 | Bug investigation | debugger | Root cause identified |
 | Code/security review | reviewer | No critical issues |
 | Documentation | tech-writer | Docs updated |
-| Performance/DB | performance-optimizer | Analysis complete |
+| Performance/DB | optimizer | Analysis complete |
 | CI/CD | devops | Pipeline passes |
 
 ---

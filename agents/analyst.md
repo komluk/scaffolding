@@ -10,7 +10,8 @@ skills:
   - pattern-recognition
   - semantic-memory-mcp
 maxTurns: 25
-disallowedTools: Edit
+disallowedTools:
+  - Edit
 ---
 
 ## MCP Semantic Memory Tools (Read-Only)

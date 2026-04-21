@@ -1,3 +1,8 @@
+---
+name: execute-prp
+description: Implement a feature using the specified PRP (Product Requirement Prompt) file.
+---
+
 # Execute BASE PRP
 
 Implement a feature using using the PRP file.

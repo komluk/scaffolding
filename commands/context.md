@@ -1,3 +1,8 @@
+---
+name: context
+description: Analyze and optimize Claude Code's context configuration (analyze, optimize, or reset).
+---
+
 # /context Command
 
 Analyze and optimize Claude Code's context configuration.
