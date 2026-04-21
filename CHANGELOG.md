@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-04-22
+
+### Fixed
+- `install.sh:107` — guard empty `CONFIG` associative array under `set -u` (fixes `./install.sh --refresh` crash on bash 5.x)
+- `.github/workflows/validate.yml` — align CI env file path with `install.sh` (`.scaffolding.env` → `.claude-scaffolding.env`)
+
 ### Changed
 - **Cross-repo alignment with `scaffolding.tool`** (2026-04-22): canonicalized
   agent names, skill set, and command surface so plugin and origin repo report
