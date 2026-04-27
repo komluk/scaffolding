@@ -1,273 +1,274 @@
 # claude-scaffolding
 
-Przenosna konfiguracja Claude Code: agenci, skille, komendy, hooki, workflow.
-Repozytorium mozna sklonowac do kazdego projektu i uzywac natychmiast, bez
-zadnych bibliotek Pythona ani backendu.
+Portable Claude Code configuration: agents, skills, commands, hooks, and workflows.
+Clone into any project and use it immediately — no Python libraries, no backend.
 
-## Wprowadzenie
+## Overview
 
-`claude-scaffolding` to wydzielony, samodzielny `~/.claude/` wyciety z repozytorium
-`scaffolding.tool`. Zawiera wylacznie to, co da sie przewiezc jako markdown --
-czyli wiedze agentow, skile i konfiguracje. Wszystko, co wymaga backendu,
-bazy danych lub dlugotrwalego procesu, zostaje w origin repo i jest
-opisane w [docs/locked-to-project/](docs/locked-to-project/README.md).
+`claude-scaffolding` is a self-contained `~/.claude/` carved out of the
+[`scaffolding.tool`](https://github.com/komluk/scaffolding.tool) repo. It ships
+only what travels as markdown — agent knowledge, skills, and configuration.
+Anything that needs a backend, database, or long-running process stays in the
+origin repo and is documented under [docs/locked-to-project/](docs/locked-to-project/README.md).
 
-Cele:
+Goals:
 
-- jeden `git clone` i masz komplet agentow, skili i hookow
-- zadnych sciezek hardcodowanych na `/opt/platform/scaffolding.tool`
-- parametryzacja przez `install.sh` z auto-detekcja wartosci
-- idempotentny rerender (`install.sh --refresh`)
-- licencja MIT
+- one `git clone` and you have the full set of agents, skills, and hooks
+- no paths hardcoded to `/opt/platform/scaffolding.tool`
+- parametrized via `install.sh` with auto-detected defaults
+- idempotent re-render (`install.sh --refresh`)
+- MIT licensed
 
 ## Differences from scaffolding.tool
 
-This plugin is a distilled mirror of [`scaffolding.tool`](https://github.com/komluk/scaffolding.tool)
-for standalone Claude Code use — no FastAPI backend, no Postgres, no Redis required.
+This plugin is a distilled mirror of `scaffolding.tool` for standalone Claude
+Code use — no FastAPI backend, no Postgres, no Redis required.
 
 - **Agents:** same 11 canonical agents (analyst, architect, coordinator, debugger,
   developer, devops, gitops, optimizer, researcher, reviewer, tech-writer);
-  omits `workflow-orchestrator` which requires the FastAPI + Redis task queue.
+  omits `workflow-orchestrator`, which requires the FastAPI + Redis task queue.
 - **Commands:** 15 commands — omits `/workflow` and `/distill` (both backend-dependent);
   includes `init-claude-scaffolding.md` for bootstrapping `CLAUDE.md` + `settings.json`
   into a target project.
 - **Skills:** identical 31 skills; skills that reference backend services
   (e.g. `semantic-memory-store`) degrade gracefully when the backend is absent.
-- **Hooks:** plugin hooks are standalone versions that run entirely from the
-  Claude Code runtime; `scaffolding.tool` hooks additionally integrate with the
-  backend task queue, step-event pipeline, and SonarQube CLI.
+- **Hooks:** standalone versions that run entirely from the Claude Code runtime;
+  `scaffolding.tool` hooks additionally integrate with the backend task queue,
+  step-event pipeline, and SonarQube CLI.
 
-## Szybki start
+## Quick start
 
-### Ktery flow instalacji wybrac?
+### Which install flow should I pick?
 
-| Flow | Kiedy uzywac | Przestrzen nazw agentow |
-|------|-------------|------------------------|
-| `/plugin install claude-scaffolding@komluk-scaffolding` | Wiekszos uzytkownikow, zero-config, natywny marketplace Claude Code | `claude-scaffolding:developer` (z prefixem) |
-| `./install.sh --target /path/to/repo` | Chcesz pliki skopiowane do drzewa repo, wlasna konfiguracja przez `~/.claude-scaffolding.env` | `developer` (bare -- install.sh usuwa prefix automatycznie) |
+| Flow | When to use | Agent namespace |
+|------|-------------|-----------------|
+| `/plugin install claude-scaffolding@komluk-scaffolding` | Most users, zero-config, native Claude Code marketplace | `claude-scaffolding:developer` (prefixed) |
+| `./install.sh --target /path/to/repo` | You want files copied into a repo tree, custom config via `~/.claude-scaffolding.env` | `developer` (bare — `install.sh` strips the prefix automatically) |
 
-Dodatkowe wskazowki:
+Additional guidance:
 
-| Potrzeba | Flow |
-|----------|------|
-| Upgrade przez `/plugin update` | Opcja A (Plugin) |
-| Wlasny `__CLAUDE_SCAFFOLDING_PROJECT_NAME__`, klucz Sonar, test commands | Opcja B (install.sh) |
-| Integracja per-project `.claude/` vs user-level | Opcja B (install.sh --target) |
-| Rozwoj/edycja komponentow claude-scaffolding | Opcja B (klon repo) |
+| Need | Flow |
+|------|------|
+| Upgrade via `/plugin update` | Option A (Plugin) |
+| Custom `__CLAUDE_SCAFFOLDING_PROJECT_NAME__`, Sonar key, test commands | Option B (`install.sh`) |
+| Per-project `.claude/` vs user-level integration | Option B (`install.sh --target`) |
+| Developing/editing claude-scaffolding components | Option B (clone repo) |
 
 ---
 
-### Opcja A -- Plugin Claude Code (zalecana dla szybkiego startu)
+### Option A — Claude Code plugin (recommended for quick start)
 
-**Wymaganie:** `komluk/claude-scaffolding` jest repozytorium prywatnym, wiec Claude
-Code CLI musi byc zalogowane do konta GitHub z dostepem do tego repo. Przed
-pierwszym uzyciem uruchom:
+**Requirement:** `komluk/claude-scaffolding` is a private repository, so the
+Claude Code CLI must be authenticated to a GitHub account with access to the
+repo. Before first use, run:
 
 ```bash
 gh auth login
-# Wybierz: GitHub.com, HTTPS, login with web browser, scope: repo
+# Choose: GitHub.com, HTTPS, login with web browser, scope: repo
 ```
 
-**Kroki po instalacji (WSZYSTKIE wymagane):**
+**Post-install steps (ALL required):**
 
 ```
 1. /plugin marketplace add komluk/claude-scaffolding
 2. /plugin install claude-scaffolding@komluk-scaffolding
-3. /reload-plugins                       ← WYMAGANE: Claude Code nie hot-reloaduje rejestru agentow
-4. (opcjonalnie) /init-claude-scaffolding   ← patrz: "Czy potrzebujesz /init-claude-scaffolding?" ponizej
+3. /reload-plugins                       ← REQUIRED: Claude Code does not hot-reload the agent registry
+4. (optional) /init-claude-scaffolding   ← see "Do you need /init-claude-scaffolding?" below
 5. Task(subagent_type="claude-scaffolding:developer", prompt="...")
 ```
 
-> **Bez `/reload-plugins`** rejestr `subagent_type` nie zostaje odswiezone po instalacji
-> pluginu -- `Task(subagent_type="claude-scaffolding:developer")` zwroci blad
-> `Agent type not found`. Mozna tez zamiast `/reload-plugins` zrestartowac cala sesje `claude`.
+> **Without `/reload-plugins`** the `subagent_type` registry is not refreshed
+> after installing the plugin — `Task(subagent_type="claude-scaffolding:developer")`
+> will return `Agent type not found`. Restarting the entire `claude` session
+> works as an alternative to `/reload-plugins`.
 
-Plugin trafi do `~/.claude/plugins/cache/komluk-scaffolding/claude-scaffolding/<version>/`.
-Parametry sa zaszyte jako sensowne defaulty (`pytest`, `npm test`, `./backend`, itd.) --
-jesli potrzebujesz wlasnych wartosci, uzyj Opcji B.
+The plugin lands in `~/.claude/plugins/cache/komluk-scaffolding/claude-scaffolding/<version>/`.
+Parameters are baked in as sensible defaults (`pytest`, `npm test`, `./backend`, etc.).
+If you need custom values, use Option B.
 
 ---
 
-### Opcja B -- Klon + install.sh (pelna parametryzacja)
+### Option B — Clone + install.sh (full parametrization)
 
 ```bash
-# 1. Klon prosto do ~/.claude/ (user-level)
+# 1. Clone straight into ~/.claude/ (user-level)
 git clone https://github.com/komluk/claude-scaffolding ~/.claude
 cd ~/.claude
 ./install.sh
 
-# LUB: klon obok + render do .claude/ projektu (project-level)
+# OR: clone elsewhere and render into a project-level .claude/
 git clone https://github.com/komluk/claude-scaffolding ~/src/claude-scaffolding
 cd ~/src/claude-scaffolding
 ./install.sh --target /path/to/your/project/.claude
 ```
 
-Install.sh pyta o kilka wartosci (komenda testow backendu, komenda walidacji
-frontendu, klucz SonarQube, nazwa projektu, itp.), zapisuje je w
-`~/.claude-scaffolding.env` i renderuje placeholdery `__CLAUDE_SCAFFOLDING_*__` z
-`templates/*.tmpl` do plikow docelowych. Po pierwszym uruchomieniu mozna
-zmienic wartosci edytujac `~/.claude-scaffolding.env` i uruchamiajac:
+`install.sh` prompts for a few values (backend test command, frontend validate
+command, SonarQube key, project name, etc.), saves them in
+`~/.claude-scaffolding.env`, and renders `__CLAUDE_SCAFFOLDING_*__` placeholders
+from `templates/*.tmpl` into the target. To change values later, edit
+`~/.claude-scaffolding.env` and run:
 
 ```bash
 ./install.sh --refresh
 ```
 
-co jest idempotentne -- kazde kolejne wywolanie daje identyczny wynik bez
-interakcji.
+This is idempotent — every subsequent invocation produces identical output
+without prompts.
 
-`install.sh` automatycznie kopiuje `CLAUDE.md` i `settings.json` do katalogu
-docelowego oraz usuwa prefix `claude-scaffolding:` z wyrenderowanych plikow.
-Nie trzeba zadnych dodatkowych krokow -- agenci sa od razu dostepni jako bare names
-(np. `Task(subagent_type="developer")`).
-
----
-
-### Czy potrzebujesz `/init-claude-scaffolding`? (tylko Opcja A)
-
-Ta komenda kopiuje `CLAUDE.md` i `settings.json` do `$CWD` projektu (bez nadpisywania).
-Dotyczy wylacznie flow z pluginem -- install.sh robi to automatycznie.
-
-| Scenariusz | Uruchomic init? | Dlaczego |
-|-----------|----------------|---------|
-| Projekt solo, plugin zawsze zainstalowany | Nie | Hook SessionStart wstrzykuje protokol przy kazdym starcie sesji |
-| Repo zespolowe, inni klonuja bez pluginu | Tak | `CLAUDE.md` w repo = protokol podrozuje razem z kodem |
-| CI/automatyzacja czyta repo | Tak | Scommitowany `CLAUDE.md` = reproducible context |
-| Jednorazowy/PoC projekt | Nie | Hook wystarczy, nie zasmiecaj repo |
-
-**Roznica mechaniczna:**
-
-- **Hook-based** (domyslnie po install + reload): protokol zyje w SessionStart hook output,
-  jest efemeryczny, per-sesyjny, wymaga aktywnego pluginu.
-- **Init-based** (po `/init-claude-scaffolding`): `CLAUDE.md` zapisany w `$CWD`,
-  persistentny, wersjonowany w git, dziala nawet bez pluginu.
+`install.sh` automatically copies `CLAUDE.md` and `settings.json` to the target
+directory and strips the `claude-scaffolding:` prefix from rendered files. No
+extra steps needed — agents are immediately available as bare names (e.g.
+`Task(subagent_type="developer")`).
 
 ---
 
-### Czeste problemy (gotchas)
+### Do you need `/init-claude-scaffolding`? (Option A only)
 
-**"Agent type 'developer' not found"**
-- Zapomniałeś uruchomic `/reload-plugins` po instalacji, LUB
-- Uzywasz bare name `developer` w flow z pluginem -- uzyj `claude-scaffolding:developer`.
+This command copies `CLAUDE.md` and `settings.json` into the project's `$CWD`
+(without overwriting). It applies only to the plugin flow — `install.sh` does
+this automatically.
 
-> Prefix `claude-scaffolding:` dotyczy wylacznie agentow zainstalowanych przez
-> marketplace Claude Code (plugin runtime). Dla agentow zdefiniowanych lokalnie
-> w `.claude/agents/` (flow `install.sh --target`) uzywaj bare names bez prefixu.
+| Scenario | Run init? | Why |
+|----------|-----------|-----|
+| Solo project, plugin always installed | No | The SessionStart hook injects the protocol on every session start |
+| Team repo, others clone without the plugin | Yes | `CLAUDE.md` in-repo means the protocol travels with the code |
+| CI/automation reads the repo | Yes | A committed `CLAUDE.md` gives reproducible context |
+| One-off / PoC project | No | The hook is enough; don't clutter the repo |
 
-**"Claude ignoruje protokol delegacji"**
-- Plugin zaladowany, ale `/reload-plugins` nie byl uruchomiony po instalacji, LUB
-- Uzywasz starszej wersji hooka (przed `45cb106`) ktora uzywala plain echo zamiast
-  `hookSpecificOutput.additionalContext`.
+**Mechanical difference:**
 
-**"Zainstalowalem plugin, ale nic nie dziala w nowej sesji"**
-- Zrestartuj Claude Code w calosci (nie tylko otwiera nowa sesje) -- cache pluginow
-  moze byc przeterminowany. `/reload-plugins` jest szybszym rozwiazaniem jezeli sesja jest aktywna.
+- **Hook-based** (default after install + reload): the protocol lives in
+  `SessionStart` hook output — ephemeral, per-session, requires the active plugin.
+- **Init-based** (after `/init-claude-scaffolding`): `CLAUDE.md` is written to
+  `$CWD` — persistent, versioned in git, works even without the plugin.
 
-## Wymagania
+---
+
+### Common gotchas
+
+**`Agent type 'developer' not found`**
+- You forgot to run `/reload-plugins` after install, OR
+- You used the bare name `developer` in the plugin flow — use `claude-scaffolding:developer` instead.
+
+> The `claude-scaffolding:` prefix applies only to agents installed via the
+> Claude Code marketplace (plugin runtime). For agents defined locally in
+> `.claude/agents/` (the `install.sh --target` flow), use bare names without
+> the prefix.
+
+**"Claude ignores the delegation protocol"**
+- The plugin is loaded but `/reload-plugins` was not run after install, OR
+- You're on an older hook version (before commit `45cb106`) that used plain
+  `echo` instead of `hookSpecificOutput.additionalContext`.
+
+**"I installed the plugin, but nothing works in a new session"**
+- Restart Claude Code entirely (not just opening a new session) — the plugin
+  cache may be stale. `/reload-plugins` is faster if a session is already active.
+
+## Requirements
 
 - `git`
-- `python3` (dowolna wersja 3.x, bez pip deps)
+- `python3` (any 3.x version, no pip dependencies)
 - Claude Code CLI (https://claude.ai/code)
 
-## Co jest w srodku
+## What's inside
 
 ```
 claude-scaffolding/
-├── agents/         11 agentow (analyst, architect, coordinator, developer,
+├── agents/         11 agents (analyst, architect, coordinator, developer,
 │                    debugger, devops, gitops, optimizer,
 │                    researcher, reviewer, tech-writer)
-├── skills/         31 skili (api-design, error-handling, pattern-recognition,
+├── skills/         31 skills (api-design, error-handling, pattern-recognition,
 │                    spec-*, mui-styling, python-patterns, testing-strategy, ...)
-├── commands/       15 komend slash: 5 top-level (context, execute-prp,
-│                    generate-prp, init-openspec, init-claude-scaffolding) + 10 w `commands/specs/`
+├── commands/       15 slash commands: 5 top-level (context, execute-prp,
+│                    generate-prp, init-openspec, init-claude-scaffolding) + 10 in `commands/specs/`
 │                    (apply, archive, bulk-archive, continue, explore, ff,
-│                    new, onboard, sync, verify) -- namespaced komendy OpenSpec
-├── hooks/          7 hookow bezpieczenstwa (block-destructive-rm,
+│                    new, onboard, sync, verify) — namespaced OpenSpec commands
+├── hooks/          7 safety hooks (block-destructive-rm,
 │                    block-env-write, pre-commit-validation, ...)
-├── templates/      Szablony PRP (base, planning, spec)
-├── validators/     Walidatory markdown (output-frontmatter, prp-document)
-├── output-styles/  Definicja output-frontmatter
-├── workflows/      YAML definicje workflow i coordinate
-├── install.sh      Installer z parametryzacja
-├── uninstall.sh    Undo install.sh (usuwa rendered copy)
-├── CLAUDE.md       Glowny prompt projektu (z placeholderami)
-└── settings.json   Hooki + statusline + permissions
+├── templates/      PRP templates (base, planning, spec)
+├── validators/     Markdown validators (output-frontmatter, prp-document)
+├── output-styles/  output-frontmatter definition
+├── workflows/      YAML workflow and coordinate definitions
+├── install.sh      Parametrized installer
+├── uninstall.sh    Undo install.sh (removes the rendered copy)
+├── CLAUDE.md       Main project prompt (with placeholders)
+└── settings.json   Hooks + statusline + permissions
 ```
 
-## Czego nie ma (Tier C)
+## What's not here (Tier C)
 
-Komponenty zalezne od runtime scaffolding.tool NIE sa tutaj -- zostaly
-opisane w [docs/locked-to-project/](docs/locked-to-project/README.md).
-Skrocona lista:
+Components that depend on the `scaffolding.tool` runtime are NOT here — they
+are documented in [docs/locked-to-project/](docs/locked-to-project/README.md).
+Short list:
 
-| Komponent | Dlaczego nie w claude-scaffolding |
-|-----------|----------------------------|
-| `semantic-memory` MCP server | Wymaga Postgres + pgvector + embedding model |
-| `semantic-memory-store` skill | Wywoluje bash do FastAPI backendu |
-| `/workflow` komenda | Wymaga FastAPI + Redis + worker |
-| `/distill` komenda | Wymaga distill CLI + DB |
+| Component | Why not in claude-scaffolding |
+|-----------|-------------------------------|
+| `semantic-memory` MCP server | Needs Postgres + pgvector + embedding model |
+| `semantic-memory-store` skill | Calls bash into a FastAPI backend |
+| `/workflow` command | Needs FastAPI + Redis + worker |
+| `/distill` command | Needs the distill CLI + DB |
 | `ui-ux-pro-max` scripts/data | Python CLI + CSV database |
 
-Skile ktore odwoluja sie do tych komponentow maja defensywne fallbacki:
-jesli zaleznosci sa niedostepne, agent pomija odpowiednia sekcje zamiast
-sie zawiesic.
+Skills that reference these components have defensive fallbacks: if the
+dependencies are unavailable, the agent skips the relevant section rather
+than crashing.
 
-## Aktualizacja
+## Updating
 
-Repo ma ustabilizowane API plikowe -- nowe wersje dodaja agentow i skile,
-nie usuwaja ich. Aby zaktualizowac:
+The repo has a stable file API — new versions add agents and skills, never
+remove them. To update:
 
 ```bash
-cd ~/.claude  # lub gdzie skloniles claude-scaffolding
+cd ~/.claude  # or wherever you cloned claude-scaffolding
 git pull
-./install.sh --refresh  # rerenderuje placeholdery z istniejacego .env
+./install.sh --refresh  # re-renders placeholders from the existing .env
 ```
 
-Idempotentnosc jest testowana -- dwie kolejne `./install.sh --refresh`
-produkuja bit-identyczne pliki.
+Idempotency is tested — two consecutive `./install.sh --refresh` runs produce
+bit-identical files.
 
-## Parametryzacja
+## Parametrization
 
-Pelna lista placeholderow `__CLAUDE_SCAFFOLDING_*__` znajduje sie w
-[docs/parametrization.md](docs/parametrization.md). Krotka wersja:
+The full list of `__CLAUDE_SCAFFOLDING_*__` placeholders lives in
+[docs/parametrization.md](docs/parametrization.md). Short version:
 
-- `CLAUDE_SCAFFOLDING_TEST_BACKEND_CMD` -- komenda do uruchomienia testow backendu
-- `CLAUDE_SCAFFOLDING_TEST_FRONTEND_CMD` -- komenda walidacji frontendu
-- `CLAUDE_SCAFFOLDING_PROJECT_NAME` -- nazwa projektu (domyslnie `basename $PWD`)
-- `CLAUDE_SCAFFOLDING_SONAR_PROJECT_KEY` -- klucz SonarQube (opcjonalny)
-- `CLAUDE_SCAFFOLDING_SCHEMAS_DIR` -- katalog schematow OpenSpec
-- `CLAUDE_SCAFFOLDING_BACKEND_EXAMPLE_PATH` -- przykladowa sciezka feature backendu
+- `CLAUDE_SCAFFOLDING_TEST_BACKEND_CMD` — backend test command
+- `CLAUDE_SCAFFOLDING_TEST_FRONTEND_CMD` — frontend validate command
+- `CLAUDE_SCAFFOLDING_PROJECT_NAME` — project name (defaults to `basename $PWD`)
+- `CLAUDE_SCAFFOLDING_SONAR_PROJECT_KEY` — SonarQube key (optional)
+- `CLAUDE_SCAFFOLDING_SCHEMAS_DIR` — OpenSpec schemas directory
+- `CLAUDE_SCAFFOLDING_BACKEND_EXAMPLE_PATH` — example backend feature path
 
-Install.sh ma auto-detekcje dla kazdego z tych pol -- czyta `package.json`,
-szuka `venv/`, sprawdza `.sonarlint/connectedMode.json` itp. Mozna wszystko
-pomijac enterem i wrocic do tego pozniej przez `~/.claude-scaffolding.env`.
+`install.sh` auto-detects each of these — it reads `package.json`, looks for
+`venv/`, checks `.sonarlint/connectedMode.json`, etc. Any field can be skipped
+with Enter and revisited later via `~/.claude-scaffolding.env`.
 
-## Dokumentacja
+## Documentation
 
-- [docs/installation.md](docs/installation.md) -- szczegolowe opcje instalacji
-- [docs/parametrization.md](docs/parametrization.md) -- pelna tabela placeholderow
-- [docs/adopting-in-legacy-repo.md](docs/adopting-in-legacy-repo.md) --
-  jak dodac do istniejacego projektu ze swoim `.claude/`
-- [docs/locked-to-project/](docs/locked-to-project/README.md) -- Tier C
-- [CHANGELOG.md](CHANGELOG.md) -- historia zmian
+- [docs/installation.md](docs/installation.md) — detailed install options
+- [docs/parametrization.md](docs/parametrization.md) — full placeholder table
+- [docs/adopting-in-legacy-repo.md](docs/adopting-in-legacy-repo.md) —
+  how to add this to an existing project that already has its own `.claude/`
+- [docs/locked-to-project/](docs/locked-to-project/README.md) — Tier C
+- [CHANGELOG.md](CHANGELOG.md) — release history
 
-## Wersjonowanie
+## Versioning
 
-Projekt trzyma sie [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
+The project follows [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 
-| Bump | Kiedy |
-|------|-------|
-| **MAJOR** (X.0.0) | Breaking changes: usuniecie agenta/skilla/command, zmiana API `install.sh`, niekompatybilne zmiany `plugin.json` schema |
-| **MINOR** (x.Y.0) | Nowy agent/skill/command/hook, nowa opcja `install.sh`, nowa feature w CI (backward compatible) |
-| **PATCH** (x.y.Z) | Bug fix, typo, poprawki dokumentacji |
+| Bump | When |
+|------|------|
+| **MAJOR** (X.0.0) | Breaking changes: removing an agent/skill/command, changing the `install.sh` API, incompatible `plugin.json` schema changes |
+| **MINOR** (x.Y.0) | New agent/skill/command/hook, new `install.sh` option, new CI feature (backward compatible) |
+| **PATCH** (x.y.Z) | Bug fix, typo, documentation tweaks |
 
-Source of truth dla wersji: `.claude-plugin/plugin.json` (`version` field).
-Git tag MUSI pasowac (`v${version}`) -- jest to wymuszone przez
-`release.yml` w GitHub Actions. Kazdy tag `v*` automatycznie tworzy
-GitHub Release z assetami `install.sh`, `uninstall.sh`,
-`.claude-scaffolding.env.example`.
+Source of truth for the version: `.claude-plugin/plugin.json` (`version` field).
+The git tag MUST match (`v${version}`) — this is enforced by `release.yml` in
+GitHub Actions. Every `v*` tag automatically creates a GitHub Release with
+`install.sh`, `uninstall.sh`, and `.claude-scaffolding.env.example` as assets.
 
-Historia wersji: [CHANGELOG.md](CHANGELOG.md).
+Version history: [CHANGELOG.md](CHANGELOG.md).
 
-## Licencja
+## License
 
-MIT -- patrz [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE).
