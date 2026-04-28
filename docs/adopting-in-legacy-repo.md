@@ -1,76 +1,93 @@
-# Dolaczanie scaffolding do istniejacego projektu
+# Adopting scaffolding in an existing project
 
-Jesli twoj projekt juz ma `.claude/` z wlasnymi agentami, skilami lub
-hookami, masz dwie opcje integracji.
+If your project already has its own `.claude/` directory with custom agents,
+skills, or hooks, here's how to layer `scaffolding` on top without losing your
+local work.
 
-## Opcja A -- user-level (rekomendowana)
+## How Claude Code merges configuration
 
-Renderuj `scaffolding` do `~/.claude/`. Claude Code automatycznie merguje
-user-level config z project-level `.claude/`. Twoje projektowe pliki wygrywaja
-w konfliktach -- to znaczy ze project-level `agents/developer.md` przysloni
-user-level, ale user-level skile bez odpowiednika w projekcie beda nadal
-widoczne.
+Claude Code reads configuration from two locations and merges them:
 
-```bash
-git clone https://github.com/komluk/scaffolding ~/.scaffolding-src
-cd ~/.scaffolding-src
-./install.sh --target ~/.claude
+- **User-level** (`~/.claude/`) — applies to every project on the machine.
+- **Project-level** (`<project>/.claude/`) — applies to that project only.
+
+When a name collides (e.g. both define `agents/developer.md`), the
+project-level file wins. Skills and agents that exist only at user level remain
+visible in every project.
+
+The plugin lives at user level (`~/.claude/plugins/marketplaces/komluk-scaffolding/`),
+so it is **automatically additive** — your project's `.claude/` is untouched
+unless you run `/init-scaffolding` inside the project.
+
+## Recommended flow
+
+```
+1. /plugin marketplace add komluk/scaffolding
+2. /plugin install scaffolding@komluk-scaffolding
+3. /reload-plugins
 ```
 
-Po tym kazdy projekt na tej maszynie automatycznie dostaje brakujace
-agenty i skile z `scaffolding`, bez ruszania projektowego `.claude/`.
+After this, every project on the machine gets `scaffolding`'s 11 agents,
+31 skills, 15 commands, and 8 hooks via the plugin runtime, namespaced as
+`scaffolding:<agent>`. Project-level files in `<project>/.claude/agents/` are
+unaffected and continue to be available as bare names.
 
-**Plus**: zero ryzyka nadpisania istniejacych plikow.
-**Minus**: scaffolding jest per-user, nie per-repo. Jesli pracujesz w kilku
-projektach o roznych wymaganiach, musisz rozwazyc Opcje B.
+**Pros:** zero risk of overwriting existing files. Updates are atomic via
+`/plugin update`.
 
-## Opcja B -- overlay na project-level `.claude/`
+**Cons:** the plugin's defaults (`pytest`, `npm test`, etc.) are baked in. If
+you need per-project values, see "Per-project overrides" below.
 
-Renderuj prosto do `.claude/` projektu. UWAGA: `install.sh` nadpisze pliki
-o tej samej nazwie (np. `agents/developer.md`). Zrob backup:
+## When to also run `/init-scaffolding`
+
+Run it inside the project root if any of these apply:
+
+- The project is a team repo, and you want `CLAUDE.md` (the routing protocol)
+  versioned in git so collaborators without the plugin still get it.
+- CI or automation reads the repo and needs a committed `CLAUDE.md` for
+  reproducible context.
+- You want `scaffolding`'s hooks (`session-start-protocol`, `pre-commit-validation`,
+  etc.) to live in `.claude/hooks/` of the project.
+
+`/init-scaffolding` is idempotent — safe to re-run. It always overwrites
+`CLAUDE.md`, `settings.json`, and `hooks/*.sh` with the latest plugin version,
+and creates `.scaffolding/` (added to `.gitignore` automatically).
+
+If the project already has its own `CLAUDE.md`, **back it up first** — the
+command will overwrite:
 
 ```bash
 cd /path/to/your/project
-cp -r .claude .claude.backup-$(date +%Y%m%d)
-
-cd ~/.scaffolding-src
-./install.sh --target /path/to/your/project/.claude
+cp CLAUDE.md CLAUDE.md.backup
+# Then in Claude Code:
+#   /init-scaffolding
+diff CLAUDE.md.backup CLAUDE.md   # review what changed
 ```
 
-Po tym sprawdz:
+## Per-project overrides
 
-```bash
-cd /path/to/your/project
-diff -r .claude.backup-<date> .claude  # zobacz co sie zmienilo
-```
+The plugin's defaults can be overridden by editing values in the project's
+`CLAUDE.md` after `/init-scaffolding`. Common overrides:
 
-Jesli jakis plik projektowy byl lepszy niz scaffolding -- przywroc go z backupu.
+- Backend test command (default: `pytest`)
+- Frontend validate command (default: `npm test`)
+- SonarQube project key (default: empty)
+- Project name (default: `(project)`)
 
-**Plus**: pelna kontrola, scaffolding w gicie projektu.
-**Minus**: konflikty wymagaja manualnego rozwiazania; kazdy `--refresh`
-moze potencjalnie nadpisac lokalne zmiany.
+Edit `CLAUDE.md` directly — those values are no longer parametrized at install
+time as of v2.0.0.
 
-### Wskazowki dla Opcji B
+## Resolving conflicts
 
-- Dodaj `.claude/` do `.gitignore` projektu, jesli nie chcesz commitowac
-  rendered copy (ale wtedy trac spojnosc zespolu -- kazdy ma inna wersje).
-- Alternatywa: commitowac `.claude/` do gita, uruchamiac `install.sh`
-  tylko gdy zmieniasz `.env`, i review diff przed commitem.
-- Do zautomatyzowania: dodaj shell alias lub makefile task np.
-  `make claude-refresh` ktory uruchamia `install.sh --refresh`.
+If your project already has a file with the same path that scaffolding would
+write, decide on a per-file basis:
 
-## Future scaffolding.tool migration steps (outside T01-T11 scope)
+| File | Recommendation |
+|------|----------------|
+| `CLAUDE.md` | Merge — scaffolding's routing protocol is the value-add; keep your project-specific instructions appended below it. |
+| `.claude/settings.json` | Merge — scaffolding's hooks + permissions block can live alongside your custom env vars. Use `jq` to splice. |
+| `.claude/hooks/<name>.sh` | Keep your version if it does more than scaffolding's; otherwise replace. Conflicts are rare. |
+| `.claude/agents/<name>.md` | Project-level wins; the plugin version remains accessible as `scaffolding:<name>`. |
 
-Poniższe kroki sa opisem mozliwej przyszlej migracji, a NIE czescia obecnej
-fazy (T01-T11). Dokumentuje je tu dla jasnosci, ale ich realizacja wymaga
-osobnego planu:
-
-- **Krok 6** -- usuniecie `.claude/` z origin `scaffolding.tool` i zastapienie
-  go symlinkiem do `scaffolding`. Wymaga weryfikacji ze zaden test nie
-  trzyma sie hardcoded path na `scaffolding.tool/.claude/`.
-- **Krok 7** -- publiczne ogloszenie `scaffolding`, dokumentacja migracyjna
-  dla uzytkownikow scaffolding.tool, plus ewentualny wrapper skrypt do
-  zainstalowania scaffolding w place of the old `.claude/`.
-
-Oba kroki wykraczaja poza obecny zakres i beda realizowane jako osobna
-iteracja po walidacji fazy A.
+There is no automated merge — `/init-scaffolding` just overwrites. Plan
+accordingly with `git diff` review before committing.

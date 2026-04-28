@@ -146,5 +146,5 @@ After initializing, inform the user:
 
 - This command is idempotent — safe to run multiple times
 - CLAUDE.md and settings.json are always overwritten with the latest version from the plugin
-- For full parametrization (custom project name, test commands, SonarQube key), use the
-  `install.sh` flow instead: `./install.sh --target /path/to/project`
+- To customize project name, test commands, or other values, edit `CLAUDE.md` in
+  the project root after running this command

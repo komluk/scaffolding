@@ -47,32 +47,12 @@ jobs:
         run: jq . .claude-plugin/marketplace.json > /dev/null
       - name: jq check settings.json
         run: jq . settings.json > /dev/null
-      - name: bash -n scripts
+      - name: bash -n hooks/*.sh
         run: |
-          bash -n install.sh
-          bash -n uninstall.sh
           for f in hooks/*.sh; do
             [ -f "$f" ] || continue
             bash -n "$f"
           done
-      - name: placeholder sanity
-        run: |
-          leaked=$(grep -rln '__CLAUDE_SCAFFOLDING_[A-Z_]*__' . \
-            --exclude-dir=.git \
-            --exclude-dir=templates \
-            --exclude-dir=docs \
-            --exclude-dir=.github \
-            --exclude=install.sh \
-            --exclude=uninstall.sh \
-            --exclude=.scaffolding.env.example \
-            --exclude=README.md \
-            --exclude=CHANGELOG.md \
-            || true)
-          if [ -n "$leaked" ]; then
-            echo "ERROR: placeholder leak:"
-            echo "$leaked"
-            exit 1
-          fi
 
   create-github-release:
     name: create github release
@@ -93,7 +73,4 @@ jobs:
           TAG="${GITHUB_REF#refs/tags/}"
           gh release create "${TAG}" \
             --title "${TAG}" \
-            --generate-notes \
-            install.sh \
-            uninstall.sh \
-            .scaffolding.env.example
+            --generate-notes

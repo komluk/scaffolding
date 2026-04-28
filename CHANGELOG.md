@@ -7,6 +7,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-04-28
+
+### BREAKING
+- **Removed `install.sh` flow entirely.** Plugin marketplace is now the single
+  install path. Users on `install.sh --target ~/.claude` must migrate (see below).
+- **Removed `__CLAUDE_SCAFFOLDING_*__` template parametrization.** Project name,
+  test commands, Sonar key, schemas dir, and backend example path are no longer
+  parametrized at install time. Defaults (`pytest`, `npm test`, `(project)`,
+  `./.scaffolding/openspec/schemas`, `app/backend/app/feature/`) are baked in;
+  override per-project by editing `CLAUDE.md` after `/init-scaffolding`.
+
+### Removed
+- `install.sh`, `uninstall.sh`, `.scaffolding.env.example`
+- `templates/*.tmpl` files (`CLAUDE.md.tmpl`, `settings.json.tmpl`,
+  `agents/*.tmpl`, `commands/*.tmpl`, `skills/*/SKILL.md.tmpl`)
+- `hooks/post-install.sh` — was never wired into any plugin lifecycle hook;
+  its logic is fully covered by `commands/init-scaffolding.md`
+- `docs/parametrization.md`, `docs/installation.md` — described the removed flow
+- CI: `install-idempotency` job, `placeholder-sanity` job, `install.sh`/`uninstall.sh`
+  shellcheck and bash-syntax steps, install.sh release assets
+
+### Changed
+- `commands/init-scaffolding.md`: removed the trailing reference to `install.sh`
+  for "full parametrization" — that flow no longer exists
+- `docs/adopting-in-legacy-repo.md`: rewritten in English for plugin flow
+- `README.md`: collapsed the two-flow install matrix into a single linear
+  install procedure; removed Option B section, parametrization section,
+  and `install.sh --refresh` references
+
+### Migration
+
+Users who previously ran `install.sh --target ~/.claude`:
+
+```bash
+# Cleanup install.sh-rendered files:
+rm -rf ~/.claude/{agents,skills,commands,hooks,templates,validators,output-styles,workflows}
+rm -f  ~/.claude/CLAUDE.md ~/.claude/settings.json ~/.claude-scaffolding.env
+
+# Then in Claude Code:
+#   /plugin marketplace add komluk/scaffolding
+#   /plugin install scaffolding@komluk-scaffolding
+#   /reload-plugins
+#   /init-scaffolding   (run from each project root)
+```
+
+`~/.claude/settings.local.json` is not touched by either flow and stays as-is.
+
 ## [1.7.1] - 2026-04-22
 
 ### Fixed
