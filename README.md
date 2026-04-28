@@ -28,7 +28,7 @@ Code use — no FastAPI backend, no Postgres, no Redis required.
   developer, devops, gitops, optimizer, researcher, reviewer, tech-writer);
   omits `workflow-orchestrator`, which requires the FastAPI + Redis task queue.
 - **Commands:** 15 commands — omits `/workflow` and `/distill` (both backend-dependent);
-  includes `init-claude-scaffolding.md` for bootstrapping `CLAUDE.md` + `settings.json`
+  includes `init-scaffolding.md` for bootstrapping `CLAUDE.md` + `settings.json`
   into a target project.
 - **Skills:** identical 31 skills; skills that reference backend services
   (e.g. `semantic-memory-store`) degrade gracefully when the backend is absent.
@@ -42,7 +42,7 @@ Code use — no FastAPI backend, no Postgres, no Redis required.
 
 | Flow | When to use | Agent namespace |
 |------|-------------|-----------------|
-| `/plugin install claude-scaffolding@komluk-scaffolding` | Most users, zero-config, native Claude Code marketplace | `claude-scaffolding:developer` (prefixed) |
+| `/plugin install scaffolding@komluk-scaffolding` | Most users, zero-config, native Claude Code marketplace | `scaffolding:developer` (prefixed) |
 | `./install.sh --target /path/to/repo` | You want files copied into a repo tree, custom config via `~/.claude-scaffolding.env` | `developer` (bare — `install.sh` strips the prefix automatically) |
 
 Additional guidance:
@@ -58,7 +58,7 @@ Additional guidance:
 
 ### Option A — Claude Code plugin (recommended for quick start)
 
-**Requirement:** `komluk/claude-scaffolding` is a private repository, so the
+**Requirement:** `komluk/scaffolding` is a private repository, so the
 Claude Code CLI must be authenticated to a GitHub account with access to the
 repo. Before first use, run:
 
@@ -70,19 +70,19 @@ gh auth login
 **Post-install steps (ALL required):**
 
 ```
-1. /plugin marketplace add komluk/claude-scaffolding
-2. /plugin install claude-scaffolding@komluk-scaffolding
+1. /plugin marketplace add komluk/scaffolding
+2. /plugin install scaffolding@komluk-scaffolding
 3. /reload-plugins                       ← REQUIRED: Claude Code does not hot-reload the agent registry
-4. (optional) /init-claude-scaffolding   ← see "Do you need /init-claude-scaffolding?" below
-5. Task(subagent_type="claude-scaffolding:developer", prompt="...")
+4. (optional) /init-scaffolding          ← see "Do you need /init-scaffolding?" below
+5. Task(subagent_type="scaffolding:developer", prompt="...")
 ```
 
 > **Without `/reload-plugins`** the `subagent_type` registry is not refreshed
-> after installing the plugin — `Task(subagent_type="claude-scaffolding:developer")`
+> after installing the plugin — `Task(subagent_type="scaffolding:developer")`
 > will return `Agent type not found`. Restarting the entire `claude` session
 > works as an alternative to `/reload-plugins`.
 
-The plugin lands in `~/.claude/plugins/cache/komluk-scaffolding/claude-scaffolding/<version>/`.
+The plugin lands in `~/.claude/plugins/marketplaces/komluk-scaffolding/`.
 Parameters are baked in as sensible defaults (`pytest`, `npm test`, `./backend`, etc.).
 If you need custom values, use Option B.
 
@@ -92,13 +92,13 @@ If you need custom values, use Option B.
 
 ```bash
 # 1. Clone straight into ~/.claude/ (user-level)
-git clone https://github.com/komluk/claude-scaffolding ~/.claude
+git clone https://github.com/komluk/scaffolding ~/.claude
 cd ~/.claude
 ./install.sh
 
 # OR: clone elsewhere and render into a project-level .claude/
-git clone https://github.com/komluk/claude-scaffolding ~/src/claude-scaffolding
-cd ~/src/claude-scaffolding
+git clone https://github.com/komluk/scaffolding ~/src/scaffolding
+cd ~/src/scaffolding
 ./install.sh --target /path/to/your/project/.claude
 ```
 
@@ -122,7 +122,7 @@ extra steps needed — agents are immediately available as bare names (e.g.
 
 ---
 
-### Do you need `/init-claude-scaffolding`? (Option A only)
+### Do you need `/init-scaffolding`? (Option A only)
 
 This command copies `CLAUDE.md` and `settings.json` into the project's `$CWD`
 (without overwriting). It applies only to the plugin flow — `install.sh` does
@@ -139,7 +139,7 @@ this automatically.
 
 - **Hook-based** (default after install + reload): the protocol lives in
   `SessionStart` hook output — ephemeral, per-session, requires the active plugin.
-- **Init-based** (after `/init-claude-scaffolding`): `CLAUDE.md` is written to
+- **Init-based** (after `/init-scaffolding`): `CLAUDE.md` is written to
   `$CWD` — persistent, versioned in git, works even without the plugin.
 
 ---
@@ -148,9 +148,9 @@ this automatically.
 
 **`Agent type 'developer' not found`**
 - You forgot to run `/reload-plugins` after install, OR
-- You used the bare name `developer` in the plugin flow — use `claude-scaffolding:developer` instead.
+- You used the bare name `developer` in the plugin flow — use `scaffolding:developer` instead.
 
-> The `claude-scaffolding:` prefix applies only to agents installed via the
+> The `scaffolding:` prefix applies only to agents installed via the
 > Claude Code marketplace (plugin runtime). For agents defined locally in
 > `.claude/agents/` (the `install.sh --target` flow), use bare names without
 > the prefix.
@@ -180,7 +180,7 @@ claude-scaffolding/
 ├── skills/         31 skills (api-design, error-handling, pattern-recognition,
 │                    spec-*, mui-styling, python-patterns, testing-strategy, ...)
 ├── commands/       15 slash commands: 5 top-level (context, execute-prp,
-│                    generate-prp, init-openspec, init-claude-scaffolding) + 10 in `commands/specs/`
+│                    generate-prp, init-openspec, init-scaffolding) + 10 in `commands/specs/`
 │                    (apply, archive, bulk-archive, continue, explore, ff,
 │                    new, onboard, sync, verify) — namespaced OpenSpec commands
 ├── hooks/          7 safety hooks (block-destructive-rm,

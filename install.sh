@@ -200,7 +200,7 @@ fi
 # Phase B model (Strategy C): source files in `skills/`, `agents/`, `commands/`,
 # `settings.json`, `CLAUDE.md` are pre-rendered with sensible defaults (pytest,
 # npm test, (project), ./backend, ./schemas, empty sonar key) so that the
-# plugin install flow (`/plugin install claude-scaffolding@komluk-scaffolding`) is
+# plugin install flow (`/plugin install scaffolding@komluk-scaffolding`) is
 # zero-config. For the Phase A install.sh flow we still want full
 # parametrization, so the canonical placeholder form is kept in
 # `templates/<rel>.tmpl` and rendered over the pre-rendered copies in --target.
