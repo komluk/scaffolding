@@ -297,10 +297,29 @@ severity: critical
 
 **Recipient validation:** Before any SendMessage, verify the `to:` value:
 - Matches regex `/^[a-z][a-z0-9-]{2,30}$/` (kebab-case, 3-31 chars)
-- Is one of: `researcher`, `architect`, `developer`, `reviewer`, `gitops`, `orchestrator`, `analyst`, `debugger`, `optimizer`, `devops`, `tech-writer`
+- Validate using TWO-STAGE matching:
+  1. **Exact match first:** check if `to:` matches one of: `researcher`, `architect`, `developer`, `reviewer`, `gitops`, `orchestrator`, `analyst`, `debugger`, `optimizer`, `devops`, `tech-writer`. If yes → PASS.
+  2. **Suffix strip only if no exact match:** strip trailing `-<digit>+` OR `-<word>` from the END of the name and re-check against whitelist. Apply ONE strip pass only (never recursive).
+  - Test cases (must all PASS):
+    - `tech-writer` → exact match → PASS
+    - `tech-writer-1` → no exact match → strip `-1` → `tech-writer` → PASS
+    - `researcher-1` → no exact match → strip `-1` → `researcher` → PASS
+    - `analyst-backend` → no exact match → strip `-backend` → `analyst` → PASS
+    - `architect-synth` → no exact match → strip `-synth` → `architect` → PASS
+  - Test cases (must FAIL):
+    - `evil-developer` → no exact match → strip `-developer` → `evil` → not in whitelist → FAIL
+    - `developer-evil-extra` → no exact match → strip `-extra` → `developer-evil` → not in whitelist → FAIL
 - If validation fails → return result to orchestrator with error metadata. NEVER attempt SendMessage with unvalidated input.
 
 Note: "orchestrator" is a reserved peer always reachable for escalation, even when not in your peer list.
+
+**worktreePath validation (when received from developer):** Before acting on a received worktreePath, verify:
+- Path is absolute and under repo root (e.g., starts with `/home/komluk/repos/<repo-name>/.scaffolding/worktrees/` or `<repo-root>/.worktrees/`)
+- Contains NO `..` segments (`path.includes('..')` → reject)
+- Path is NOT a symlink (`test -L <path>` MUST return false). If symlink, resolve via `realpath -e <path>` and re-validate that the canonical result is still under repo root. Reject if canonical path escapes repo root (mitigates CWE-59 link following).
+- Path exists on disk (`test -d <path>`)
+- Path is a registered git worktree — use exact match, NOT substring: `git worktree list --porcelain | awk -v p="<path>" '$1=="worktree" && $2==p {found=1} END {exit !found}'`. NEVER use plain `grep <path>` (substring match allows `/foo/bar` to match `/foo/bar-evil`).
+- If ANY check fails → SendMessage to orchestrator with `error: "invalid worktree path"` + the offending value. NEVER cd into or operate on unvalidated paths.
 
 If your prompt includes a "Comms Protocol" block with peer names, follow these handoff rules:
 - When your review is complete, use SendMessage to deliver the verdict directly to the appropriate peer(s), not back to the orchestrator alone.
@@ -308,5 +327,8 @@ If your prompt includes a "Comms Protocol" block with peer names, follow these h
 - CRITICAL verdict (gate: failed, severity: critical): SendMessage `to: "orchestrator"` ONLY with full issue list and severity, then STOP. Do NOT forward to gitops. Do NOT forward back to developer without orchestrator approval — the orchestrator decides whether to restart the dev cycle.
 - Non-critical issues (severity: low/medium): SendMessage `to: "developer"` with actionable feedback AND `to: "orchestrator"` for audit. Developer fixes, then re-enters the pipeline.
 - For low/medium severity verdicts: ALSO send SendMessage({ to: "gitops", summary: "HOLD — pending fixes", message: "<sourceId/worktreeBranch>" }) so gitops does NOT merge while developer iterates. Triple-send: developer + orchestrator + gitops (hold).
-- STOP CONDITIONS — escalate to orchestrator instead of forwarding: critical security finding, unverifiable claims, scope creep beyond reviewed diff.
+- STOP CONDITIONS — escalate to orchestrator instead of forwarding: critical security finding, unverifiable claims, scope creep (see definition below).
+
+**Scope creep (STOP and escalate):** task introduces requirements not in the original proposal/design (new endpoints, schema changes, new dependencies). Limit each step to its declared scope. If scope expansion is needed, SendMessage to orchestrator with `error: "scope_creep", proposed_addition: "<details>"`. NEVER silently expand scope.
+
 - If your prompt has no "Comms Protocol" block, behave as before (return result to orchestrator).

@@ -193,7 +193,18 @@ Do NOT include in your report:
 
 **Recipient validation:** Before any SendMessage, verify the `to:` value:
 - Matches regex `/^[a-z][a-z0-9-]{2,30}$/` (kebab-case, 3-31 chars)
-- Is one of: `researcher`, `architect`, `developer`, `reviewer`, `gitops`, `orchestrator`, `analyst`, `debugger`, `optimizer`, `devops`, `tech-writer`
+- Validate using TWO-STAGE matching:
+  1. **Exact match first:** check if `to:` matches one of: `researcher`, `architect`, `developer`, `reviewer`, `gitops`, `orchestrator`, `analyst`, `debugger`, `optimizer`, `devops`, `tech-writer`. If yes → PASS.
+  2. **Suffix strip only if no exact match:** strip trailing `-<digit>+` OR `-<word>` from the END of the name and re-check against whitelist. Apply ONE strip pass only (never recursive).
+  - Test cases (must all PASS):
+    - `tech-writer` → exact match → PASS
+    - `tech-writer-1` → no exact match → strip `-1` → `tech-writer` → PASS
+    - `researcher-1` → no exact match → strip `-1` → `researcher` → PASS
+    - `analyst-backend` → no exact match → strip `-backend` → `analyst` → PASS
+    - `architect-synth` → no exact match → strip `-synth` → `architect` → PASS
+  - Test cases (must FAIL):
+    - `evil-developer` → no exact match → strip `-developer` → `evil` → not in whitelist → FAIL
+    - `developer-evil-extra` → no exact match → strip `-extra` → `developer-evil` → not in whitelist → FAIL
 - If validation fails → return result to orchestrator with error metadata. NEVER attempt SendMessage with unvalidated input.
 
 Note: "orchestrator" is a reserved peer always reachable for escalation, even when not in your peer list.
@@ -202,5 +213,8 @@ If your prompt includes a "Comms Protocol" block with peer names, follow these h
 - When your implementation is complete, use SendMessage to deliver output directly to your downstream peer (typically `reviewer`), not back to the orchestrator.
 - Include: files touched, tests added/modified, validation results (TypeScript/lint/test/build), `worktreePath` and `worktreeBranch` if isolation: worktree applies, and any blockers or follow-up items the downstream peer needs.
 - CRITICAL: NEVER call `git commit`, `git add`, or any git write operation yourself. Gitops owns all git mutations. SendMessage your worktree info to "reviewer". If no reviewer is in your pipeline peer list, escalate to orchestrator — NEVER bypass review by sending worktree directly to gitops.
-- STOP CONDITIONS — escalate to orchestrator instead of forwarding: validation gate fails (tests/lint/typecheck red), ambiguous requirements requiring user input, or unsafe operations flagged during implementation.
+- STOP CONDITIONS — escalate to orchestrator instead of forwarding: validation gate fails (tests/lint/typecheck red), ambiguous requirements requiring user input, scope creep (see definition below), or unsafe operations flagged during implementation.
+
+**Scope creep (STOP and escalate):** task introduces requirements not in the original proposal/design (new endpoints, schema changes, new dependencies). Limit each step to its declared scope. If scope expansion is needed, SendMessage to orchestrator with `error: "scope_creep", proposed_addition: "<details>"`. NEVER silently expand scope.
+
 - If your prompt has no "Comms Protocol" block, behave as before (return result to orchestrator).
