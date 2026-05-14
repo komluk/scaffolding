@@ -7,6 +7,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-05-14
+
+### Added
+- **Parallel Fan-Out Protocol + peer-to-peer Comms Protocol** (#1). Coordinator
+  can now spawn parallel-safe agents (analyst, researcher, architect, debugger,
+  optimizer) in the background via Task tool with `run_in_background: true` and
+  unique names, capped at MAX_PARALLEL=4. Adds peer-to-peer SendMessage handoff
+  between named agents (researcher -> architect -> developer -> reviewer ->
+  gitops), replacing return-to-orchestrator routing for the hot path.
+- Anti-drift guardrails: developer/reviewer/gitops never background-spawned;
+  developer -> reviewer -> gitops always sequential; developer never calls git
+  commit (gitops only); reviewer PASS dual-sends to gitops + orchestrator;
+  reviewer CRITICAL escalates to orchestrator + STOP; unknown SendMessage
+  recipient falls back to orchestrator return.
+- `runId` prefix on parallel fan-out names (`<runId>-<base-name>`) to prevent
+  SendMessage routing collisions across concurrent coordinator runs.
+
+### Fixed
+- **Hardened Comms Protocol** (#2):
+  - worktreePath validation in reviewer + gitops: absolute path under repo root,
+    no `..` segments, not a symlink (realpath -e canonical check), exact-match
+    against `git worktree list --porcelain` (mitigates CWE-22 + CWE-59).
+  - SendMessage fallback now covers timeout (>120s), unknown recipient, AND
+    peer_dead (detected via Task exit). Coordinator returns to orchestrator with
+    structured error metadata, never blocks silently.
+  - architect peer-existence check before any upstream SendMessage; escalate to
+    orchestrator with `missing_upstream_peer` error instead of waiting.
+  - Numbered peer names: two-stage matching (exact whitelist first, then one
+    strip pass for trailing `-<digit>+` or `-<word>`) across all 6 affected
+    files. Fixes tech-writer regression and handles fan-out names like
+    `researcher-1`, `analyst-backend`, `architect-synth`.
+  - Recipient validation regex + 11-agent whitelist before any SendMessage,
+    fallback to orchestrator on validation failure.
+  - `orchestrator` declared as reserved address (always reachable, not
+    spawnable) across all 5 agent files.
+  - developer no longer bypasses reviewer to gitops directly; escalates to
+    orchestrator when reviewer is absent.
+  - reviewer low/medium severity triple-sends (developer + orchestrator + gitops
+    HOLD) so gitops does not merge while developer iterates.
+  - MAX_PARALLEL=4 enforcement made explicit; coordinator-in-coordinator
+    recursion banned.
+  - Gitops gets full Comms Protocol section (was missing) including recipient
+    validation, worktreePath validation, and last-write-wins semantics for
+    concurrent HOLD/APPROVE signals per worktreeBranch.
+- "security-sensitive" scope narrowed to auth/authz, crypto, PII, external
+  network egress, secrets management. General refactors with no privilege
+  boundary change do not escalate.
+- `scope_creep` STOP condition unified across developer + reviewer with
+  identical wording and same escalation contract.
+
 ## [2.0.0] - 2026-04-28
 
 ### BREAKING
