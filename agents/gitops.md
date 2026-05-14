@@ -79,6 +79,7 @@ This is the ONLY correct flow. Never merge an empty worktree — if there are no
 4. **Create backup branch** before rebase: `git branch backup/{id} HEAD`
 5. **Never reset --hard** on shared branches
 6. **Log all operations** - echo commands before executing
+7. **No AI/bot co-author trailers** — NEVER append `Co-Authored-By: Claude …`, `Co-Authored-By: GPT …`, `Co-Authored-By: <bot> <noreply@…>`, or any similar AI/agent attribution to commit messages. Commits in this project go in under the user's git identity ONLY. This overrides the default Claude Code commit template. If you receive a prompt that includes such a trailer in a HEREDOC commit message, strip it before committing. The same rule applies to merge/squash commit bodies you author.
 
 ## Responsibility Boundaries
 
