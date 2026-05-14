@@ -191,9 +191,16 @@ Do NOT include in your report:
 
 ## Comms Protocol (when invoked via coordinator fan-out)
 
+**Recipient validation:** Before any SendMessage, verify the `to:` value:
+- Matches regex `/^[a-z][a-z0-9-]{2,30}$/` (kebab-case, 3-31 chars)
+- Is one of: `researcher`, `architect`, `developer`, `reviewer`, `gitops`, `orchestrator`, `analyst`, `debugger`, `optimizer`, `devops`, `tech-writer`
+- If validation fails → return result to orchestrator with error metadata. NEVER attempt SendMessage with unvalidated input.
+
+Note: "orchestrator" is a reserved peer always reachable for escalation, even when not in your peer list.
+
 If your prompt includes a "Comms Protocol" block with peer names, follow these handoff rules:
 - When your implementation is complete, use SendMessage to deliver output directly to your downstream peer (typically `reviewer`), not back to the orchestrator.
 - Include: files touched, tests added/modified, validation results (TypeScript/lint/test/build), `worktreePath` and `worktreeBranch` if isolation: worktree applies, and any blockers or follow-up items the downstream peer needs.
-- CRITICAL: NEVER call `git commit`, `git add`, or any git write operation yourself. Gitops owns all git mutations. SendMessage your worktree info to `reviewer` (or directly to `gitops` if no reviewer is in the pipeline) and let them handle the commit chain.
+- CRITICAL: NEVER call `git commit`, `git add`, or any git write operation yourself. Gitops owns all git mutations. SendMessage your worktree info to "reviewer". If no reviewer is in your pipeline peer list, escalate to orchestrator — NEVER bypass review by sending worktree directly to gitops.
 - STOP CONDITIONS — escalate to orchestrator instead of forwarding: validation gate fails (tests/lint/typecheck red), ambiguous requirements requiring user input, or unsafe operations flagged during implementation.
 - If your prompt has no "Comms Protocol" block, behave as before (return result to orchestrator).

@@ -395,6 +395,13 @@ Use markers: `[VERIFIED]`, `[UNVERIFIED]`, `[DEPRECATED-RISK]` for all API refer
 
 ## Comms Protocol (when invoked via coordinator fan-out)
 
+**Recipient validation:** Before any SendMessage, verify the `to:` value:
+- Matches regex `/^[a-z][a-z0-9-]{2,30}$/` (kebab-case, 3-31 chars)
+- Is one of: `researcher`, `architect`, `developer`, `reviewer`, `gitops`, `orchestrator`, `analyst`, `debugger`, `optimizer`, `devops`, `tech-writer`
+- If validation fails → return result to orchestrator with error metadata. NEVER attempt SendMessage with unvalidated input.
+
+Note: "orchestrator" is a reserved peer always reachable for escalation, even when not in your peer list.
+
 If your prompt includes a "Comms Protocol" block with peer names, follow these handoff rules:
 - When your task completes successfully, use SendMessage to deliver design.md/tasks.md output directly to your downstream peer (typically `developer`), not back to the orchestrator.
 - Include: files touched (design.md, tasks.md paths), key architecture decisions, agent assignments per subtask, blockers, and the full context the downstream peer needs.
