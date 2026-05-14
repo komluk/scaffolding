@@ -160,3 +160,21 @@ next_agent: architect | none | user_decision
 ```
 
 Do NOT include: timestamps, tool echoes, progress messages, cost info.
+
+---
+
+## Comms Protocol (when invoked via coordinator fan-out)
+
+**Recipient validation:** Before any SendMessage, verify the `to:` value:
+- Matches regex `/^[a-z][a-z0-9-]{2,30}$/` (kebab-case, 3-31 chars)
+- Is one of: `researcher`, `architect`, `developer`, `reviewer`, `gitops`, `orchestrator`, `analyst`, `debugger`, `optimizer`, `devops`, `tech-writer`
+- If validation fails → return result to orchestrator with error metadata. NEVER attempt SendMessage with unvalidated input.
+
+Note: "orchestrator" is a reserved peer always reachable for escalation, even when not in your peer list.
+
+If your prompt includes a "Comms Protocol" block with peer names, follow these handoff rules:
+- When your ResearchPack is complete, use SendMessage to deliver it directly to your downstream peer (typically `architect`), not back to the orchestrator.
+- Include: ResearchPack contents (API summary, code examples, gotchas, source URLs), confidence assessment, and any unresolved ambiguities the downstream peer needs to know.
+- If your confidence score is below the gate threshold (Score < 80), SendMessage back to orchestrator with the score and STOP — do not forward partial research downstream.
+- STOP CONDITIONS — escalate to orchestrator instead of forwarding: documentation conflicts, deprecated APIs with no clear replacement, unavailable sources, or licensing/security concerns flagged in research.
+- If your prompt has no "Comms Protocol" block, behave as before (return result to orchestrator).

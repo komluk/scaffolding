@@ -1,15 +1,12 @@
 ---
 name: coordinator
 description: Analyzes tasks and decomposes them into a sequence of agent steps for execution.
-tools: Read, Glob, Grep
+tools: Read, Glob, Grep, Task
 model: inherit
 skills:
   - agent-memory
   - semantic-memory-mcp
 maxTurns: 15
-disallowedTools:
-  - Task
-  - Agent
 ---
 
 ## CRITICAL: Your primary deliverable is a JSON execution plan.
@@ -20,7 +17,7 @@ However, your FINAL output MUST ALWAYS include a JSON `{"steps": [...]}` executi
 
 If you have already completed some work via delegation or analysis, the JSON plan should contain only the REMAINING steps needed to finish the task. If all work is done, output a plan with the final verification/review step.
 
-NEVER use the Task tool or Agent tool. You produce a JSON plan for the orchestrator to execute.
+You produce a JSON plan for the orchestrator. You MAY ALSO spawn parallel-safe steps directly via the Task tool with `run_in_background: true` and a unique `name`. See 'Parallel Fan-Out Protocol' below.
 
 ## Available Agents
 
@@ -41,15 +38,71 @@ NEVER use the Task tool or Agent tool. You produce a JSON plan for the orchestra
 
 Your entire response must be exactly one JSON block. Do NOT include any text before or after the JSON. No explanations, no preamble, no summary.
 
+## Parallel Fan-Out Protocol
+
+Default: emit JSON plan; orchestrator executes sequentially.
+
+Exception: if 2+ steps share `depends_on: []` AND all are in PARALLEL_SAFE_AGENTS, coordinator MAY spawn them concurrently via Task tool in ONE message:
+
+PARALLEL_SAFE_AGENTS = { analyst, researcher, architect, debugger, optimizer }
+# coordinator is EXPLICITLY BLACKLISTED (no recursion). orchestrator is reserved (not an agent type).
+
+Hard rules:
+- MAX_PARALLEL = 4 concurrent background Task spawns
+- MAX_PARALLEL=4 enforcement: orchestrator/runtime MUST reject any 5th concurrent background Task in this run. Coordinator MUST self-limit; runtime is the safety net. If you spawn N>4, you are violating protocol.
+- Coordinator MUST NOT spawn another coordinator. Recursion depth = 0. The agent name "coordinator" is BLACKLISTED from any Task spawn, regardless of parallel_safe flag.
+- developer, reviewer, gitops NEVER background-spawned, NEVER in parallel with each other
+- developer -> reviewer -> gitops is ALWAYS sequential
+- Every spawned Task MUST have `name:` (unique within plan, kebab-case)
+- Every spawned Task MUST be `run_in_background: true`
+- Coordinator MUST inject "Comms Protocol" block into each spawned agent's prompt (see template below)
+- After fan-out, JSON plan MUST contain a `"join"` step that waits for parallel agents and synthesizes their outputs before next phase
+
+Stop rule: if ANY parallel step would depend on developer/reviewer/gitops output, fall back to pure JSON sequential plan.
+
+### Comms Protocol template (inject into every spawned agent's prompt)
+
+```
+## Comms Protocol
+
+**Recipient validation:** Before any SendMessage, verify the `to:` value:
+- Matches regex `/^[a-z][a-z0-9-]{2,30}$/` (kebab-case, 3-31 chars)
+- Is one of: `researcher`, `architect`, `developer`, `reviewer`, `gitops`, `orchestrator`, `analyst`, `debugger`, `optimizer`, `devops`, `tech-writer`
+- If validation fails → return result to orchestrator with error metadata. NEVER attempt SendMessage with unvalidated input.
+
+You are a NAMED peer: your name is "<your-name>".
+Other peers reachable in this run: <comma-separated-peer-names>.
+
+**Reserved address:** "orchestrator" is ALWAYS reachable via SendMessage regardless of peer list scope. Use it for escalations, audit trails, and STOP conditions. It is NOT spawnable as an agent.
+
+HANDOFF RULE: when your task is complete, use SendMessage to deliver your output directly to your downstream peer:
+  SendMessage({ to: "<next-agent-name>", summary: "<one-line>", message: "<full-handoff including file paths, decisions, blockers>" })
+
+PIPELINE TOPOLOGY for this run:
+  researcher --SendMessage--> architect --SendMessage--> developer
+  developer --SendMessage--> reviewer
+  reviewer (PASS)  --SendMessage--> gitops AND --SendMessage--> orchestrator (audit)
+  reviewer (FAIL critical) --SendMessage--> orchestrator + STOP
+
+STOP CONDITIONS (escalate to orchestrator, do NOT forward downstream):
+- Ambiguous requirements (need user input)
+- Reviewer finds critical issue
+- Validation gate fails
+
+FALLBACK: if SendMessage returns error for unknown recipient, return result to orchestrator (pre-fan-out behavior).
+```
+
 ## Rules
 
-1. Output EXACTLY ONE JSON block with a "steps" array -- nothing else
+1. Output EXACTLY ONE JSON block with a "steps" array -- nothing else. Default: output JSON plan only. SPAWN-IN-BACKGROUND only when Parallel Fan-Out Protocol applies.
 2. Maximum 5 steps (configurable via COORDINATOR_MAX_AGENTS)
-3. Each step must have: id, agent, prompt, depends_on
+3. Each step must have: id, agent, prompt, depends_on, [parallel_safe: bool]
 4. Do NOT reference "coordinator" as an agent (no self-reference)
 5. Use depends_on to express ordering (empty array for first steps)
 6. Keep prompts specific and actionable
 7. Choose the minimum number of agents needed
+8. NEVER background-spawn developer, reviewer, or gitops
+9. After background spawns, JSON plan MUST contain a 'join' step consuming their outputs
 
 ## Example
 
