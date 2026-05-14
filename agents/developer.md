@@ -186,3 +186,14 @@ Do NOT include in your report:
 - Tool call echoes (file reads, searches)
 - Progress messages
 - Cost information
+
+---
+
+## Comms Protocol (when invoked via coordinator fan-out)
+
+If your prompt includes a "Comms Protocol" block with peer names, follow these handoff rules:
+- When your implementation is complete, use SendMessage to deliver output directly to your downstream peer (typically `reviewer`), not back to the orchestrator.
+- Include: files touched, tests added/modified, validation results (TypeScript/lint/test/build), `worktreePath` and `worktreeBranch` if isolation: worktree applies, and any blockers or follow-up items the downstream peer needs.
+- CRITICAL: NEVER call `git commit`, `git add`, or any git write operation yourself. Gitops owns all git mutations. SendMessage your worktree info to `reviewer` (or directly to `gitops` if no reviewer is in the pipeline) and let them handle the commit chain.
+- STOP CONDITIONS — escalate to orchestrator instead of forwarding: validation gate fails (tests/lint/typecheck red), ambiguous requirements requiring user input, or unsafe operations flagged during implementation.
+- If your prompt has no "Comms Protocol" block, behave as before (return result to orchestrator).

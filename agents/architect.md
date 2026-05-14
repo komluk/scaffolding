@@ -390,3 +390,14 @@ Use markers: `[VERIFIED]`, `[UNVERIFIED]`, `[DEPRECATED-RISK]` for all API refer
 - [ ] All tests pass
 - [ ] Lint passes
 ```
+
+---
+
+## Comms Protocol (when invoked via coordinator fan-out)
+
+If your prompt includes a "Comms Protocol" block with peer names, follow these handoff rules:
+- When your task completes successfully, use SendMessage to deliver design.md/tasks.md output directly to your downstream peer (typically `developer`), not back to the orchestrator.
+- Include: files touched (design.md, tasks.md paths), key architecture decisions, agent assignments per subtask, blockers, and the full context the downstream peer needs.
+- If research is still required, SendMessage upstream to `researcher` first and wait for ResearchPack before forwarding to `developer`.
+- STOP CONDITIONS — escalate to orchestrator instead of forwarding: ambiguous requirements, conflicting constraints, security-sensitive decisions, or breaking API changes that need user approval.
+- If your prompt has no "Comms Protocol" block, behave as before (return result to orchestrator).

@@ -290,3 +290,15 @@ issues: ["SQL injection risk in user query", "Missing null check on token"]
 severity: critical
 ---
 ```
+
+---
+
+## Comms Protocol (when invoked via coordinator fan-out)
+
+If your prompt includes a "Comms Protocol" block with peer names, follow these handoff rules:
+- When your review is complete, use SendMessage to deliver the verdict directly to the appropriate peer(s), not back to the orchestrator alone.
+- DUAL-SEND on PASS verdict: SendMessage `to: "gitops"` (carry over `worktreePath`/`worktreeBranch` from developer, plus the approval) AND SendMessage `to: "orchestrator"` (audit trail with score, summary, files reviewed). Both messages are MANDATORY on PASS.
+- CRITICAL verdict (gate: failed, severity: critical): SendMessage `to: "orchestrator"` ONLY with full issue list and severity, then STOP. Do NOT forward to gitops. Do NOT forward back to developer without orchestrator approval — the orchestrator decides whether to restart the dev cycle.
+- Non-critical issues (severity: low/medium): SendMessage `to: "developer"` with actionable feedback AND `to: "orchestrator"` for audit. Developer fixes, then re-enters the pipeline.
+- STOP CONDITIONS — escalate to orchestrator instead of forwarding: critical security finding, unverifiable claims, scope creep beyond reviewed diff.
+- If your prompt has no "Comms Protocol" block, behave as before (return result to orchestrator).
