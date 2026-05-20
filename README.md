@@ -12,6 +12,16 @@ only what travels as markdown — agent knowledge, skills, and configuration.
 Anything that needs a backend, database, or long-running process stays in the
 origin repo and is documented under [docs/locked-to-project/](docs/locked-to-project/README.md).
 
+## Why use this
+
+<!-- TODO: add demo.gif showing an agent workflow -->
+
+- **Spec-driven workflows** — OpenSpec-style specs keep work grounded and reproducible.
+- **11 specialized agents** — analyst, architect, developer, reviewer, debugger, and more, each with a focused role.
+- **Parallel multi-agent orchestration** — fan out work across agents and coordinate results.
+- **Opinionated guardrail hooks** — 8 safety and lifecycle hooks block destructive commands and enforce conventions.
+- **Zero backend required** — pure markdown and Claude Code runtime; no database, server, or process to run.
+
 ## Differences from scaffolding.tool
 
 This plugin is a distilled mirror of `scaffolding.tool` for standalone Claude
@@ -31,24 +41,15 @@ Code use — no FastAPI backend, no Postgres, no Redis required.
 
 ## Install
 
-**Requirement:** `komluk/scaffolding` is a private repository, so the Claude Code
-CLI must be authenticated to a GitHub account with access to it. Before first
-use, run:
-
-```bash
-gh auth login
-# Choose: GitHub.com, HTTPS, login with web browser, scope: repo
-```
-
-**Steps:**
-
 ```
 1. /plugin marketplace add komluk/scaffolding
 2. /plugin install scaffolding@komluk-scaffolding
 3. /reload-plugins                       ← REQUIRED: Claude Code does not hot-reload the agent registry
-4. /init-scaffolding                     ← run once per project to create .scaffolding/ + copy CLAUDE.md
-5. Task(subagent_type="scaffolding:developer", prompt="...")
 ```
+
+Optionally, run `/init-scaffolding` once per project to create `.scaffolding/`
+and copy `CLAUDE.md` into the repo (see [Per-project setup](#per-project-setup-init-scaffolding)).
+Then start delegating: `Task(subagent_type="scaffolding:developer", prompt="...")`.
 
 > **Without `/reload-plugins`** the `subagent_type` registry is not refreshed
 > after install — `Task(subagent_type="scaffolding:developer")` will return
