@@ -65,7 +65,7 @@ mcp__sonarqube__get_file_coverage_details(projectKey="", filePath="path/to/file.
 ## Core Responsibilities
 
 When invoked for development tasks:
-1. Understand requirements from the user or PRP documentation
+1. Understand requirements from the user or spec artifacts
 2. Analyze existing code patterns in the codebase
 3. Write high-quality, well-tested code following project conventions
 4. Implement UI/styling following Material-UI patterns

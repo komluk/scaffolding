@@ -1,6 +1,6 @@
 # claude-scaffolding
 
-Portable Claude Code configuration: 11 agents, 31 skills, 15 commands, 8 hooks,
+Portable Claude Code configuration: 11 agents, 31 skills, 13 commands, 8 hooks,
 spec-driven workflows. Installs as a Claude Code plugin from a private GitHub
 marketplace.
 
@@ -30,7 +30,7 @@ Code use — no FastAPI backend, no Postgres, no Redis required.
 - **Agents:** same 11 canonical agents (analyst, architect, coordinator, debugger,
   developer, devops, gitops, optimizer, researcher, reviewer, tech-writer);
   omits `workflow-orchestrator`, which requires the FastAPI + Redis task queue.
-- **Commands:** 15 commands — omits `/workflow` and `/distill` (both backend-dependent);
+- **Commands:** 13 commands — omits `/workflow` and `/distill` (both backend-dependent);
   includes `/init-scaffolding` for bootstrapping `CLAUDE.md` + `settings.json`
   + `.scaffolding/` into a project.
 - **Skills:** identical 31 skills; skills that reference backend services
@@ -100,8 +100,8 @@ claude-scaffolding/
 │                    researcher, reviewer, tech-writer)
 ├── skills/         31 skills (api-design, error-handling, pattern-recognition,
 │                    spec-*, mui-styling, python-patterns, testing-strategy, ...)
-├── commands/       15 slash commands: 5 top-level (context, execute-prp,
-│                    generate-prp, init-openspec, init-scaffolding) + 10 in `commands/specs/`
+├── commands/       13 slash commands: 3 top-level (context, init-openspec,
+│                    init-scaffolding) + 10 in `commands/specs/`
 │                    (apply, archive, bulk-archive, continue, explore, ff,
 │                    new, onboard, sync, verify) — namespaced OpenSpec commands
 ├── hooks/          8 safety + lifecycle hooks (block-destructive-rm,
@@ -109,7 +109,7 @@ claude-scaffolding/
 │                    session-start-protocol, ...)
 ├── templates/      Shared agent reference docs (output-frontmatter schema,
 │                    agents/skills overview, responsibility matrix)
-├── validators/     Markdown validators (output-frontmatter, prp-document)
+├── validators/     Validation scripts (circuit-breaker, validate-agent-output)
 ├── output-styles/  output-frontmatter definition
 ├── workflows/      YAML workflow and coordinate definitions
 ├── CLAUDE.md       Main project prompt

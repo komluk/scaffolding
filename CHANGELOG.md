@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+- **Deprecated `/generate-prp` and `/execute-prp` commands.** The PRP (Product
+  Requirements Prompt) workflow has been superseded by the OpenSpec specs
+  workflow (`commands/specs/`). The `prp-document` validator is removed
+  alongside the commands.
+
 ## [2.1.0] - 2026-05-14
 
 ### Added
