@@ -3,8 +3,7 @@
 > **For the maintainer:** These are *drafts*. Nothing here is auto-posted. Post each
 > one yourself, and review each community's self-promotion rules first (Reddit
 > subreddits and the Anthropic Discord both restrict promo posts — space them out and
-> engage with replies). Attach `demo.gif` where the platform supports media (Reddit,
-> X, Discord all do). Tweak tone/wording so it reads as your own voice.
+> engage with replies). Tweak tone/wording so it reads as your own voice.
 
 ---
 
@@ -63,7 +62,7 @@ Install:
   /reload-plugins
 
 Repo: https://github.com/komluk/scaffolding
-Demo GIF attached 👇 — feedback very welcome!
+Feedback very welcome!
 ```
 
 ---
@@ -112,5 +111,3 @@ rules very welcome.
 
 github.com/komluk/scaffolding
 ```
-
-Attach `demo.gif` to tweet 1/ (or the single post).

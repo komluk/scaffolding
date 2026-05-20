@@ -13,8 +13,6 @@ long-running process required.
 
 ## Why use this
 
-<!-- TODO: add demo.gif showing an agent workflow -->
-
 - **Spec-driven workflows** — OpenSpec-style specs keep work grounded and reproducible.
 - **11 specialized agents** — analyst, architect, developer, reviewer, debugger, and more, each with a focused role.
 - **Parallel multi-agent orchestration** — fan out work across agents and coordinate results.
