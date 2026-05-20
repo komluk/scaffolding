@@ -1,16 +1,15 @@
 # claude-scaffolding
 
 Portable Claude Code configuration: 11 agents, 31 skills, 13 commands, 8 hooks,
-spec-driven workflows. Installs as a Claude Code plugin from a private GitHub
-marketplace.
+spec-driven workflows. Installs as a Claude Code plugin.
 
 ## Overview
 
-`claude-scaffolding` is a self-contained `~/.claude/` carved out of the
-[`scaffolding.tool`](https://github.com/komluk/scaffolding.tool) repo. It ships
-only what travels as markdown — agent knowledge, skills, and configuration.
-Anything that needs a backend, database, or long-running process stays in the
-origin repo and is documented under [docs/locked-to-project/](docs/locked-to-project/README.md).
+`claude-scaffolding` is a portable, markdown-only Claude Code configuration. It
+provides multi-agent orchestration, a library of reusable skills, guardrail
+hooks, and spec-driven workflows — everything ships as plain markdown and runs
+entirely on the Claude Code runtime, with no backend, database, or
+long-running process required.
 
 ## Why use this
 
@@ -21,23 +20,6 @@ origin repo and is documented under [docs/locked-to-project/](docs/locked-to-pro
 - **Parallel multi-agent orchestration** — fan out work across agents and coordinate results.
 - **Opinionated guardrail hooks** — 8 safety and lifecycle hooks block destructive commands and enforce conventions.
 - **Zero backend required** — pure markdown and Claude Code runtime; no database, server, or process to run.
-
-## Differences from scaffolding.tool
-
-This plugin is a distilled mirror of `scaffolding.tool` for standalone Claude
-Code use — no FastAPI backend, no Postgres, no Redis required.
-
-- **Agents:** same 11 canonical agents (analyst, architect, coordinator, debugger,
-  developer, devops, gitops, optimizer, researcher, reviewer, tech-writer);
-  omits `workflow-orchestrator`, which requires the FastAPI + Redis task queue.
-- **Commands:** 13 commands — omits `/workflow` and `/distill` (both backend-dependent);
-  includes `/init-scaffolding` for bootstrapping `CLAUDE.md` + `settings.json`
-  + `.scaffolding/` into a project.
-- **Skills:** identical 31 skills; skills that reference backend services
-  (e.g. `semantic-memory-store`) degrade gracefully when the backend is absent.
-- **Hooks:** standalone versions that run entirely from the Claude Code runtime;
-  `scaffolding.tool` hooks additionally integrate with the backend task queue,
-  step-event pipeline, and SonarQube CLI.
 
 ## Install
 
@@ -116,22 +98,14 @@ claude-scaffolding/
 └── settings.json   Hooks + statusline + permissions
 ```
 
-## What's not here (Tier C)
+## Optional backend-dependent features
 
-Components that depend on the `scaffolding.tool` runtime are NOT here — they
-are documented in [docs/locked-to-project/](docs/locked-to-project/README.md).
-
-| Component | Why not in claude-scaffolding |
-|-----------|-------------------------------|
-| `semantic-memory` MCP server | Needs Postgres + pgvector + embedding model |
-| `semantic-memory-store` skill | Calls bash into a FastAPI backend |
-| `/workflow` command | Needs FastAPI + Redis + worker |
-| `/distill` command | Needs the distill CLI + DB |
-| `ui-ux-pro-max` scripts/data | Python CLI + CSV database |
-
-Skills that reference these components have defensive fallbacks: if the
-dependencies are unavailable, the agent skips the relevant section rather
-than crashing.
+A few skills have optional features that can use an external backend if one is
+available — for example, `semantic-memory-store` can persist embeddings to a
+vector store, and `ui-ux-pro-max` can draw on a local dataset. When no such
+backend is present, these skills degrade gracefully: the agent skips the
+relevant section rather than crashing, and all core functionality continues to
+work as pure markdown.
 
 ## Updating
 
@@ -147,7 +121,6 @@ and hooks copied in.
 
 - [docs/adopting-in-legacy-repo.md](docs/adopting-in-legacy-repo.md) —
   how to add this to an existing project that already has its own `.claude/`
-- [docs/locked-to-project/](docs/locked-to-project/README.md) — Tier C components
 - [CHANGELOG.md](CHANGELOG.md) — release history
 
 ## Versioning

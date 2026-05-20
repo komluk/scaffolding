@@ -5,7 +5,9 @@ description: "Store knowledge in semantic memory for cross-session vector-simila
 
 # Semantic Memory Store
 
-Store knowledge as vector-embedded entries in the PostgreSQL semantic memory system. Entries are automatically embedded with all-MiniLM-L6-v2 (384 dims) and retrievable via cosine similarity search by any agent in future sessions.
+Store knowledge as vector-embedded entries in an optional semantic memory service. When the service is available, entries are automatically embedded and retrievable via cosine similarity search by any agent in future sessions.
+
+This skill is **optional**. If no semantic memory service is configured, agents should degrade gracefully and rely on the file-based memory described in the `agent-memory` skill.
 
 ## When to Use
 
@@ -19,46 +21,26 @@ Store knowledge as vector-embedded entries in the PostgreSQL semantic memory sys
 
 - Temporary task context (use conversation memory in `.scaffolding/conversations/`)
 - Information already in CLAUDE.md, docs/, or KNOWLEDGE.md
-- Large code snippets (max 2000 chars; use file-based memory instead)
+- Large code snippets (use file-based memory instead)
 - Speculative or unverified conclusions
+
+## Availability Check
+
+Before attempting to store or search, verify a semantic memory backend is reachable:
+
+- If `mcp__semantic-memory__*` MCP tools are available, use those (see the `semantic-memory-mcp` skill).
+- If an optional backend service is configured for the project, use its documented interface.
+- If neither is available, **skip this skill entirely** and use file-based memory from the `agent-memory` skill. Do not block on missing infrastructure.
 
 ## How to Store
 
-Run this Bash command from the backend directory. The script calls the service layer directly, bypassing HTTP auth.
-
-```bash
-cd /opt/platform/scaffolding.tool/app/backend && /opt/platform/scaffolding.tool/app/backend/venv/bin/python3 -c "
-import asyncio
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from core.config import DATABASE_URL
-from semantic_memory.service import store_memory
-
-async def _store():
-    engine = create_async_engine(DATABASE_URL, pool_size=1, max_overflow=0)
-    factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
-    try:
-        async with factory() as db:
-            m = await store_memory(
-                db=db,
-                content='''CONTENT_HERE''',
-                agent_name='AGENT_NAME',
-                content_type='CONTENT_TYPE',
-                tags=['TAG1', 'TAG2'],
-            )
-            await db.commit()
-            print(f'Stored memory {m.id}')
-    finally:
-        await engine.dispose()
-
-asyncio.run(_store())
-"
-```
+When a semantic memory backend is available, store an entry with the following fields. The backend embeds the content and persists it for similarity search.
 
 ### Parameter Reference
 
 | Parameter | Required | Description |
 |-----------|----------|-------------|
-| `content` | Yes | Text to embed and store (max 2000 chars, truncated) |
+| `content` | Yes | Text to embed and store (keep concise; long content may be truncated) |
 | `agent_name` | No | Agent that created this memory (e.g. `developer`, `debugger`) |
 | `content_type` | No | One of: `learning`, `error`, `pattern`, `decision` (default: `learning`) |
 | `tags` | No | List of string tags for filtering |
@@ -79,112 +61,52 @@ asyncio.run(_store())
 
 ### Store a debugging insight
 
-```bash
-cd /opt/platform/scaffolding.tool/app/backend && /opt/platform/scaffolding.tool/app/backend/venv/bin/python3 -c "
-import asyncio
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from core.config import DATABASE_URL
-from semantic_memory.service import store_memory
+Store an entry with:
 
-async def _store():
-    engine = create_async_engine(DATABASE_URL, pool_size=1, max_overflow=0)
-    factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
-    try:
-        async with factory() as db:
-            m = await store_memory(
-                db=db,
-                content='SQLAlchemy async_session_maker bound to one event loop cannot be reused in a worker thread. Create a fresh engine+session per thread to avoid attached-to-different-loop errors.',
-                agent_name='debugger',
-                content_type='error',
-                tags=['sqlalchemy', 'async', 'threading'],
-            )
-            await db.commit()
-            print(f'Stored memory {m.id}')
-    finally:
-        await engine.dispose()
-
-asyncio.run(_store())
-"
-```
+- `content`: "SQLAlchemy async_session_maker bound to one event loop cannot be reused in a worker thread. Create a fresh engine+session per thread to avoid attached-to-different-loop errors."
+- `agent_name`: `debugger`
+- `content_type`: `error`
+- `tags`: `["sqlalchemy", "async", "threading"]`
 
 ### Store an architectural decision
 
-```bash
-cd /opt/platform/scaffolding.tool/app/backend && /opt/platform/scaffolding.tool/app/backend/venv/bin/python3 -c "
-import asyncio
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from core.config import DATABASE_URL
-from semantic_memory.service import store_memory
+Store an entry with:
 
-async def _store():
-    engine = create_async_engine(DATABASE_URL, pool_size=1, max_overflow=0)
-    factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
-    try:
-        async with factory() as db:
-            m = await store_memory(
-                db=db,
-                content='Semantic memory uses local all-MiniLM-L6-v2 model (384 dims) instead of OpenAI API. Zero cost, ~5ms per embedding, runs on CPU. Trade-off: lower quality than text-embedding-3-small but no API dependency.',
-                agent_name='architect',
-                content_type='decision',
-                tags=['semantic-memory', 'embedding', 'architecture'],
-            )
-            await db.commit()
-            print(f'Stored memory {m.id}')
-    finally:
-        await engine.dispose()
-
-asyncio.run(_store())
-"
-```
+- `content`: "Semantic memory uses a local all-MiniLM-L6-v2 model (384 dims) instead of a hosted embedding API. Zero cost, fast, runs on CPU. Trade-off: lower quality than a hosted model but no API dependency."
+- `agent_name`: `architect`
+- `content_type`: `decision`
+- `tags`: `["semantic-memory", "embedding", "architecture"]`
 
 ## How Retrieval Works
 
-Stored memories are automatically recalled by the agent execution pipeline. When a task starts, `memory/integration.py` calls `_read_semantic_memory()` which:
+When a semantic memory backend is available, stored memories are automatically recalled by the agent execution pipeline. When a task starts, the pipeline:
 
 1. Embeds the task prompt using the same model
-2. Performs cosine similarity search against all stored memories
-3. Returns top-K results (default 5) within the distance threshold (default 0.3)
+2. Performs cosine similarity search against stored memories
+3. Returns top-K results within a distance threshold
 4. Injects matching memories into the agent's context as `## Semantic Memory`
 
-No manual retrieval is needed. Agents searching for specific memories can also use:
-
-```bash
-cd /opt/platform/scaffolding.tool/app/backend && /opt/platform/scaffolding.tool/app/backend/venv/bin/python3 -c "
-import asyncio
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from core.config import DATABASE_URL
-from semantic_memory.service import search_memories
-
-async def _search():
-    engine = create_async_engine(DATABASE_URL, pool_size=1, max_overflow=0)
-    factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
-    try:
-        async with factory() as db:
-            results = await search_memories(db=db, query='SEARCH_QUERY_HERE', top_k=5)
-            for mem, dist in results:
-                print(f'[{1-dist:.0%}] [{mem.agent_name}] {mem.content[:120]}')
-    finally:
-        await engine.dispose()
-
-asyncio.run(_search())
-"
-```
+No manual retrieval is needed. Agents that want to search for specific memories can use the `semantic_search` MCP tool described in the `semantic-memory-mcp` skill.
 
 ## Prerequisites
 
-- `SEMANTIC_MEMORY_ENABLED=true` must be set in the environment (check `core/config.py`)
-- PostgreSQL must be running with the `semantic_memory` table (Alembic migration applied)
-- The `sentence-transformers` package must be installed in `app/backend/venv`
+Semantic memory requires an optional backend service. If your project does not configure one, this skill is inert and file-based memory remains fully functional. When a backend is configured, it typically requires:
+
+- The semantic memory feature enabled in the backend configuration
+- A datastore for embedded entries
+- An embedding model available to the backend
+
+Consult your project's setup documentation for the exact configuration. Absence of any of these means the skill degrades gracefully to file-based memory.
 
 ## Deduplication
 
-Content is deduplicated by SHA-256 hash. Storing the same content twice updates the existing entry (merges tags, updates timestamp) instead of creating a duplicate.
+When supported by the backend, content is deduplicated by hash. Storing the same content twice updates the existing entry (merges tags, updates timestamp) instead of creating a duplicate.
 
 ## Relationship to File-Based Memory
 
 | System | Mechanism | Best For |
 |--------|-----------|----------|
 | File-based (agent-memory skill) | Markdown files in `.scaffolding/` | Structured, curated knowledge with manual organization |
-| Semantic memory (this skill) | Vector DB with embedding search | Discoverable knowledge via natural language similarity |
+| Semantic memory (this skill) | Vector store with embedding search | Discoverable knowledge via natural language similarity |
 
-Use both: file-based memory for well-organized reference material, semantic memory for fuzzy-match discoverable insights.
+Use both when available: file-based memory for well-organized reference material, semantic memory for fuzzy-match discoverable insights. When semantic memory is unavailable, file-based memory alone is sufficient.
