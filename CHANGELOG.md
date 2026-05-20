@@ -5,7 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.2.0] - 2026-05-20
+
+### Added
+- **`/create-skill` command + `skill-authoring` skill.** A new interactive
+  command, backed by the `skill-authoring` skill, that walks users through
+  authoring their own scaffolding-compatible skills — from `SKILL.md`
+  frontmatter and trigger description through directory layout and validation.
+  Brings the skill count to 32 and the command count to 15.
+- **`/learn` command — closed-loop learning.** Distills reusable insights from
+  a finished conversation and proposes new memory entries or skills, connecting
+  the `agent-memory` and `distill` skills so the scaffolding improves itself
+  over time.
+
+### Changed
+- **Hardened skill auto-trigger descriptions.** All 32 skill `description`
+  fields were rewritten into an explicit `TRIGGER when: ... SKIP: ...` form so
+  Claude Code reliably auto-invokes the right skill and avoids false positives.
 
 ### Removed
 - **Deprecated `/generate-prp` and `/execute-prp` commands.** The PRP (Product

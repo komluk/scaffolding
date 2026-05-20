@@ -1,6 +1,6 @@
 ---
 name: semantic-memory-store
-description: "Store knowledge in semantic memory for cross-session vector-similarity recall. Use when an agent discovers a reusable insight, pattern, or decision that should be retrievable by future agents via embedding search."
+description: "Store reusable insights in semantic memory for vector-similarity recall. TRIGGER when: an agent discovers a pattern, decision, or gotcha worth retrieving later via embedding search. SKIP: searching/recalling memory (use semantic-memory-mcp); file-based memory writes (use agent-memory)."
 ---
 
 # Semantic Memory Store

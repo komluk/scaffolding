@@ -1,6 +1,6 @@
 ---
 name: security-review-checklists
-description: OWASP Top 10, STRIDE threat modeling, auth/compliance review checklists for code review
+description: "OWASP Top 10, STRIDE threat modeling, and auth/compliance review checklists. TRIGGER when: reviewing code for vulnerabilities, threat-modeling a feature, or auditing auth. SKIP: general code-quality review (use pattern-recognition); test coverage review (use testing-strategy)."
 ---
 
 ## OWASP Top 10 Checklist

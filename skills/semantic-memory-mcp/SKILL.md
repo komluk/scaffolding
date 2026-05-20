@@ -1,6 +1,6 @@
 ---
 name: semantic-memory-mcp
-description: "Directives for proactive use of semantic memory MCP tools (semantic_search, semantic_store, semantic_recall). Ensures agents actively leverage vector-similarity memory during tasks."
+description: "Proactive use of semantic-memory MCP tools (semantic_search, semantic_recall). TRIGGER when: an agent should search vector memory for prior insights mid-task. SKIP: file-based 3-tier memory (use agent-memory); storing a new memory (use semantic-memory-store)."
 ---
 
 # Semantic Memory MCP Usage

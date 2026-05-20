@@ -1,6 +1,6 @@
 ---
 name: python-patterns
-description: "Python backend patterns with FastAPI, async SQLAlchemy, and Pydantic. Use when creating routes, models, schemas, or services."
+description: "Python backend patterns: FastAPI, async SQLAlchemy, Pydantic. TRIGGER when: creating routes, models, schemas, or services in Python. SKIP: REST contract design (use api-design); schema/index tuning (use database-optimization)."
 ---
 
 # Python Backend Patterns Skill

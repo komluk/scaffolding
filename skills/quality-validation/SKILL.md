@@ -1,6 +1,6 @@
 ---
 name: quality-validation
-description: "Validate ResearchPacks and Implementation Plans meet quality thresholds. Use when scoring research (>=80) or plans (>=85) before implementation."
+description: "Score ResearchPacks (>=80) and Implementation Plans (>=85) against quality gates. TRIGGER when: gating research or a plan before implementation. SKIP: writing or running tests (use testing-strategy); security threat review (use security-review-checklists)."
 ---
 
 # Quality Validation Skill

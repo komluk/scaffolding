@@ -1,6 +1,6 @@
 ---
 name: spec-design
-description: "How to write OpenSpec design.md and tasks.md artifacts"
+description: "Write OpenSpec design.md and tasks.md artifacts. TRIGGER when: producing a technical design or task checklist for a spec-driven feature. SKIP: writing proposal.md (use spec-research); executing tasks.md (use spec-develop)."
 ---
 
 # OpenSpec Design & Tasks Writing

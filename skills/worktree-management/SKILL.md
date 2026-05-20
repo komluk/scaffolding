@@ -1,6 +1,6 @@
 ---
 name: worktree-management
-description: "Scaffolding.tool worktree lifecycle management, diagnostics, and recovery. Use when debugging worktree issues or managing task isolation."
+description: "Scaffolding worktree lifecycle, diagnostics, and recovery. TRIGGER when: debugging worktree isolation, recovering a stuck worktree, or managing task isolation. SKIP: ordinary branch/commit/merge operations (use git-operations)."
 ---
 
 # Worktree Management Skill

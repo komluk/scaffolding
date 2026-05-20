@@ -1,6 +1,6 @@
 ---
 name: research-methodology
-description: "Systematic approach for gathering accurate, version-specific documentation. Use when researching new APIs, libraries, or best practices before implementation."
+description: "Systematic gathering of accurate, version-specific documentation. TRIGGER when: researching a new API, library, or best practice before implementation. SKIP: turning findings into a plan (use planning-methodology); writing proposal.md (use spec-research)."
 ---
 
 # Research Methodology Skill

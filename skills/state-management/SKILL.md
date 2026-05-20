@@ -1,6 +1,6 @@
 ---
 name: state-management
-description: "Zustand-based state management standards. Use when creating stores, managing global state, or choosing between local and global state."
+description: "Zustand-based global state standards. TRIGGER when: creating a store, managing global state, or deciding local vs global state. SKIP: component/hook structure (use react-patterns); visual styling (use mui-styling)."
 ---
 
 # State Management Skill

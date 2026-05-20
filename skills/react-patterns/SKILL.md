@@ -1,6 +1,6 @@
 ---
 name: react-patterns
-description: "React 18 + TypeScript component standards and hook patterns. Use when creating components, custom hooks, or reviewing React code."
+description: "React 18 + TypeScript component and hook standards. TRIGGER when: creating components, custom hooks, or reviewing React code. SKIP: visual styling and theme tokens (use mui-styling); global store design (use state-management)."
 ---
 
 # React Patterns Skill

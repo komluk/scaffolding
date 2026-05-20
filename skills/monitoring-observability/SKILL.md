@@ -1,6 +1,6 @@
 ---
 name: monitoring-observability
-description: "Monitoring, metrics, alerting, and observability standards. Use when implementing health checks, metrics collection, or alerting rules."
+description: "Monitoring, metrics, alerting, and observability standards. TRIGGER when: implementing health checks, collecting metrics, or defining alert rules. SKIP: log statement formatting (use logging-standards); CI pipeline setup (use github-actions-template)."
 ---
 
 # Monitoring & Observability Skill

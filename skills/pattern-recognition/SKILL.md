@@ -1,6 +1,6 @@
 ---
 name: pattern-recognition
-description: "Identify and apply existing codebase patterns for consistency. Use when writing new code to match established conventions in a project."
+description: "Identify and apply existing codebase patterns for consistency. TRIGGER when: writing new code that should match conventions, or reviewing code for pattern drift. SKIP: language-specific patterns (use python-patterns or react-patterns); security review (use security-review-checklists)."
 ---
 
 # Pattern Recognition Skill

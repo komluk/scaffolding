@@ -1,6 +1,6 @@
 ---
 name: database-optimization
-description: Schema design principles, index strategy, migration safety, and query analysis patterns
+description: "Schema design, index strategy, migration safety, and query analysis. TRIGGER when: designing tables or indexes, writing a migration, or diagnosing a slow query. SKIP: writing SQLAlchemy model code (use python-patterns); generic backend patterns (use python-patterns)."
 ---
 
 ## Schema Design Principles

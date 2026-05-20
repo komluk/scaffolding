@@ -1,6 +1,6 @@
 ---
 name: spec-research
-description: "How to write OpenSpec proposal.md artifacts"
+description: "Write OpenSpec proposal.md artifacts (why + what). TRIGGER when: capturing requirements, scope, and impact for a spec-driven feature. SKIP: technical design (use spec-design); external documentation research (use research-methodology)."
 ---
 
 # OpenSpec Proposal Writing

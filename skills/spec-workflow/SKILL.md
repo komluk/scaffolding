@@ -1,6 +1,6 @@
 ---
 name: spec-workflow
-description: "OpenSpec lifecycle orchestration for /workflow chains"
+description: "OpenSpec lifecycle orchestration for /workflow chains. TRIGGER when: coordinating the analyst-architect-developer-reviewer chain or managing spec status transitions. SKIP: writing an individual spec artifact (use spec-research, spec-design, or spec-review)."
 ---
 
 # OpenSpec Workflow Orchestration

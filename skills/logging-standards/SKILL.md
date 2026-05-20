@@ -1,6 +1,6 @@
 ---
 name: logging-standards
-description: "Structured logging standards using structlog and Seq. Use when adding log statements, configuring logging, or reviewing log output."
+description: "Structured logging standards using structlog and Seq. TRIGGER when: adding log statements, configuring loggers, or reviewing log output. SKIP: metrics and alerting (use monitoring-observability); error control flow (use error-handling)."
 ---
 
 # Logging Standards Skill

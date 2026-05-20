@@ -1,6 +1,6 @@
 ---
 name: distill
-description: "Knowledge distillation methodology -- extraction patterns, confidence scoring, and tier routing rules for the /distill command."
+description: "Knowledge distillation methodology: candidate extraction, confidence scoring, tier routing, conversation-scoped mode. TRIGGER when: running /learn or /distill, deciding if an insight is memory-worthy, or scoring a knowledge candidate. SKIP: ad-hoc memory reads/writes (use agent-memory); vector storage (use semantic-memory-store)."
 ---
 
 # Distill Methodology
@@ -64,3 +64,36 @@ KNOWLEDGE.md has a hard limit of 200 lines (auto-injected into every agent conte
 - **Dry-run** (default): Report what would change, write nothing
 - **Apply**: Create timestamped backup, then write merged content
 - **Restore**: Revert files from any backup timestamp
+
+## Conversation-Scoped Distillation
+
+The `/learn` command runs distillation against a **single conversation** rather
+than mining all of `.scaffolding/conversations/`. This mode is backend-free and
+self-contained — no session-log mining, no database.
+
+Inputs for one `conversation_id` (a UUID `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`):
+
+| Input | Path | Role |
+|-------|------|------|
+| Conversation memory | `.scaffolding/conversations/{id}/agent-memory/context.md` | Decisions and findings recorded during the chain |
+| Design decisions | `.scaffolding/conversations/{id}/specs/design.md` (`## Decisions` section, if present) | Architectural choices + rationale |
+
+Apply the Knowledge Candidate Criteria and Confidence Scoring above against these
+two files only. With a single conversation, the "Cross-conversation pattern"
+criterion does not apply; rely on the Decision-section and pattern-keyword
+criteria. If `context.md` is absent, there is nothing to distill — exit cleanly.
+
+## Skill Promotion Criterion
+
+Each distilled candidate routes to one of two destinations:
+
+| Candidate shape | Destination | Decision rule |
+|-----------------|-------------|---------------|
+| Situational insight, gotcha, or one-off decision | Memory entry — `shared`, `agent:{name}`, or conversation tier per the Tier Routing rules above | The knowledge is a *fact about this codebase*. |
+| Repeatable procedure or methodology | New skill — propose a `/create-skill` invocation with a pre-filled draft | The knowledge is a *reusable how-to* an agent would follow on future, unrelated tasks. |
+
+Promote to a skill only when the candidate is a generalizable procedure, not a
+single fact. A one-off fact ("module X has a 301 redirect bug") is a memory
+entry; a recurring procedure ("how to safely roll a zero-downtime migration") is
+a skill. When in doubt, prefer a memory entry — skills carry an auto-invocation
+cost and should stay few and sharp.

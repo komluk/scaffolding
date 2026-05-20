@@ -1,6 +1,6 @@
 ---
 name: mui-styling
-description: "Material-UI styling standards with the project's neon cyberpunk theme. Use when styling React components, creating theme tokens, or applying componentStyles."
+description: "Material-UI styling with the project neon cyberpunk theme. TRIGGER when: styling React components, defining theme tokens, or applying componentStyles. SKIP: component logic and hooks (use react-patterns); cross-stack UX/design decisions (use ui-ux-pro-max)."
 ---
 
 # MUI Styling Skill

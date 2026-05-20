@@ -1,6 +1,6 @@
 ---
 name: context-engineering
-description: "Optimize Claude Code context window usage for better performance. Use when managing context limits, prompt engineering, or improving agent accuracy."
+description: "Optimize Claude Code context-window usage for accuracy and cost. TRIGGER when: hitting context limits, structuring prompts for an agent, or trimming what gets injected into a task. SKIP: persisting knowledge across sessions (use agent-memory); semantic recall tuning (use semantic-memory-mcp)."
 ---
 
 # Context Engineering Skill

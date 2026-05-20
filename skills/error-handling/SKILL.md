@@ -1,6 +1,6 @@
 ---
 name: error-handling
-description: "Consistent error handling patterns across frontend and Python backend. Use when implementing error boundaries, exception handlers, or error responses."
+description: "Consistent error handling across React frontend and Python backend. TRIGGER when: implementing error boundaries, exception handlers, or try/catch blocks. SKIP: shaping HTTP error response bodies (use api-design); logging the error (use logging-standards)."
 ---
 
 # Error Handling Skill

@@ -1,6 +1,6 @@
 # claude-scaffolding
 
-Portable Claude Code configuration: 11 agents, 31 skills, 13 commands, 8 hooks,
+Portable Claude Code configuration: 11 agents, 32 skills, 15 commands, 8 hooks,
 spec-driven workflows. Installs as a Claude Code plugin.
 
 ## Overview
@@ -19,6 +19,7 @@ long-running process required.
 - **11 specialized agents** — analyst, architect, developer, reviewer, debugger, and more, each with a focused role.
 - **Parallel multi-agent orchestration** — fan out work across agents and coordinate results.
 - **Opinionated guardrail hooks** — 8 safety and lifecycle hooks block destructive commands and enforce conventions.
+- **Extensible & self-improving** — `/create-skill` scaffolds your own scaffolding-compatible skills, and `/learn` closes the loop by distilling reusable insights from finished conversations.
 - **Zero backend required** — pure markdown and Claude Code runtime; no database, server, or process to run.
 
 ## Install
@@ -80,12 +81,14 @@ claude-scaffolding/
 ├── agents/         11 agents (analyst, architect, coordinator, developer,
 │                    debugger, devops, gitops, optimizer,
 │                    researcher, reviewer, tech-writer)
-├── skills/         31 skills (api-design, error-handling, pattern-recognition,
-│                    spec-*, mui-styling, python-patterns, testing-strategy, ...)
-├── commands/       13 slash commands: 3 top-level (context, init-openspec,
-│                    init-scaffolding) + 10 in `commands/specs/`
-│                    (apply, archive, bulk-archive, continue, explore, ff,
-│                    new, onboard, sync, verify) — namespaced OpenSpec commands
+├── skills/         32 skills (api-design, error-handling, pattern-recognition,
+│                    skill-authoring, spec-*, mui-styling, python-patterns,
+│                    testing-strategy, ...)
+├── commands/       15 slash commands: 5 top-level (context, create-skill,
+│                    init-openspec, init-scaffolding, learn) + 10 in
+│                    `commands/specs/` (apply, archive, bulk-archive, continue,
+│                    explore, ff, new, onboard, sync, verify) — namespaced
+│                    OpenSpec commands
 ├── hooks/          8 safety + lifecycle hooks (block-destructive-rm,
 │                    block-env-write, pre-commit-validation,
 │                    session-start-protocol, ...)

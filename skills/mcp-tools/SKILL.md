@@ -1,6 +1,6 @@
 ---
 name: mcp-tools
-description: "MCP tool decision tree and plugin reference. Agents follow MCP-first strategy: attempt MCP tools before falling back to built-in alternatives."
+description: "MCP tool decision tree and MCP-first fallback strategy. TRIGGER when: choosing whether to use an MCP tool versus a built-in, or an MCP tool is available for a task. SKIP: semantic-memory MCP usage specifically (use semantic-memory-mcp)."
 ---
 
 # MCP Tools Decision Tree

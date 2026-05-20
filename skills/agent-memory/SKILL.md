@@ -1,6 +1,6 @@
 ---
 name: agent-memory
-description: "3-tier persistent memory protocol for cross-session knowledge accumulation. Use when agents need to read, write, or manage memory files."
+description: "3-tier markdown memory protocol (shared/agent/conversation) for cross-session knowledge. TRIGGER when: reading or writing agent memory files, choosing which memory tier an insight belongs in, or starting a task needing prior context. SKIP: vector recall (use semantic-memory-mcp); distilling conversations into candidates (use distill)."
 ---
 
 # Agent Memory Protocol
@@ -105,3 +105,32 @@ If memory files don't exist, create them with the appropriate header:
 ## Conversation Recall
 
 Conversation memory is always available via file-based recall. When a task runs with a `conversation_id`, the system reads `context.md` and injects it into the agent's context. No database setup is required for conversation-tier memory.
+
+## Learning Loop
+
+The `/learn` command closes the loop between a finished conversation and the
+memory tiers above. It distills one conversation into knowledge candidates (via
+the `distill` skill's Conversation-Scoped Distillation mode) and routes each
+candidate back into this memory system.
+
+### Candidate ingestion into the 3 tiers
+
+| Candidate kind | Target tier | File |
+|----------------|-------------|------|
+| Cross-cutting project fact | Shared | `.scaffolding/agent-memory/shared/KNOWLEDGE.md` |
+| Domain-specific pattern or lesson | Agent | `.scaffolding/agent-memory/agents/{name}/MEMORY.md` |
+| Decision relevant only to the active chain | Conversation | `.scaffolding/conversations/{id}/agent-memory/context.md` |
+
+Ingestion is **propose-then-confirm**: `/learn` prints the proposed memory diff
+and applies it only on explicit confirmation. Writes respect the 200-line
+`KNOWLEDGE.md` limit — overflow routes to the most relevant agent file per the
+`distill` overflow rule. Applied entries become auto-injected context on the next
+task.
+
+### Escalation to /create-skill
+
+If a candidate is a **repeatable procedure** rather than a situational fact (per
+`distill`'s Skill Promotion Criterion), it is not written to memory. Instead
+`/learn` proposes a `/create-skill` invocation with a pre-filled draft, escalating
+the knowledge into a first-class auto-invokable skill. Memory holds facts; skills
+hold reusable how-to procedures.

@@ -1,6 +1,6 @@
 ---
 name: api-design
-description: "RESTful API design standards for this project. Use when designing new API endpoints, creating error responses, or implementing pagination."
+description: "RESTful API design standards: resource naming, HTTP methods, status codes, pagination, versioning. TRIGGER when: designing new API endpoints, defining error response shapes, or adding pagination/filtering. SKIP: implementing FastAPI route code (use python-patterns); error-handling internals (use error-handling)."
 ---
 
 # API Design Skill

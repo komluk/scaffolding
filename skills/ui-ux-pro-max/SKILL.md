@@ -1,6 +1,6 @@
 ---
 name: ui-ux-pro-max
-description: "UI/UX design intelligence for web and mobile: plan, build, review, and improve UI/UX across 13 stacks, with styles, color palettes, font pairings, charts, and accessibility guidance."
+description: "Cross-stack UI/UX design intelligence: layout, color, typography, charts, accessibility. TRIGGER when: planning or reviewing UI/UX, choosing palettes/fonts, or improving accessibility. SKIP: Material-UI code specifics (use mui-styling); React component code (use react-patterns)."
 ---
 # UI/UX Pro Max - Design Intelligence
 

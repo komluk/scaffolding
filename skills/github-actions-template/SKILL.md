@@ -1,6 +1,6 @@
 ---
 name: github-actions-template
-description: GitHub Actions CI pipeline templates and workflow patterns for this project
+description: "GitHub Actions CI pipeline templates and workflow YAML patterns. TRIGGER when: creating or editing a CI workflow, adding a CI job, or wiring build/test/deploy steps. SKIP: container build internals (use docker-templates); local git workflow (use git-operations)."
 ---
 
 ## Standard CI Pipeline

@@ -1,6 +1,6 @@
 ---
 name: spec-review
-description: "How to verify implementation against OpenSpec artifacts"
+description: "Verify an implementation against its OpenSpec artifacts. TRIGGER when: checking completed work against design.md and tasks.md. SKIP: security-specific review (use security-review-checklists); executing tasks (use spec-develop)."
 ---
 
 # OpenSpec Verification

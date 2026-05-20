@@ -1,6 +1,6 @@
 ---
 name: spec-develop
-description: "How to execute OpenSpec tasks.md during implementation"
+description: "Execute an OpenSpec tasks.md during implementation. TRIGGER when: working through spec task checkboxes and applying code changes. SKIP: authoring the tasks.md (use spec-design); verifying the result (use spec-review)."
 ---
 
 # OpenSpec Apply (Task Execution)

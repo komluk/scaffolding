@@ -146,6 +146,15 @@ Write proposal directly (no researcher) for:
 6. **Rollback ready** - Every proposal must include a reversion plan
 7. **Route correctly** - After analysis, hand off to the right specialist agent
 
+## Closing a Workflow: Optional /learn Hand-Off
+
+When a workflow chain completes, the analyst MAY recommend the user run
+`/learn [conversation_id]` to distill the conversation into knowledge candidates.
+This is most valuable when the chain surfaced reusable requirements insights or
+scoping lessons worth persisting. `/learn` is propose-then-confirm — it never
+auto-writes memory — so suggesting it is low-risk. Mention it in the final
+report's Notes section when the conversation yielded durable insight.
+
 ## Responsibility Boundaries
 
 **analyst OWNS:**

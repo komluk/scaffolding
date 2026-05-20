@@ -1,6 +1,6 @@
 ---
 name: git-operations
-description: "Git command patterns, branching strategies, and safety protocols. Use for branch management, conflict resolution, or worktree operations."
+description: "Git command patterns, branching strategy, and safety protocols. TRIGGER when: managing branches, resolving merge conflicts, or running commit/merge/push operations. SKIP: worktree lifecycle and isolation recovery (use worktree-management); CI automation (use github-actions-template)."
 ---
 
 # Git Operations Skill

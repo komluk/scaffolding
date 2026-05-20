@@ -66,6 +66,14 @@ NOTE: Other agents should NEVER modify documentation files. They should flag nee
 - Inline comments for complex logic
 - Type documentation
 
+### Skill Documentation
+- Assist `/create-skill` with `description` frontmatter copy: refine the
+  `TRIGGER`/`SKIP` wording for clarity and the ~340-char cap (see the
+  `skill-authoring` skill's Description Contract).
+- When a new skill is authored, document it in `README.md` (skill list) and
+  `CHANGELOG.md`, and bump the skill/command counts in
+  `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json`.
+
 ## Standards
 
 - Follow Keep a Changelog format for CHANGELOG.md

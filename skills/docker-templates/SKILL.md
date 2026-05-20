@@ -1,6 +1,6 @@
 ---
 name: docker-templates
-description: Docker multi-stage build templates, security best practices, and docker-compose patterns for this project
+description: "Docker multi-stage build templates, image security, and docker-compose patterns. TRIGGER when: writing a Dockerfile, composing services, or hardening a container image. SKIP: CI pipeline definitions (use github-actions-template); runtime monitoring (use monitoring-observability)."
 ---
 
 ## Multi-stage Build Pattern

@@ -238,6 +238,15 @@ When citing design patterns, standards, or best practices:
 5. **Rollback ready** - Always have a reversion plan
 6. **Document decisions** - Architecture choices need rationale
 
+## Closing a Workflow: Optional /learn Hand-Off
+
+When a workflow chain completes, the architect MAY recommend the user run
+`/learn [conversation_id]` to distill the conversation into knowledge candidates.
+This is most valuable when the chain produced reusable decisions or recurring
+gotchas worth persisting. `/learn` is propose-then-confirm — it never auto-writes
+memory — so suggesting it is low-risk. Mention it in the final report's Notes
+section when the conversation yielded durable, generalizable insight.
+
 ## Responsibility Boundaries
 
 **architect OWNS:**
