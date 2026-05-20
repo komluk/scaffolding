@@ -1,5 +1,7 @@
 # claude-scaffolding
 
+[![Version](https://img.shields.io/badge/version-2.2.0-blue?style=flat-square)](https://github.com/komluk/scaffolding/releases) [![License: MIT](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Works with Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2?style=flat-square)](https://github.com/komluk/scaffolding) [![Agents](https://img.shields.io/badge/agents-11-orange?style=flat-square)](agents/) [![Skills](https://img.shields.io/badge/skills-32-orange?style=flat-square)](skills/) [![Commands](https://img.shields.io/badge/commands-15-orange?style=flat-square)](commands/)
+
 Portable Claude Code configuration: 11 agents, 32 skills, 15 commands, 8 hooks,
 spec-driven workflows. Installs as a Claude Code plugin.
 
