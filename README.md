@@ -38,7 +38,9 @@ Then start delegating: `Task(subagent_type="scaffolding:developer", prompt="..."
 > after install — `Task(subagent_type="scaffolding:developer")` will return
 > `Agent type not found`. Restarting `claude` works as an alternative.
 
-The plugin lands in `~/.claude/plugins/marketplaces/komluk-scaffolding/`.
+The installed plugin lives under `~/.claude/plugins/` — primarily in the
+versioned `cache/komluk-scaffolding/` subtree, with
+`marketplaces/komluk-scaffolding/` as the marketplace clone.
 Default values (`pytest`, `npm test`, `(project)`, etc.) are baked in. To
 override per-project, edit the rendered `CLAUDE.md` after running `/init-scaffolding`.
 
@@ -56,6 +58,23 @@ latest plugin version, hook scripts are always copied.
 | Solo project | Optional — the plugin's `SessionStart` hook injects the routing protocol on every session |
 | Team repo (others clone without the plugin) | Yes — `CLAUDE.md` in-repo means the protocol travels with the code |
 | CI / automation reads the repo | Yes — a committed `CLAUDE.md` gives reproducible context |
+
+## Agent memory
+
+Agents share a file-based, 3-tier memory protocol — all plain markdown under
+`.scaffolding/` of the project. Memory is auto-injected into an agent's context
+when a task starts: shared tier always, agent tier when the agent name is known,
+conversation tier when a `conversation_id` is provided. Each file is capped at
+200 lines. Read-only agents (architect, reviewer) cannot write memory — they
+report findings in their output instead. This protocol is the always-on
+default; the optional semantic-memory MCP adds vector recall on top when a
+backend is configured.
+
+| Tier | File | Scope |
+|------|------|-------|
+| Shared | `.scaffolding/agent-memory/shared/KNOWLEDGE.md` | Whole-project facts, written/read by any agent |
+| Agent | `.scaffolding/agent-memory/agents/{agent-name}/MEMORY.md` | Per-agent domain knowledge |
+| Conversation | `.scaffolding/conversations/{conversation_id}/agent-memory/context.md` | Per-conversation context and handoffs |
 
 ## Common gotchas
 
