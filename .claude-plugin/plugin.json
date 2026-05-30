@@ -1,6 +1,6 @@
 {
   "name": "scaffolding",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "11 agents, 32 skills, 16 commands, 9 hooks — spec-driven multi-agent orchestration for Claude Code, with optional cross-device semantic memory.",
   "author": {
     "name": "komluk",
@@ -24,7 +24,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "hooks/pre-commit-validation.sh"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/pre-commit-validation.sh"
           }
         ]
       },
@@ -33,7 +33,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "hooks/block-force-push.sh"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/block-force-push.sh"
           }
         ]
       },
@@ -42,7 +42,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "hooks/file-staleness-check.sh"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/file-staleness-check.sh"
           }
         ]
       },
@@ -51,7 +51,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "hooks/block-env-write.sh"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/block-env-write.sh"
           }
         ]
       },
@@ -60,7 +60,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "hooks/block-destructive-rm.sh"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/block-destructive-rm.sh"
           }
         ]
       }
@@ -71,7 +71,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "hooks/post-edit-review.sh"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/post-edit-review.sh"
           }
         ]
       },
@@ -80,7 +80,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "hooks/file-staleness-update.sh"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/file-staleness-update.sh"
           }
         ]
       }
@@ -91,7 +91,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "hooks/session-start-protocol.sh"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/session-start-protocol.sh"
           }
         ]
       },
@@ -100,11 +100,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "hooks/session-start-protocol.sh"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/session-start-protocol.sh"
           },
           {
             "type": "command",
-            "command": "hooks/memory-project-id.sh"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/memory-project-id.sh"
           }
         ]
       },
@@ -113,11 +113,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "hooks/session-start-protocol.sh"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/session-start-protocol.sh"
           },
           {
             "type": "command",
-            "command": "hooks/memory-project-id.sh"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/memory-project-id.sh"
           }
         ]
       }
