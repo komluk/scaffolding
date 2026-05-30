@@ -38,12 +38,18 @@ Read-only agents: tech-writer, devops, gitops.
 - Keep queries under 100 words for best embedding match
 - Use `semantic_search` when you want structured results with metadata
 - Use `semantic_recall` when you want a quick formatted summary
+- **Always pass `project_id`** so results are scoped to the current repository.
+  The `memory-project-id` SessionStart hook injects the value to use (a
+  `scaffold:<hash>` derived from the git remote); pass that exact value to
+  every `semantic_search` / `semantic_recall` / `semantic_store` call. If no
+  `project_id` is provided in session context, the backend uses a shared
+  `default` namespace.
 
 ### Examples:
 ```
-semantic_recall(context="SQLAlchemy async session event loop issues")
-semantic_search(query="deployment nginx proxy configuration gotchas")
-semantic_search(query="Redis task queue timeout handling", agent_name="debugger")
+semantic_recall(context="SQLAlchemy async session event loop issues", project_id="scaffold:ab12cd34ef56")
+semantic_search(query="deployment nginx proxy configuration gotchas", project_id="scaffold:ab12cd34ef56")
+semantic_search(query="Redis task queue timeout handling", project_id="scaffold:ab12cd34ef56", agent_name="debugger")
 ```
 
 ## WHEN to Store Memory (Write Agents Only)

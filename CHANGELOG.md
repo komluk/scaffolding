@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] - 2026-05-30
+
+### Added
+- **`/memory` command — cross-device semantic memory (opt-in).** A single
+  command with `enable` / `disable` / `status` that wires an optional
+  self-hosted [mem0](https://github.com/mem0ai/mem0) backend (PostgreSQL +
+  pgvector, local LLM/embeddings via Ollama) into Claude Code at user scope.
+  When enabled, the existing `semantic-memory-mcp` / `semantic-memory-store`
+  skills become live: agents persist and recall insights across sessions and
+  devices via `semantic_search` / `semantic_recall` / `semantic_store`. Memory
+  is **off by default** and personal (token-gated); without a backend, skills
+  degrade gracefully to file-based memory. Brings the command count to 16.
+- **`memory-project-id.sh` hook (SessionStart).** Computes a stable
+  `project_id` from the git remote and injects it as session context so agents
+  scope semantic memory per repository (shared across your devices). Brings the
+  hook count to 9.
+
+### Changed
+- **`semantic-memory-mcp` skill documents `project_id`.** The search/recall
+  tool reference and examples now include the per-project `project_id` argument
+  supplied by the SessionStart hook, matching the `semantic-memory-store` skill.
+
 ## [2.2.0] - 2026-05-20
 
 ### Added

@@ -1,7 +1,7 @@
 {
   "name": "scaffolding",
-  "version": "2.2.0",
-  "description": "11 agents, 32 skills, 15 commands, 8 hooks — spec-driven multi-agent orchestration for Claude Code.",
+  "version": "2.3.0",
+  "description": "11 agents, 32 skills, 16 commands, 9 hooks — spec-driven multi-agent orchestration for Claude Code, with optional cross-device semantic memory.",
   "author": {
     "name": "komluk",
     "url": "https://github.com/komluk"
@@ -101,6 +101,10 @@
           {
             "type": "command",
             "command": "hooks/session-start-protocol.sh"
+          },
+          {
+            "type": "command",
+            "command": "hooks/memory-project-id.sh"
           }
         ]
       },
@@ -110,6 +114,10 @@
           {
             "type": "command",
             "command": "hooks/session-start-protocol.sh"
+          },
+          {
+            "type": "command",
+            "command": "hooks/memory-project-id.sh"
           }
         ]
       }

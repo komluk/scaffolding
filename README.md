@@ -67,8 +67,9 @@ when a task starts: shared tier always, agent tier when the agent name is known,
 conversation tier when a `conversation_id` is provided. Each file is capped at
 200 lines. Read-only agents (architect, reviewer) cannot write memory — they
 report findings in their output instead. This protocol is the always-on
-default; the optional semantic-memory MCP adds vector recall on top when a
-backend is configured.
+default; an optional **cross-device semantic memory** backend adds vector recall
+on top — enable it per device with `/memory enable` (see
+*[Optional backend-dependent features](#optional-backend-dependent-features)*).
 
 | Tier | File | Scope |
 |------|------|-------|
@@ -103,14 +104,14 @@ claude-scaffolding/
 ├── skills/         32 skills (api-design, error-handling, pattern-recognition,
 │                    skill-authoring, spec-*, mui-styling, python-patterns,
 │                    testing-strategy, ...)
-├── commands/       15 slash commands: 5 top-level (context, create-skill,
-│                    init-openspec, init-scaffolding, learn) + 10 in
+├── commands/       16 slash commands: 6 top-level (context, create-skill,
+│                    init-openspec, init-scaffolding, learn, memory) + 10 in
 │                    `commands/specs/` (apply, archive, bulk-archive, continue,
 │                    explore, ff, new, onboard, sync, verify) — namespaced
 │                    OpenSpec commands
-├── hooks/          8 safety + lifecycle hooks (block-destructive-rm,
+├── hooks/          9 safety + lifecycle hooks (block-destructive-rm,
 │                    block-env-write, pre-commit-validation,
-│                    session-start-protocol, ...)
+│                    session-start-protocol, memory-project-id, ...)
 ├── templates/      Shared agent reference docs (output-frontmatter schema,
 │                    agents/skills overview, responsibility matrix)
 ├── validators/     Validation scripts (circuit-breaker, validate-agent-output)
@@ -128,6 +129,36 @@ vector store, and `ui-ux-pro-max` can draw on a local dataset. When no such
 backend is present, these skills degrade gracefully: the agent skips the
 relevant section rather than crashing, and all core functionality continues to
 work as pure markdown.
+
+### Cross-device semantic memory (`/memory`)
+
+The `semantic-memory-mcp` / `semantic-memory-store` skills can be backed by a
+self-hosted [mem0](https://github.com/mem0ai/mem0) service (PostgreSQL + pgvector,
+with a local LLM and embeddings via [Ollama](https://ollama.com)). When enabled,
+agents persist and recall insights across sessions **and devices** through
+`semantic_search` / `semantic_recall` / `semantic_store`, on top of the always-on
+file-based memory.
+
+It is **opt-in and personal**:
+
+```
+/memory enable     # wire the backend into Claude Code (user scope) — run once per device
+/memory disable    # disconnect this device (stored memories are kept)
+/memory status     # show whether it's wired and reachable
+```
+
+- **Off by default.** Nothing connects until you run `/memory enable`. Installing
+  the plugin without a backend simply runs without semantic memory.
+- **Token-gated.** Auth uses a personal bearer token (`MEMORY_MCP_TOKEN`); the
+  endpoint defaults to your own backend and is overridable via `MEMORY_MCP_URL`.
+- **Per-project isolation.** The `memory-project-id` SessionStart hook derives a
+  stable `project_id` from the git remote, so each repository has its own memory
+  namespace, shared across your devices.
+- **Graceful fallback.** If the backend is unreachable, skills fall back to the
+  file-based `.scaffolding/agent-memory/` — agents never block.
+
+Hosting the backend (LXC/VM, Docker compose, Ollama, network egress policy) is
+outside the plugin; the plugin only consumes the MCP endpoint.
 
 ## Updating
 
