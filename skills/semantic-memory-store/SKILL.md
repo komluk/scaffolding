@@ -102,6 +102,8 @@ Consult your project's setup documentation for the exact configuration. Absence 
 
 When supported by the backend, content is deduplicated by hash. Storing the same content twice updates the existing entry (merges tags, updates timestamp) instead of creating a duplicate.
 
+**Search-before-store:** hash dedup only catches byte-identical content. Backends that distil input into atomic memories (e.g. mem0) split one store call into several entries, so a slightly reworded fact silently bloats the store. Before storing, run a similarity search first; if a near-duplicate already exists, update or skip rather than adding a paraphrase.
+
 ## Relationship to File-Based Memory
 
 | System | Mechanism | Best For |

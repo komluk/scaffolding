@@ -38,13 +38,43 @@ memory is yours only; anyone without it gets 401.
    (The literal `${MEMORY_MCP_TOKEN}` is stored and expanded at runtime — the token is
    never written to disk.)
 3. **Verify**: `claude mcp list | grep semantic-memory`
-4. **Tell the user to restart Claude Code** so the server + token load and connect. After
+4. **(Optional) Wire token auto-refresh from Vault.** Offer this only if the user wants
+   the token kept fresh per-device without manual re-export. It installs a SessionStart
+   hook (shipped with the plugin) into **user** settings — opt-in, never an always-on
+   plugin hook:
+   ```bash
+   mkdir -p "$HOME/.claude/hooks"
+   cp "${CLAUDE_PLUGIN_ROOT}/hooks/refresh-mcp-token.sh" "$HOME/.claude/hooks/refresh-mcp-token.sh"
+   chmod 700 "$HOME/.claude/hooks/refresh-mcp-token.sh"
+   python3 - "$HOME/.claude/settings.json" <<'PY'
+   import json, os, sys
+   p = sys.argv[1]
+   d = json.load(open(p)) if os.path.exists(p) else {}
+   cmd = "$HOME/.claude/hooks/refresh-mcp-token.sh"
+   ss = d.setdefault("hooks", {}).setdefault("SessionStart", [])
+   if not any(h.get("command") == cmd for e in ss for h in e.get("hooks", [])):
+       ss.append({"matcher": "", "hooks": [{"type": "command", "command": cmd, "timeout": 30}]})
+       json.dump(d, open(p, "w"), indent=2); open(p, "a").write("\n")
+       print("auto-refresh hook installed")
+   else:
+       print("auto-refresh hook already present")
+   PY
+   ```
+   It re-pulls `MEMORY_MCP_TOKEN` from Vault (`kv/memory/mcp`) each session and keeps
+   `settings.json` topped up. Requires the `vault` CLI + a valid login; a clean no-op
+   without them. **Skip** if the token is supplied another way (e.g. the `claude()`
+   shell wrapper). Takes effect next session.
+5. **Tell the user to restart Claude Code** so the server + token load and connect. After
    restart, `mcp__semantic-memory__*` tools are available and skills use them automatically.
 
 ## disable
 
 ```bash
 claude mcp remove semantic-memory --scope user
+```
+If the optional auto-refresh hook was installed, also remove it:
+```bash
+rm -f "$HOME/.claude/hooks/refresh-mcp-token.sh"   # then drop its SessionStart entry from ~/.claude/settings.json
 ```
 Then tell the user to restart Claude Code. Stored memories on the backend are **not**
 deleted — re-enable any time with `/memory enable`.

@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] - 2026-06-06
+
+### Added
+- **Memory conventions in the `agent-memory` and `semantic-memory-store` skills.**
+  Documented the hot/cold split (lean auto-injected file memory vs. on-demand vector
+  recall), `confidence` / `last_verified` frontmatter with proactive decay, a
+  search-before-store rule to avoid silent duplicate bloat on distilling backends
+  (e.g. mem0), and a local-only carve-out keeping secrets and MCP-recovery info out of
+  the shared vector store.
+- **Optional Vault token auto-refresh for `/memory`.** `/memory enable` can now install a
+  per-device SessionStart hook (`refresh-mcp-token.sh`) that re-pulls `MEMORY_MCP_TOKEN`
+  from Vault each session and keeps user `settings.json` topped up. Opt-in only — never an
+  always-on plugin hook — and a clean no-op without the `vault` CLI. `/memory disable`
+  documents its removal.
+
 ## [2.3.0] - 2026-05-30
 
 ### Added
