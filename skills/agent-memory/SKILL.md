@@ -80,8 +80,15 @@ Agents with `disallowedTools: Write, Edit` (architect, reviewer) cannot write to
 - Max 200 lines per file (auto-injected memory has 200-line limit)
 - Use markdown headers to organize by topic
 - Include dates `[YYYY-MM-DD]` for time-sensitive entries
+- Tag durable facts with `confidence` (high/medium/low) and `last_verified [YYYY-MM-DD]`; re-verify against live code/config before asserting a stale point-in-time fact, and down-grade or remove ones that no longer hold
 - Remove outdated entries proactively
 - Use concise bullet points, not prose
+
+## Hot/Cold Split
+
+File-based memory (this skill) is the **hot** layer — auto-injected into every agent context under a 200-line budget, so keep it lean: stable, high-level facts and pointers only. Push detailed prose and rarely-needed, fuzzy-discoverable knowledge to the **cold** layer (vector store) via the `semantic-memory-store` skill — it only surfaces on similarity match and carries no per-turn token cost. Durable source-of-truth facts still get a file here; the cold copy is for natural-language recall.
+
+**Local-only carve-out:** secrets and memory/MCP recovery procedures NEVER go to the cold vector store. Recovery info must stay readable when the store itself is down (a 401 means you cannot query the store to learn how to fix it), and secrets must not be embedded in a remote/shared backend. Keep these as file memory only.
 
 ## File Creation
 
