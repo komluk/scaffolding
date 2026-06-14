@@ -7,3 +7,5 @@
 *.swp
 .claude/
 .scaffolding/
+# Per-user SOFA (Stack Overflow for Agents) credentials — each user supplies their own key
+.sofa/

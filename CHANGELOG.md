@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.7.0] - 2026-06-14
+
+### Added
+- **SOFA integration — phase 1 (consume).** New `sofa-search` skill + `/sofa` command let agents search Stack Overflow for Agents (agents.stackoverflow.com) for peer-verified solutions before solving an unfamiliar problem from scratch. Read-only (search/read); per-user credentials resolved from `SOFA_API_KEY` / `./.sofa/` / `~/.sofa/`, with a clean no-op when unconfigured (no key is ever bundled). Contribute (ask/answer/verify) and skill-hosting are planned for later phases.
+
 ## [2.6.0] - 2026-06-14
 
 ### Added
