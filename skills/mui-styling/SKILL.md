@@ -1,6 +1,6 @@
 ---
 name: mui-styling
-description: "Material-UI styling with the project neon cyberpunk theme. TRIGGER when: styling React components, defining theme tokens, or applying componentStyles. SKIP: component logic and hooks (use react-patterns); cross-stack UX/design decisions (use ui-ux-pro-max)."
+description: "Material-UI (MUI) styling standards: sx-prop priority, theme tokens, spacing scale, responsive design, and accessibility. TRIGGER when: styling MUI components, defining theme tokens, or building responsive layouts. SKIP: component logic and hooks (use react-patterns); cross-stack UX/design decisions (use ui-ux-pro-max)."
 ---
 
 # MUI Styling Skill
@@ -230,13 +230,19 @@ Material-UI styling standards and best practices.
 
 ---
 
-## Project Theme Reference
+## Example: Centralized Theme Module (illustrative)
+
+> Illustrative — this is one team's convention shown as a concrete example.
+> Substitute your project's own theme tokens, palette, and component-style
+> helpers. The *pattern* (centralize colors/shadows/component styles in a theme
+> module and reference tokens instead of raw values) is the reusable part; the
+> specific neon-cyberpunk values below are just an example.
 
 ### Theme: Neon Cyberpunk (Dark Mode Only)
 
-Font: `"Ubuntu"` (UI), `"Ubuntu Mono"` (code/terminal). Theme at `src/theme/index.ts`.
+Font: `"Ubuntu"` (UI), `"Ubuntu Mono"` (code/terminal). Theme at `<your-theme-module>/index.ts`.
 
-### Color Palette (`src/theme/colors.ts`)
+### Color Palette (`<your-theme-module>/colors.ts`)
 
 ```typescript
 colors.background.primary   // '#0D0D0D' - page background
@@ -259,7 +265,7 @@ colors.text.muted     // '#666666'
 colors.border.primary // '#2A2A2A'
 ```
 
-### Alpha Helpers (`src/theme/colors.ts`)
+### Alpha Helpers (`<your-theme-module>/colors.ts`)
 ```typescript
 alpha.cyan(0.08)   // hover backgrounds
 alpha.cyan(0.16)   // selected backgrounds
@@ -267,7 +273,7 @@ alpha.red(0.1)     // error backgrounds
 alpha.lime(0.1)    // success backgrounds
 ```
 
-### Glow Effects (`src/theme/glows.ts`)
+### Glow Effects (`<your-theme-module>/glows.ts`)
 ```typescript
 glows.cyan         // '0 0 15px rgba(0,255,255,0.4)' - standard
 glows.cyanLight    // '0 0 10px rgba(0,255,255,0.2)' - subtle (buttons, inputs)
@@ -276,7 +282,7 @@ glows.terminalInset// inset shadow for terminal containers
 statusGlows[status]// per-TaskStatus glow effects
 ```
 
-### componentStyles (`src/theme/componentStyles.ts`)
+### componentStyles (`<your-theme-module>/componentStyles.ts`)
 
 Pre-built `SxProps<Theme>` objects. Apply via spread in `sx` prop:
 ```tsx
@@ -303,7 +309,7 @@ Available styles: `primaryButton`, `secondaryButton`, `dangerButton`, `ghostButt
 
 Usage: `animation: 'liveGlow 2s ease-in-out infinite'`
 
-### Project Anti-Patterns
+### Example Anti-Patterns (for the theme module above)
 - Do NOT use raw hex colors - use `colors.*` tokens
 - Do NOT write inline `boxShadow` - use `glows.*` presets
 - Do NOT create new button styles - use `componentStyles.*Button`

@@ -1,6 +1,6 @@
 ---
 name: database-optimization
-description: "Schema design, index strategy, migration safety, and query analysis. TRIGGER when: designing tables or indexes, writing a migration, or diagnosing a slow query. SKIP: writing SQLAlchemy model code (use python-patterns); generic backend patterns (use python-patterns)."
+description: "Schema design, index strategy, migration safety, and query analysis. TRIGGER when: designing tables or indexes, writing a migration, or diagnosing a slow query. SKIP: writing ORM model code (use python-patterns); generic backend patterns (use python-patterns)."
 ---
 
 ## Schema Design Principles
@@ -18,9 +18,12 @@ description: "Schema design, index strategy, migration safety, and query analysi
 |------|----------|
 | B-Tree | Default, range queries |
 | Hash | Exact match only |
-| GIN | Full-text, JSONB, arrays |
+| GIN (Postgres) | Full-text, JSONB, arrays |
 | Partial | Subset of rows |
 | Composite | Multi-column queries |
+
+> Index type names vary by engine (e.g. GIN/GiST/BRIN are Postgres-specific;
+> MySQL/SQLite expose a different set). Treat engine-specific rows as examples.
 
 ### When to Index
 - Primary keys (automatic)
@@ -129,9 +132,13 @@ Pool size formula: `(cores * 2) + disk_spindles`. Always use pooling in producti
 
 ---
 
-## Project Database Patterns
+## Example: Async SQLAlchemy schema patterns (illustrative)
 
-### Async SQLAlchemy Setup (`core/database.py`)
+> Illustrative — this is one team's SQLAlchemy/Postgres setup shown as a concrete
+> example. Substitute your ORM, driver, and schema conventions. The schema-design,
+> indexing, and query-analysis guidance above is the engine-agnostic, reusable part.
+
+### Async SQLAlchemy Setup (`<your-database-module>.py`)
 
 ```python
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
@@ -166,7 +173,7 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 
 ### Model Conventions
 
-All models inherit from `core.database.Base` and follow these patterns:
+All models inherit from the shared declarative `Base` and follow these patterns:
 
 | Convention | Pattern | Example |
 |-----------|---------|---------|

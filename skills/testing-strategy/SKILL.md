@@ -1,6 +1,6 @@
 ---
 name: testing-strategy
-description: "Test pyramid, coverage targets, and pytest/vitest patterns. TRIGGER when: planning tests, writing test code, or reviewing coverage. SKIP: quality-gate scoring of plans (use quality-validation); security testing (use security-review-checklists)."
+description: "Test pyramid, coverage targets, and test patterns (unit/integration/E2E). TRIGGER when: planning tests, writing test code, or reviewing coverage. SKIP: quality-gate scoring of plans (use quality-validation); security testing (use security-review-checklists). (Examples use common runners such as pytest and vitest.)"
 ---
 
 # Testing Strategy Skill

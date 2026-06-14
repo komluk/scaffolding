@@ -1,11 +1,13 @@
 ---
 name: state-management
-description: "Zustand-based global state standards. TRIGGER when: creating a store, managing global state, or deciding local vs global state. SKIP: component/hook structure (use react-patterns); visual styling (use mui-styling)."
+description: "Client state management standards: local-vs-global decisions, store structure, selectors, and re-render performance. TRIGGER when: creating a store, managing global state, or deciding local vs global state. SKIP: component/hook structure (use react-patterns); visual styling (use mui-styling). (Examples use Zustand.)"
 ---
 
 # State Management Skill
 
-Zustand-based state management standards and best practices.
+Client state management standards and best practices. The universal guidance
+(local-vs-global decisions, store structure, selectors, performance) applies to
+any store library; the concrete code examples use **Zustand**.
 
 ## When to Apply
 
@@ -142,9 +144,14 @@ src/stores/
 
 ---
 
-## Project Store Patterns
+## Example: Zustand Store Patterns (illustrative)
 
-### Store Files (`src/stores/`)
+> Illustrative — these are one team's concrete Zustand conventions shown as an
+> example. Substitute your store library's equivalents (Redux Toolkit, Jotai,
+> Pinia, signals, etc.). The decision matrix and selector/performance guidance
+> above are the reusable, library-agnostic part.
+
+### Store Files (`<your-stores-module>/`)
 
 | Store | Persist | Purpose |
 |-------|---------|---------|
@@ -187,7 +194,7 @@ export const useWorkspaceStore = create<WorkspaceStore>()(
 );
 ```
 
-### Hook Wrappers with `useShallow` (`src/hooks/`)
+### Hook Wrappers with `useShallow` (`<your-hooks-module>/`)
 
 Stores are consumed through hook wrappers that use `useShallow` to prevent re-renders:
 ```typescript

@@ -21,16 +21,16 @@ Standards for identifying and applying existing codebase patterns to maintain co
 ### Step 1: Scan Existing Code
 | Action | Purpose |
 |--------|---------|
-| Find similar components | Match structure and naming |
-| Find similar hooks | Match return types and patterns |
+| Find similar modules/components | Match structure and naming |
+| Find similar functions/hooks | Match return types and patterns |
 | Find similar services | Match error handling and API patterns |
-| Check types location | Ensure types/index.ts usage |
+| Check shared-types location | Match how the project centralizes types |
 
 ### Step 2: Extract Patterns
 | Element | What to Look For |
 |---------|------------------|
-| Component structure | Props, hooks order, JSX structure |
-| State management | Zustand vs useState decisions |
+| Module/component structure | Imports, signature, body order |
+| State management | Local-vs-shared state decisions |
 | Error handling | Try/catch style, error messages |
 | Naming conventions | Files, functions, types |
 | File organization | Directory structure |
@@ -43,6 +43,15 @@ Standards for identifying and applying existing codebase patterns to maintain co
 | Refactor if needed | Update old code to match new pattern |
 
 ---
+
+## Example: React + TypeScript conventions (illustrative)
+
+> Illustrative — the naming, component, hook, service, and type conventions below
+> are one team's React/TypeScript catalog shown as a concrete example. The
+> reusable skill is the *process* above (scan → extract → apply existing
+> conventions). Substitute your stack's actual conventions; the value of this
+> skill is matching whatever your codebase already does, not adopting these
+> specific rules.
 
 ## Naming Conventions
 
@@ -152,33 +161,40 @@ Standards for identifying and applying existing codebase patterns to maintain co
 
 | Anti-Pattern | Problem | Solution |
 |--------------|---------|----------|
-| Props drilling | Hard to maintain | Use Zustand or Context |
+| Props drilling | Hard to maintain | Use a shared store or context |
 | Large components | Hard to test/read | Extract sub-components |
-| Inline styles | Inconsistent | Use MUI sx prop |
+| Inline styles | Inconsistent | Use your styling system's tokens |
 | `any` type | Loses type safety | Define proper types |
 | Barrel exports | Circular dependencies | Use direct imports |
 | Mixed conventions | Confusing | Follow established patterns |
 
 ---
 
-## Backend Code Reuse Protocol
+## Code Reuse Protocol
 
-Before writing ANY new backend utility, search these locations first:
+The universal rule: **before writing ANY new utility, grep the codebase for an
+existing one.** Map your project's shared modules and reuse them instead of
+creating parallel helpers, exception hierarchies, or clients.
+
+### Example: a backend `core/` layout (illustrative)
+
+> Illustrative — one team's shared-module layout. Substitute your project's
+> actual shared modules. The reusable rule is "search before you create".
 
 | Module | Contains | Example |
 |--------|----------|---------|
 | `core/utils/` | datetime, validation, paths, formatters, file, language | `utc_now()`, `validate_uuid()`, `ensure_dir()` |
 | `core/exceptions.py` | Base exceptions: AppError, NotFoundError, CreationError, GitHubError | Inherit, don't create parallel hierarchies |
-| `core/http_client.py` | Singleton async httpx client with connection pooling | `get_http_client()` for all HTTP calls |
+| `core/http_client.py` | Singleton async HTTP client with connection pooling | `get_http_client()` for all HTTP calls |
 | `core/config.py` | App configuration and settings | Centralized env var access |
-| `*/service.py` | Domain service layer (projects, users, sonarqube) | Match existing service patterns |
-| `*/schemas.py` | Pydantic models per domain | Follow existing schema structure |
+| `*/service.py` | Domain service layer | Match existing service patterns |
+| `*/schemas.py` | Validation models per domain | Follow existing schema structure |
 
 ### Rules
-1. **Grep before creating** - Search `core/` for existing function before writing a new one
-2. **Inherit base exceptions** - New domain errors must extend `AppError` from `core/exceptions.py`
-3. **Use shared HTTP client** - Import `get_http_client()` from `core/http_client.py`, never create new `httpx.AsyncClient`
-4. **Follow service pattern** - New services should match structure of `projects/service.py` or `sonarqube/service.py`
+1. **Grep before creating** - Search shared modules for an existing function before writing a new one
+2. **Inherit base exceptions** - New domain errors must extend the project's base error type
+3. **Use shared clients** - Reuse the project's shared HTTP/DB client, never spin up a new one ad hoc
+4. **Follow service pattern** - New services should match the structure of existing services
 
 ---
 

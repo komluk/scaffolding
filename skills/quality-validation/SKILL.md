@@ -28,7 +28,7 @@ Systematic validation ensuring ResearchPacks and Implementation Plans meet quali
 
 ### Gate 3: Implementation → Completion
 - **Trigger**: Code complete
-- **Pass**: `npm run validate` passes
+- **Pass**: your project's validate/lint/test command passes (e.g. `npm run validate`, `pytest`, `make check`, `cargo test`)
 - **Fail**: Trigger self-correction (max 3 attempts)
 
 ## ResearchPack Validation (100 pts, pass: 80)
@@ -75,20 +75,25 @@ Systematic validation ensuring ResearchPacks and Implementation Plans meet quali
 - Plan matches ResearchPack: 10 pts
 - Addresses all requirements: 5 pts
 
-## Frontend Validation Commands
+## Validation Commands
+
+Run your project's own validate/lint/type-check/test command at the completion
+gate. The exact command depends on your stack — substitute the equivalents below.
+
+| Step | Generic intent | Example (Node/TS) | Example (Python) |
+|------|----------------|-------------------|------------------|
+| Type check | Static type safety | `npm run type-check` | `mypy .` |
+| Lint | Style / static analysis | `npm run lint` | `ruff check .` |
+| Build | Compile / package | `npm run build` | `python -m build` |
+| Tests | Behavioral verification | `npm test` | `pytest` |
+| Full gate | One command runs all | `npm run validate` | `make check` |
 
 ```bash
-# TypeScript type checking
-npm run type-check
-
-# ESLint validation
-npm run lint
-
-# Production build
-npm run build
-
-# Full validation
+# Example (Node/TypeScript): full validation
 npm run validate
+
+# Example (Python): full validation
+pytest && ruff check . && mypy .
 ```
 
 ## Common Failures

@@ -1,6 +1,6 @@
 ---
 name: logging-standards
-description: "Structured logging standards using structlog and Seq. TRIGGER when: adding log statements, configuring loggers, or reviewing log output. SKIP: metrics and alerting (use monitoring-observability); error control flow (use error-handling)."
+description: "Structured logging standards: log levels, structured fields, correlation IDs, PII masking, and event naming. TRIGGER when: adding log statements, configuring loggers, or reviewing log output. SKIP: metrics and alerting (use monitoring-observability); error control flow (use error-handling). (Examples use structlog + an OTLP sink.)"
 ---
 
 # Logging Standards Skill
@@ -232,11 +232,16 @@ Standards for consistent, useful logging across all application layers.
 
 ---
 
-## Project-Specific Patterns
+## Example: structlog + OTLP sink (illustrative)
 
-### structlog Configuration (`core/logging/config.py`)
+> Illustrative — this is one team's logging stack shown as a concrete example.
+> Substitute your own logging library, processor pipeline, and log sink. The
+> universal guidance above (levels, structured fields, correlation IDs, PII
+> masking, event naming) is the reusable part; the specifics below are an example.
 
-This project uses **structlog** with stdlib integration, routing all logs through Python's `logging` module with per-handler formatters.
+### structlog Configuration (`<your-logging-module>/config.py`)
+
+This example uses **structlog** with stdlib integration, routing all logs through Python's `logging` module with per-handler formatters.
 
 **Processor chain** (shared across all handlers):
 ```python
@@ -254,7 +259,7 @@ shared_processors = [
 
 **Two output pipelines:**
 1. **Console** - `ConsoleRenderer(colors=True)` for dev, `JSONRenderer` for prod
-2. **OTLP/Seq** - `JSONRenderer` always (no ANSI codes), via `OTLPLogExporter`
+2. **OTLP sink** (e.g. Seq, Grafana Loki, any OTLP collector) - `JSONRenderer` always (no ANSI codes), via `OTLPLogExporter`
 
 ### Context Variables
 
@@ -283,9 +288,9 @@ logger.error("redis.queue_push_error", queue=name, error=str(e))
 logger.debug("redis.subscribed", channel=ch, task_id=tid)
 ```
 
-### Seq/OpenTelemetry Integration
+### OTLP Sink / OpenTelemetry Integration
 
-Configured in `main.py` at startup:
+Configured at app startup (this example targets a Seq OTLP endpoint):
 ```python
 setup_logging(
     log_level=LOG_LEVEL,      # From core.config (env: LOG_LEVEL)
@@ -303,7 +308,7 @@ Shutdown flushes pending logs: `shutdown_logging()` called in app lifespan teard
 ### Key Files
 | File | Purpose |
 |------|---------|
-| `core/logging/__init__.py` | Public API: `get_logger`, `set_log_context`, `TaskLogger` |
-| `core/logging/config.py` | structlog setup, OTel/Seq integration, context vars |
-| `core/logging/task_logger.py` | Task-specific step logging |
-| `core/middleware/` | `CorrelationIdMiddleware`, `LoggingMiddleware`, `UserContextMiddleware` |
+| `<your-logging-module>/__init__.py` | Public API: `get_logger`, `set_log_context`, `TaskLogger` |
+| `<your-logging-module>/config.py` | structlog setup, OTel/OTLP integration, context vars |
+| `<your-logging-module>/task_logger.py` | Task-specific step logging |
+| `<your-middleware-module>/` | `CorrelationIdMiddleware`, `LoggingMiddleware`, `UserContextMiddleware` |

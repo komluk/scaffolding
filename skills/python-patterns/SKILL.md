@@ -1,22 +1,43 @@
 ---
 name: python-patterns
-description: "Python backend patterns: FastAPI, async SQLAlchemy, Pydantic. TRIGGER when: creating routes, models, schemas, or services in Python. SKIP: REST contract design (use api-design); schema/index tuning (use database-optimization)."
+description: "Python backend patterns: layered architecture, async I/O, dependency injection, request/response schemas, and repository/service separation. TRIGGER when: creating routes, models, schemas, or services in a Python backend. SKIP: REST contract design (use api-design); schema/index tuning (use database-optimization). (Examples use FastAPI + SQLAlchemy + Pydantic.)"
 ---
 
 # Python Backend Patterns Skill
 
 ## Purpose
-Best practices for Python backend development with FastAPI, SQLAlchemy, and async programming.
+Best practices for Python backend development: layered architecture, async I/O, dependency injection, and clear separation between HTTP handling, business logic, and data access. The concrete examples below use FastAPI, SQLAlchemy, and Pydantic, but the patterns apply to any Python web framework, ORM, and validation library.
 
 ## Auto-Invoke Triggers
-- Creating FastAPI routes
-- Working with SQLAlchemy models
+- Creating backend routes / endpoints
+- Working with ORM models
 - Implementing async operations
-- Creating Pydantic schemas
+- Creating request/response validation schemas
 
 ---
 
-## Project Structure
+## Layer Responsibilities
+
+| Layer | Responsibility |
+|-------|----------------|
+| **Endpoints** | HTTP handling, request/response |
+| **Services** | Business logic, orchestration |
+| **Repositories** | Data access, queries |
+| **Models** | Database schema |
+| **Schemas** | Data validation, serialization |
+
+These layers are framework-agnostic — keep HTTP concerns, business rules, and
+data access in separate modules regardless of which framework/ORM you use.
+
+---
+
+## Example: FastAPI + SQLAlchemy + Pydantic (illustrative)
+
+> Illustrative — this is one concrete stack shown as an example. Substitute your
+> framework's equivalents (any ASGI/WSGI framework, ORM, and validation library).
+> The layering and separation-of-concerns patterns above are the reusable part.
+
+### Project Structure
 
 ```
 app/
@@ -35,18 +56,6 @@ app/
     ├── alembic.ini
     └── requirements.txt
 ```
-
----
-
-## Layer Responsibilities
-
-| Layer | Responsibility |
-|-------|----------------|
-| **Endpoints** | HTTP handling, request/response |
-| **Services** | Business logic, orchestration |
-| **Repositories** | Data access, queries |
-| **Models** | Database schema |
-| **Schemas** | Data validation, serialization |
 
 ---
 
