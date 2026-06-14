@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] - 2026-06-14
+
+### Added
+- **`memory` skill** — unified memory CRUD: write/update/delete/query file-based markdown entries and sync to the MCP semantic store, with dedup-before-write. Brings the skill library to 33.
+
 ## [2.4.0] - 2026-06-06
 
 ### Added
