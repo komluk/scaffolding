@@ -1,8 +1,8 @@
 # claude-scaffolding
 
-[![Version](https://img.shields.io/badge/version-2.2.0-blue?style=flat-square)](https://github.com/komluk/scaffolding/releases) [![License: MIT](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Works with Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2?style=flat-square)](https://github.com/komluk/scaffolding) [![Agents](https://img.shields.io/badge/agents-11-orange?style=flat-square)](agents/) [![Skills](https://img.shields.io/badge/skills-32-orange?style=flat-square)](skills/) [![Commands](https://img.shields.io/badge/commands-15-orange?style=flat-square)](commands/)
+[![Version](https://img.shields.io/badge/version-2.4.0-blue?style=flat-square)](https://github.com/komluk/scaffolding/releases) [![License: MIT](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Works with Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2?style=flat-square)](https://github.com/komluk/scaffolding) [![Agents](https://img.shields.io/badge/agents-11-orange?style=flat-square)](agents/) [![Skills](https://img.shields.io/badge/skills-32-orange?style=flat-square)](skills/) [![Commands](https://img.shields.io/badge/commands-16-orange?style=flat-square)](commands/) [![Listed on ClaudePluginHub](https://www.claudepluginhub.com/badge/komluk-scaffolding)](https://www.claudepluginhub.com/plugins/komluk-scaffolding?ref=badge)
 
-Portable Claude Code configuration: 11 agents, 32 skills, 15 commands, 8 hooks,
+Portable Claude Code configuration: 11 agents, 32 skills, 16 commands, 9 hooks,
 spec-driven workflows. Installs as a Claude Code plugin.
 
 ## Overview
@@ -18,7 +18,7 @@ long-running process required.
 - **Spec-driven workflows** — OpenSpec-style specs keep work grounded and reproducible.
 - **11 specialized agents** — analyst, architect, developer, reviewer, debugger, and more, each with a focused role.
 - **Parallel multi-agent orchestration** — fan out work across agents and coordinate results.
-- **Opinionated guardrail hooks** — 8 safety and lifecycle hooks block destructive commands and enforce conventions.
+- **Opinionated guardrail hooks** — 9 safety and lifecycle hooks block destructive commands and enforce conventions.
 - **Extensible & self-improving** — `/create-skill` scaffolds your own scaffolding-compatible skills, and `/learn` closes the loop by distilling reusable insights from finished conversations.
 - **Zero backend required** — pure markdown and Claude Code runtime; no database, server, or process to run.
 

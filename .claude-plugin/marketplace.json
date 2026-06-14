@@ -8,7 +8,7 @@
     {
       "name": "scaffolding",
       "source": "./",
-      "description": "11 agents, 32 skills, 15 commands, 8 hooks — spec-driven multi-agent orchestration for Claude Code."
+      "description": "11 agents, 32 skills, 16 commands, 9 hooks — spec-driven multi-agent orchestration for Claude Code, with optional cross-device semantic memory."
     }
   ]
 }
