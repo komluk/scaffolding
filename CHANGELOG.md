@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.1] - 2026-06-14
+
+### Changed
+- **Leaner SessionStart hook.** `session-start-protocol.sh` now injects a thin pointer to `CLAUDE.md` instead of re-emitting the full routing table (~3,800 chars), saving ~800–950 tokens per session-start/resume/compact.
+
+### Fixed
+- **Stale `claude-scaffolding:` namespace** in the SessionStart hook corrected to `scaffolding:`, matching the registered marketplace namespace and `CLAUDE.md`.
+- **Duplicate SessionStart registration** removed from `settings.json` (it had broken `.claude/hooks/...` paths and double-injected the protocol); `plugin.json` is now the single source of truth for hook registration.
+
 ## [2.5.0] - 2026-06-14
 
 ### Added
