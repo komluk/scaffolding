@@ -10,6 +10,7 @@ skills:
   - spec-workflow
   - spec-design
   - semantic-memory-mcp
+  - agent-comms
 maxTurns: 25
 disallowedTools:
   - Edit
@@ -404,23 +405,7 @@ Use markers: `[VERIFIED]`, `[UNVERIFIED]`, `[DEPRECATED-RISK]` for all API refer
 
 ## Comms Protocol (when invoked via coordinator fan-out)
 
-**Recipient validation:** Before any SendMessage, verify the `to:` value:
-- Matches regex `/^[a-z][a-z0-9-]{2,30}$/` (kebab-case, 3-31 chars)
-- Validate using TWO-STAGE matching:
-  1. **Exact match first:** check if `to:` matches one of: `researcher`, `architect`, `developer`, `reviewer`, `gitops`, `orchestrator`, `analyst`, `debugger`, `optimizer`, `devops`, `tech-writer`. If yes → PASS.
-  2. **Suffix strip only if no exact match:** strip trailing `-<digit>+` OR `-<word>` from the END of the name and re-check against whitelist. Apply ONE strip pass only (never recursive).
-  - Test cases (must all PASS):
-    - `tech-writer` → exact match → PASS
-    - `tech-writer-1` → no exact match → strip `-1` → `tech-writer` → PASS
-    - `researcher-1` → no exact match → strip `-1` → `researcher` → PASS
-    - `analyst-backend` → no exact match → strip `-backend` → `analyst` → PASS
-    - `architect-synth` → no exact match → strip `-synth` → `architect` → PASS
-  - Test cases (must FAIL):
-    - `evil-developer` → no exact match → strip `-developer` → `evil` → not in whitelist → FAIL
-    - `developer-evil-extra` → no exact match → strip `-extra` → `developer-evil` → not in whitelist → FAIL
-- If validation fails → return result to orchestrator with error metadata. NEVER attempt SendMessage with unvalidated input.
-
-Note: "orchestrator" is a reserved peer always reachable for escalation, even when not in your peer list.
+**Recipient validation:** validate any SendMessage `to:` against the agent whitelist — exact match first (`researcher`, `architect`, `developer`, `reviewer`, `gitops`, `orchestrator`, `analyst`, `debugger`, `optimizer`, `devops`, `tech-writer`), then a single trailing `-<digit>`/`-<word>` suffix-strip and re-check; reject (escalate to orchestrator, NEVER send) otherwise. "orchestrator" is always reachable for escalation. Full algorithm + PASS/FAIL test cases: see the `agent-comms` skill.
 
 **Peer existence check:** Before SendMessage to upstream `researcher` (or any peer beyond the immediate downstream), verify the recipient is listed in your "peer names" parameter. If `researcher` is NOT in your peer list, escalate to orchestrator with `error: "missing_upstream_peer", required: "researcher"` instead of attempting SendMessage. NEVER wait indefinitely for a peer that was not spawned.
 

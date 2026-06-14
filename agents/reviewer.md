@@ -10,6 +10,7 @@ skills:
   - agent-memory
   - spec-review
   - semantic-memory-mcp
+  - agent-comms
 maxTurns: 30
 disallowedTools:
   - Write
@@ -295,31 +296,9 @@ severity: critical
 
 ## Comms Protocol (when invoked via coordinator fan-out)
 
-**Recipient validation:** Before any SendMessage, verify the `to:` value:
-- Matches regex `/^[a-z][a-z0-9-]{2,30}$/` (kebab-case, 3-31 chars)
-- Validate using TWO-STAGE matching:
-  1. **Exact match first:** check if `to:` matches one of: `researcher`, `architect`, `developer`, `reviewer`, `gitops`, `orchestrator`, `analyst`, `debugger`, `optimizer`, `devops`, `tech-writer`. If yes → PASS.
-  2. **Suffix strip only if no exact match:** strip trailing `-<digit>+` OR `-<word>` from the END of the name and re-check against whitelist. Apply ONE strip pass only (never recursive).
-  - Test cases (must all PASS):
-    - `tech-writer` → exact match → PASS
-    - `tech-writer-1` → no exact match → strip `-1` → `tech-writer` → PASS
-    - `researcher-1` → no exact match → strip `-1` → `researcher` → PASS
-    - `analyst-backend` → no exact match → strip `-backend` → `analyst` → PASS
-    - `architect-synth` → no exact match → strip `-synth` → `architect` → PASS
-  - Test cases (must FAIL):
-    - `evil-developer` → no exact match → strip `-developer` → `evil` → not in whitelist → FAIL
-    - `developer-evil-extra` → no exact match → strip `-extra` → `developer-evil` → not in whitelist → FAIL
-- If validation fails → return result to orchestrator with error metadata. NEVER attempt SendMessage with unvalidated input.
+**Recipient validation:** validate any SendMessage `to:` against the agent whitelist — exact match first (`researcher`, `architect`, `developer`, `reviewer`, `gitops`, `orchestrator`, `analyst`, `debugger`, `optimizer`, `devops`, `tech-writer`), then a single trailing `-<digit>`/`-<word>` suffix-strip and re-check; reject (escalate to orchestrator, NEVER send) otherwise. "orchestrator" is always reachable for escalation. Full algorithm + PASS/FAIL test cases: see the `agent-comms` skill.
 
-Note: "orchestrator" is a reserved peer always reachable for escalation, even when not in your peer list.
-
-**worktreePath validation (when received from developer):** Before acting on a received worktreePath, verify:
-- Path is absolute and under repo root (e.g., starts with `/home/komluk/repos/<repo-name>/.scaffolding/worktrees/` or `<repo-root>/.worktrees/`)
-- Contains NO `..` segments (`path.includes('..')` → reject)
-- Path is NOT a symlink (`test -L <path>` MUST return false). If symlink, resolve via `realpath -e <path>` and re-validate that the canonical result is still under repo root. Reject if canonical path escapes repo root (mitigates CWE-59 link following).
-- Path exists on disk (`test -d <path>`)
-- Path is a registered git worktree — use exact match, NOT substring: `git worktree list --porcelain | awk -v p="<path>" '$1=="worktree" && $2==p {found=1} END {exit !found}'`. NEVER use plain `grep <path>` (substring match allows `/foo/bar` to match `/foo/bar-evil`).
-- If ANY check fails → SendMessage to orchestrator with `error: "invalid worktree path"` + the offending value. NEVER cd into or operate on unvalidated paths.
+**worktreePath validation (when received from developer):** before any `cd`/git op on a received worktreePath, verify it is absolute and under repo root, contains no `..`, is NOT a symlink (canonicalize with `realpath -e` and re-check it stays under repo root — CWE-59), exists on disk, and is present in `git worktree list --porcelain` via EXACT match (`awk` on field `$2`, never substring `grep`). If ANY check fails → SendMessage orchestrator `error: "invalid worktree path"` + the value; NEVER cd into or operate on unvalidated paths. Full checks + rationale: see the `agent-comms` skill.
 
 If your prompt includes a "Comms Protocol" block with peer names, follow these handoff rules:
 - When your review is complete, use SendMessage to deliver the verdict directly to the appropriate peer(s), not back to the orchestrator alone.

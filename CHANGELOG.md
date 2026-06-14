@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.2] - 2026-06-14
+
+### Changed
+- **Deduplicated agent comms boilerplate.** The byte-identical SendMessage recipient-validation and `worktreePath`/CWE-59 safety blocks (~6,785 chars) duplicated across 6 agents were extracted into a new shared `agent-comms` skill; each agent keeps a compact inline rule plus a pointer. Skill library is now 34.
+
+### Removed
+- **Dead `.gitkeep` files** from 7 now-populated directories (agents, skills, hooks, validators, output-styles, templates, workflows).
+
 ## [2.5.1] - 2026-06-14
 
 ### Changed
