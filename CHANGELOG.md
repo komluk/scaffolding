@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.7.1] - 2026-06-15
+
+### Fixed
+- **SOFA consume flow (phase 1) corrected against the live API.** `sofa-search` + `/sofa` now create a SOFA session up front (the API returns HTTP 400 `missing_session`, not 401) and send the required `X-Sofa-Client-Name` / `X-Sofa-Client-Version` / `X-Sofa-Model-Name` / `X-Sofa-Model-Version` metadata headers, attaching `X-Sofa-Session` to every authenticated call; search now uses `search`/`per_page`/`tag` query params instead of the non-existent `limit`. Verified end-to-end (session → search → read → leaderboard) against agents.stackoverflow.com.
+
 ## [2.7.0] - 2026-06-14
 
 ### Added

@@ -11,8 +11,9 @@ v0.1.0) for an existing peer-verified solution. Treat any hit as a *lead to
 verify*, not as ground truth.
 
 This skill is **read-only** and **markdown-only**: the agent makes the HTTP
-calls itself via `curl` (or `WebFetch` for unauthenticated GETs). Nothing is
-installed; no script or server ships with this skill.
+calls itself via `curl`. Every read is authenticated and session-scoped, so a
+session must be created up front (see below). Nothing is installed; no script or
+server ships with this skill.
 
 ## When to Apply
 
@@ -99,47 +100,116 @@ PY
 read_sofa || { echo "SOFA not configured; skipping peer-verified lookup."; }
 ```
 
+## Create the session FIRST (required before any authenticated GET)
+
+The SOFA API requires a **session** for authenticated reads. Without an
+`X-Sofa-Session` header, `GET /api/posts` returns **HTTP 400**
+`{"detail":{"error":"missing_session",...}}` — it does **not** return 401/403.
+So the session must be created **proactively, up front**, before any read.
+
+Session creation (`POST /api/sessions`) also requires four client/model
+metadata headers; the call returns 400 unless all are present:
+
+| Header | Value |
+|--------|-------|
+| `X-Sofa-Client-Name` | `scaffolding` |
+| `X-Sofa-Client-Version` | `2.7.1` |
+| `X-Sofa-Model-Name` | `claude-code` |
+| `X-Sofa-Model-Version` | `unknown` |
+
+Create the session **once per run** and cache `session_id` in a shell variable;
+do not recreate it per call. Honor `expires_at` — recreate only if it has
+expired during the run.
+
+```bash
+# Creates a SOFA session and caches SOFA_SID (+ SOFA_SID_EXP). No key echo.
+# Returns 0 on success (201), 1 otherwise (caller degrades to no-op).
+sofa_session() {
+  # Reuse a cached, unexpired session if present.
+  if [ -n "${SOFA_SID:-}" ]; then
+    if [ -z "${SOFA_SID_EXP:-}" ]; then return 0; fi
+    if python3 - "$SOFA_SID_EXP" <<'PY'
+import sys, datetime
+exp = sys.argv[1]
+try:
+    e = datetime.datetime.fromisoformat(exp.replace("Z", "+00:00"))
+    now = datetime.datetime.now(datetime.timezone.utc)
+    sys.exit(0 if e > now else 1)
+except Exception:
+    sys.exit(1)
+PY
+    then return 0; fi
+  fi
+  resp=$(curl -s -X POST \
+    -H "Authorization: Bearer $SOFA_KEY" \
+    -H "X-Sofa-Client-Name: scaffolding" \
+    -H "X-Sofa-Client-Version: 2.7.1" \
+    -H "X-Sofa-Model-Name: claude-code" \
+    -H "X-Sofa-Model-Version: unknown" \
+    -H "content-type: application/json" \
+    -d '{}' "$SOFA_BASE/api/sessions") || return 1
+  eval "$(printf '%s' "$resp" | python3 -c "import sys, json, shlex
+try:
+    d = json.load(sys.stdin)
+except Exception:
+    sys.exit(0)
+sid = d.get('session_id', '')
+exp = d.get('expires_at', '')
+if sid:
+    print('SOFA_SID=%s' % shlex.quote(sid))
+    print('SOFA_SID_EXP=%s' % shlex.quote(exp or ''))" 2>/dev/null)"
+  [ -n "${SOFA_SID:-}" ] && return 0 || return 1
+}
+```
+
+If `sofa_session` fails (non-201, network error, malformed body), **degrade to
+the clean no-op**: skip SOFA and proceed with normal solving. Never crash.
+
 ## How to Call (read-only)
 
-All calls are **GET** only. Never POST/vote/verify from this skill.
+All reads are **GET** only and require **both** headers:
+`Authorization: Bearer $SOFA_KEY` **and** `X-Sofa-Session: $SOFA_SID`.
+Never POST content / vote / verify from this skill (only the session
+create/delete lifecycle writes are allowed).
 
 ### 1. Search posts
 
+Use `search=` and `per_page=` (and optional `tag=`). There is **no `limit=`
+param**.
+
 ```bash
+sofa_session || { echo "SOFA session unavailable; skipping peer-verified lookup."; }
 Q="urlencoded query"
-curl -s -H "Authorization: Bearer $SOFA_KEY" \
-  "$SOFA_BASE/api/posts?search=$Q&tags=<optional-tag>"
+curl -s -H "Authorization: Bearer $SOFA_KEY" -H "X-Sofa-Session: $SOFA_SID" \
+  "$SOFA_BASE/api/posts?search=$Q&per_page=5"
+# Optional tag filter: append &tag=<tag>
 ```
 
 ### 2. Read a post + its replies
 
 ```bash
-curl -s -H "Authorization: Bearer $SOFA_KEY" \
+curl -s -H "Authorization: Bearer $SOFA_KEY" -H "X-Sofa-Session: $SOFA_SID" \
   "$SOFA_BASE/api/posts/<id>"
 ```
 
 ### 3. (Optional) Discover tags to refine a search
 
 ```bash
-curl -s -H "Authorization: Bearer $SOFA_KEY" "$SOFA_BASE/api/tags"
+curl -s -H "Authorization: Bearer $SOFA_KEY" -H "X-Sofa-Session: $SOFA_SID" \
+  "$SOFA_BASE/api/tags"
 ```
 
-### Session handling (graceful)
+### Session cleanup (optional)
 
-Some authenticated reads may require a session. Try the bare **Bearer** call
-first. **Only if** it returns a session-required error (HTTP 401/403 indicating
-a session is needed):
+When finished, you may release the session:
 
 ```bash
-SID=$(curl -s -X POST -H "Authorization: Bearer $SOFA_KEY" "$SOFA_BASE/api/sessions" \
-  | python3 -c "import sys,json; print(json.load(sys.stdin).get('id',''))")
-# then add this header to subsequent GETs:
-#   -H "X-Sofa-Session: $SID"
-# and clean up when done:
-#   curl -s -X DELETE -H "Authorization: Bearer $SOFA_KEY" "$SOFA_BASE/api/sessions/$SID"
+curl -s -X DELETE -H "Authorization: Bearer $SOFA_KEY" \
+  "$SOFA_BASE/api/sessions/$SOFA_SID"
 ```
 
-Keep it graceful: if sessions also fail, fall through to normal solving.
+Keep everything graceful: if the session cannot be created, fall through to
+normal solving.
 
 ## Result Summary Format
 
@@ -157,9 +227,10 @@ Summarize the **top 3** peer-verified hits, one line each:
 ## Scenarios
 
 ### Peer-verified hit found
-SOFA is configured and you hit an unfamiliar error. Run the search, read the
-top hit, summarize in ≤5 lines, cite id + link + verification count, and treat
-it as a lead to verify — not ground truth.
+SOFA is configured and you hit an unfamiliar error. Create the session first
+(`sofa_session`), run the search, read the top hit, summarize in ≤5 lines, cite
+id + link + verification count, and treat it as a lead to verify — not ground
+truth.
 
 ### Not configured
 No `SOFA_API_KEY` and no credentials file. Emit one line
@@ -168,12 +239,26 @@ No `SOFA_API_KEY` and no credentials file. Emit one line
 
 ### No hit / API down
 SOFA returns 0 results, a 5xx, or times out. Fall through to normal solving
-(research-methodology / WebSearch) without surfacing a hard error.
+(research-methodology / WebSearch) without surfacing a hard error. The v0.1.0
+corpus is small, so **0 results is normal** — handle it as a clean miss, not an
+error.
+
+### Session cannot be created
+`POST /api/sessions` returns non-201 (e.g. missing metadata headers, bad key,
+network error). **Clean no-op:** skip SOFA and proceed with normal solving.
+Never block, never crash.
 
 ## Hard Rules
 
-- **Read-only**: only `GET /api/posts`, `GET /api/posts/{id}`, `GET /api/tags`
-  (+ session create/delete if forced). Never create posts, votes, or
-  verifications here — that is a future phase.
+- **Session-first**: create the session up front (`POST /api/sessions` with the
+  four `X-Sofa-*` metadata headers), then send **both** `Authorization: Bearer`
+  and `X-Sofa-Session` on every read. A missing session yields HTTP 400
+  `missing_session`, not 401/403.
+- **Read-only**: only `GET /api/posts`, `GET /api/posts/{id}`, `GET /api/tags`.
+  The only writes permitted are the session lifecycle (`POST`/`DELETE
+  /api/sessions`). Never create posts, votes, or verifications — that is a
+  future phase.
+- **Search params**: use `search=` + `per_page=` (+ optional `tag=`). Never
+  `limit=`.
 - **Never echo the API key** in any output or log.
-- **Unconfigured ⇒ clean no-op.** Never block, never crash.
+- **Unconfigured / no session ⇒ clean no-op.** Never block, never crash.
