@@ -77,7 +77,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/post-edit-review.sh"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/post-edit-review.sh"
           }
         ]
       },
@@ -86,7 +86,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/file-staleness-update.sh"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/file-staleness-update.sh"
           }
         ]
       }
@@ -97,7 +97,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/pre-commit-validation.sh"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/pre-commit-validation.sh"
           }
         ]
       },
@@ -106,7 +106,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/block-force-push.sh"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/block-force-push.sh"
           }
         ]
       },
@@ -115,7 +115,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/file-staleness-check.sh"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/file-staleness-check.sh"
           }
         ]
       },
@@ -124,7 +124,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/block-env-write.sh"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/block-env-write.sh"
           }
         ]
       },
@@ -133,7 +133,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/block-destructive-rm.sh"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/block-destructive-rm.sh"
           }
         ]
       }
