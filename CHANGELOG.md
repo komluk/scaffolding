@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.7.3] - 2026-06-25
+
+### Changed
+- **Trimmed `CLAUDE.md` static context by ~44%** (146 → 71 lines, 5884 → 3306 chars). Removed four sections that duplicated content already shipped as on-demand skills: *Worktree Delegation Protocol* (→ `worktree-management`), *MCP Tools* (→ `mcp-tools`), *OpenSpec & Specs Path* (→ `spec-workflow`), and the redundant *Delegation Format* block. *Large Edit Prevention* folded into one Key Rules line. Routing fidelity preserved (all 11 agents + decision tree intact). Applies the static-vs-dynamic context boundary from Google's "New SDLC with Vibe Coding" whitepaper — static context is paid on every turn, so reference detail belongs in dynamic skills.
+
+## [2.7.2] - 2026-06-24
+
+### Fixed
+- **Hook commands in `settings.json` now use `${CLAUDE_PLUGIN_ROOT}`.** The 7 Edit/Write and git hooks were registered with relative paths (`.claude/hooks/*.sh`), resolved against the process cwd; when a tool ran from a cwd lacking `./.claude/hooks` (worktree isolation, other projects), `sh` reported `not found` — non-blocking but noisy on every edit. Now matches `plugin.json` (fixed earlier in 38e70b4).
+
 ## [2.7.1] - 2026-06-15
 
 ### Fixed
