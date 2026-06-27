@@ -8,6 +8,9 @@ description: "Scaffolding worktree lifecycle, diagnostics, and recovery. TRIGGER
 ## Purpose
 Scaffolding.tool-specific worktree lifecycle management, diagnostics, and recovery procedures.
 
+Live worktrees:
+!`git worktree list 2>/dev/null || true`
+
 ## CRITICAL: Only gitops Touches Git
 
 Other agents (developer, architect) do NOT commit. The worktree flow is:

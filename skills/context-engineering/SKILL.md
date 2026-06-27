@@ -7,6 +7,8 @@ description: "Optimize Claude Code context-window usage for accuracy and cost. T
 
 Optimizes Claude Code context for better performance and accuracy.
 
+Tracked files in repo: !`git ls-files 2>/dev/null | wc -l || true`
+
 ## Auto-Invoke Triggers
 
 - Every 50 messages in conversation

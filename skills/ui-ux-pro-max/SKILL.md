@@ -1,6 +1,8 @@
 ---
 name: ui-ux-pro-max
 description: "Cross-stack UI/UX design intelligence: layout, color, typography, charts, accessibility. TRIGGER when: planning or reviewing UI/UX, choosing palettes/fonts, or improving accessibility. SKIP: Material-UI code specifics (use mui-styling); React component code (use react-patterns)."
+context: fork
+agent: general-purpose
 ---
 # UI/UX Pro Max - Design Intelligence
 
