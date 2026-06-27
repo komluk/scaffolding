@@ -114,6 +114,23 @@ Optimal structure for quick reference:
 2. [Critical rule]
 ```
 
+## Always-loaded vs lazy path-scoped rules
+
+CLAUDE.md content splits into two tiers by *when* it must be available:
+
+| Tier | Lives in | Loads | Examples |
+|------|----------|-------|----------|
+| **Always-loaded** | project-root `CLAUDE.md` | every message, before any file is touched | routing Protocol + Decision Tree + Agents table |
+| **Lazy / path-scoped** | nested `CLAUDE.md` in a subdir | only while editing under that directory tree | per-area code conventions, stack notes, types location |
+
+**Hard rule:** the routing sections NEVER move into a nested `CLAUDE.md` — routing
+must fire on the first message, but a nested file only loads on Edit/Write under
+its tree (too late to route). Only path-specific *code conventions* are
+candidates to relocate, and only via the opt-in `/init-rules` scaffolder. This
+trims always-loaded tokens (modest for the plugin CLAUDE.md, larger for heavy
+project repos) without weakening routing. `/doctor` asserts the routing section
+is still present in the root CLAUDE.md.
+
 ## Optimization Strategies
 
 ### Token Reduction

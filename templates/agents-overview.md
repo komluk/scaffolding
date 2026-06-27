@@ -2,6 +2,19 @@
 
 The agent system comprises **10 specialized agents** organized across three operational tiers.
 
+## Command → Agent → Skill responsibility split
+
+| Layer | Owns | Does NOT |
+|-------|------|----------|
+| **Command** | Arg parsing, UI/UX, sequencing agents, the final report | Domain logic or reusable methodology |
+| **Agent** | Doing the work for one role; carrying its skills | Arg parsing or cross-agent sequencing |
+| **Skill** | One reusable, auto-invokable methodology | Orchestrating agents or owning UI |
+
+An agent **preloads** a skill via `skills:` frontmatter when it needs it on
+nearly every task; otherwise the skill stays **invoked** on demand via its
+`description:` `TRIGGER`/`SKIP`. Full decision rule:
+`docs/orchestration-pattern.md`.
+
 ## Tier 1: Orchestration (1 Agent)
 
 ### architect

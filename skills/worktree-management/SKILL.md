@@ -16,6 +16,22 @@ Other agents (developer, architect) do NOT commit. The worktree flow is:
 
 If a worktree has no new commits after an agent finishes, the changes are uncommitted — gitops must commit them BEFORE merge.
 
+## Parallel Teammates: Isolation + Serialized Merge
+
+When Agent Teams is enabled (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`, see
+`docs/agent-teams.md`), multiple writer teammates may run concurrently. The
+worktree model makes this safe ONLY if both hold:
+
+- **Per-teammate isolation:** every writer gets its OWN worktree
+  `.scaffolding/worktrees/{task_id[:12]}` AND its OWN unique `SCAFFOLDING_TASK_ID`.
+  No two writers share a working tree or a `/tmp/scaffolding-mtime-${TASK_ID}.json`
+  staleness store — sharing would trip `file-staleness-check.sh` between them and
+  produce unattributable interleaved changes.
+- **Serialized merge:** gitops remains the SOLE committer and merges worktree
+  branches to main ONE AT A TIME through the `merging`→`merged` states below.
+  Parallel work is allowed; parallel committing/merging is not — only one merge
+  is ever in flight.
+
 ## Worktree Lifecycle
 
 ```

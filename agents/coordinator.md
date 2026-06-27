@@ -62,6 +62,31 @@ Hard rules:
 
 Stop rule: if ANY parallel step would depend on developer/reviewer/gitops output, fall back to pure JSON sequential plan.
 
+### Agent Teams (experimental — `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`)
+
+Default OFF: writers are sequential as above. When the env flag is set, the
+coordinator MAY additionally parallelize **independent writer teammates**
+(developer worktrees) — but ONLY under these mandatory constraints (full detail:
+`docs/agent-teams.md`):
+
+- **Per-writer isolation:** each writer teammate runs in its OWN worktree
+  `.scaffolding/worktrees/{task_id[:12]}` with its OWN unique `SCAFFOLDING_TASK_ID`.
+  No two writers share a working tree or staleness store.
+- **No teammate commits:** gitops stays the SOLE committer. Do not grant commit
+  authority or relax `disallowedTools` on any other agent. Teams change
+  orchestration only.
+- **gitops serializes merges:** worktree branches merge to main ONE AT A TIME via
+  the existing `merging`→`merged` state machine. Parallel work, never parallel
+  committing.
+- **Independence required:** writers parallelize ONLY when the architect's issue
+  graph marks them non-file-overlapping (workflow.yaml emits independent IMPL
+  issues). Overlap → fall back to sequential.
+- **Unchanged guardrails:** `MAX_PARALLEL=4` holds; developer/reviewer/gitops are
+  never parallel PEERS of each other; teams parallelize independent developer
+  worktrees, never duplicate gitops. Coordinator stays non-recursive.
+- **Handoff:** teammates use `agent-comms` SendMessage with recipient validation
+  (§1) and worktreePath validation (§2), reused UNCHANGED.
+
 ### Comms Protocol template (inject into every spawned agent's prompt)
 
 ```

@@ -25,6 +25,57 @@ This directory contains hooks that run automatically during Claude Code workflow
 - Blocks commit if validation fails
 - Ensures code quality before it enters git history
 
+### 3. post-edit-format.sh
+**Type:** PostToolUse hook (Edit|Write)
+**Triggers:** After Edit or Write tool usage
+**Purpose:** Auto-format the single edited file with a runtime-detected formatter
+
+**What it does:**
+- Extracts `file_path` from stdin JSON (no jq dependency)
+- Detects a formatter by extension and formats **only that one file**:
+  - `.py` → `ruff format` then `black` (project venv bin first, then PATH)
+  - `.ts/.tsx/.js/.jsx/.json/.css/.scss` → `prettier` (`node_modules/.bin` then `npx --no-install`)
+  - `.cs` → `dotnet format`
+- Skips silently when no formatter is present; swallows formatter errors
+- **Always exits 0** — best-effort cosmetic, never blocks an edit
+- **Opt-in:** gated behind env `SCAFFOLDING_AUTOFORMAT=1` (default off)
+
+### 4. notify.sh
+**Type:** Stop / Notification hook
+**Triggers:** When Claude finishes a turn (Stop) or raises a Notification
+**Purpose:** Desktop/terminal notification that a task finished or needs input
+
+**What it does:**
+- `notify-send` (Linux), else `osascript` (macOS), plus a terminal bell on a TTY
+- Pure no-op when no notifier is available
+- **Opt-in:** gated behind env `SCAFFOLDING_NOTIFY=1` (default off — noisy in CI)
+
+## PostToolUse(Edit|Write) ordering — CRITICAL
+
+The registered order in **both** `.claude-plugin/plugin.json` and `settings.json`
+MUST be:
+
+```
+1. post-edit-review.sh       (advisory, unchanged)
+2. post-edit-format.sh       (NEW — mutates the file, bumps mtime)
+3. file-staleness-update.sh  (MUST stay LAST — records post-format mtime)
+```
+
+Hooks run in listed array order. `file-staleness-update.sh` records the file's
+mtime so the next PreToolUse `file-staleness-check.sh` allows the next edit. If
+`post-edit-format.sh` ran *after* staleness-update, it would rewrite the file and
+bump the mtime past the recorded value, so the next edit would be falsely blocked
+as "modified externally". Formatting **before** staleness-update records the
+post-format mtime and avoids this. Never move `file-staleness-update.sh` out of
+the last position.
+
+## Environment flags
+
+| Flag | Default | Effect |
+|------|---------|--------|
+| `SCAFFOLDING_AUTOFORMAT` | off | `=1` enables `post-edit-format.sh` auto-formatting |
+| `SCAFFOLDING_NOTIFY` | off | `=1` enables `notify.sh` desktop/terminal notifications |
+
 ## Hook Configuration
 
 Hooks are configured in `.claude/settings.json`. See that file for:

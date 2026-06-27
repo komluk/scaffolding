@@ -2,6 +2,19 @@
 
 Skills are auto-invoked capabilities that enhance agent effectiveness. They provide standardized methodologies and best practices.
 
+## Command → Agent → Skill responsibility split
+
+| Layer | Owns | Does NOT |
+|-------|------|----------|
+| **Command** | Arg parsing, UI/UX, sequencing agents, the final report | Domain logic or reusable methodology |
+| **Agent** | Doing the work for one role; carrying its skills | Arg parsing or cross-agent sequencing |
+| **Skill** | One reusable, auto-invokable methodology | Orchestrating agents or owning UI |
+
+A skill is **preloaded** (in an agent's `skills:` frontmatter) when the agent
+needs it on nearly every task, or **invoked** (auto-loaded via its
+`description:` `TRIGGER`/`SKIP`) when it is situational. See
+`docs/orchestration-pattern.md` for the full decision rule.
+
 ## Core Skills (5)
 
 ### research-methodology
