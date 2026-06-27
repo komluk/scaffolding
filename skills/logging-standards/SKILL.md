@@ -1,6 +1,8 @@
 ---
 name: logging-standards
 description: "Structured logging standards: log levels, structured fields, correlation IDs, PII masking, and event naming. TRIGGER when: adding log statements, configuring loggers, or reviewing log output. SKIP: metrics and alerting (use monitoring-observability); error control flow (use error-handling). (Examples use structlog + an OTLP sink.)"
+context: fork
+agent: general-purpose
 ---
 
 # Logging Standards Skill

@@ -62,6 +62,25 @@ else
     fi
 fi
 
+# --- Check 3b: optional fields — context, agent, effort (allowed, value-checked) ---
+# These optional fields tune how a skill is delivered (e.g. `context: fork` runs
+# the skill in an isolated forked subagent). They are OPTIONAL; only their values
+# are constrained when present. Any other frontmatter key is left untouched.
+CONTEXT_VALUE=$(echo "$FRONTMATTER" | grep -oP '^context:\s*\K.*' | xargs 2>/dev/null || true)
+if [ -n "$CONTEXT_VALUE" ] && [ "$CONTEXT_VALUE" != "fork" ]; then
+    ERRORS+=("Invalid context: '${CONTEXT_VALUE}' (only 'fork' is supported)")
+fi
+
+AGENT_VALUE=$(echo "$FRONTMATTER" | grep -oP '^agent:\s*\K.*' | xargs 2>/dev/null || true)
+if [ -n "$AGENT_VALUE" ] && ! echo "$AGENT_VALUE" | grep -qE '^(Explore|Plan|general-purpose)$'; then
+    ERRORS+=("Invalid agent: '${AGENT_VALUE}' (must be Explore, Plan, or general-purpose)")
+fi
+
+EFFORT_VALUE=$(echo "$FRONTMATTER" | grep -oP '^effort:\s*\K.*' | xargs 2>/dev/null || true)
+if [ -n "$EFFORT_VALUE" ] && ! echo "$EFFORT_VALUE" | grep -qE '^(low|medium|high)$'; then
+    ERRORS+=("Invalid effort: '${EFFORT_VALUE}' (must be low, medium, or high)")
+fi
+
 # --- Check 4: at least one '##' heading in the body ---
 if ! grep -qE '^##[^#]' "$FILE"; then
     ERRORS+=("No '##' section heading found in body")

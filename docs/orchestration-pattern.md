@@ -46,6 +46,22 @@ Rationale and guardrails:
 - When in doubt, prefer **invoked** — under-triggering a situational skill is
   cheaper than paying its tokens on every unrelated task.
 
+## Forked — the third delivery mode
+
+A third way a skill can reach work is **forked**: a skill with `context: fork`
+in its frontmatter runs in an isolated subagent so its large body never pollutes
+the main thread's context.
+
+| Mode | Mechanism | Use when |
+|------|-----------|----------|
+| **Preloaded** | Agent `skills:` frontmatter — in context from turn one. | Needed on nearly every task. |
+| **Invoked** | Auto-loaded on demand via `description:` `TRIGGER`/`SKIP`. | Situational. |
+| **Forked** | Skill `context: fork` (+ optional `agent:`) — runs in an isolated subagent. | **Heavy AND one-shot** reference skills (e.g. `ui-ux-pro-max`, `mui-styling`). |
+
+Fork only heavy, one-shot reference skills; never iterative ones
+(`testing-strategy`, `pattern-recognition`) that need the live main context. See
+`skill-authoring` for the full fork rule.
+
 ## Validation
 
 The `/doctor` command validates this contract:

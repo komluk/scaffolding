@@ -1,6 +1,8 @@
 ---
 name: mui-styling
 description: "Material-UI (MUI) styling standards: sx-prop priority, theme tokens, spacing scale, responsive design, and accessibility. TRIGGER when: styling MUI components, defining theme tokens, or building responsive layouts. SKIP: component logic and hooks (use react-patterns); cross-stack UX/design decisions (use ui-ux-pro-max)."
+context: fork
+agent: general-purpose
 ---
 
 # MUI Styling Skill
