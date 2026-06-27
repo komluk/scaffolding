@@ -2,7 +2,8 @@
 name: architect
 description: Technical architect. MUST BE USED for system design, API design, implementation planning, multi-file refactoring, and agent orchestration. Receives proposal.md from analyst and produces design.md + tasks.md.
 tools: Read, Glob, Grep, Bash, Write
-model: inherit
+model: opus
+effort: high
 skills:
   - api-design
   - pattern-recognition

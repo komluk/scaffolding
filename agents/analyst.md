@@ -2,7 +2,8 @@
 name: analyst
 description: Requirements analyst. MUST BE USED for ambiguous requests, requirements gathering, scope assessment, feasibility checks, and proposal writing. PROACTIVELY interprets user intent and produces proposal.md specs.
 tools: Read, Glob, Grep, Bash, Write
-model: inherit
+model: opus
+effort: high
 skills:
   - spec-research
   - planning-methodology
