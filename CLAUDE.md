@@ -16,7 +16,7 @@
 
 ---
 
-## Agents (11)
+## Agents (13)
 
 | Agent | When to Use |
 |-------|-------------|
@@ -27,6 +27,8 @@
 | **scaffolding:debugger** | Bug reports, unexpected behavior, errors |
 | **scaffolding:reviewer** | After code changes, security analysis, threat modeling (gate: no criticals) |
 | **scaffolding:optimizer** | Performance issues, database design, schema, migrations, queries |
+| **scaffolding:prompt-engineer** | System prompts, prompt templates, guardrail rules, prompt evals, LLM-judge rubrics, injection defense |
+| **scaffolding:mcp-builder** | Build/modify MCP servers, tool schema design, stdio/http transport, MCP auth/secret launchers |
 | **scaffolding:tech-writer** | Documentation, CHANGELOG updates |
 | **scaffolding:devops** | CI/CD, deployment, infrastructure |
 | **scaffolding:gitops** | Branch management, conflict resolution, git history, worktree recovery, push to remote |
@@ -45,6 +47,8 @@
 - Architecture question -> architect
 - Requirements / scope / planning / ambiguous -> analyst
 - Review / security -> reviewer · CI/CD -> devops · DB / perf -> optimizer
+- Prompt / guardrail / system-prompt / eval / LLM-judge -> prompt-engineer
+- MCP server build / tool schema / transport -> mcp-builder
 - Git / commit / merge / push -> gitops
 - After ANY worktree agent completes -> gitops (commit + merge + push)
 - Multi-agent coordination -> coordinator

@@ -142,7 +142,7 @@ researcher → architect (plan) → developer
 
 ---
 
-## Summary: All 8 Agents
+## Summary: All 10 Agents
 
 | Agent | Primary Focus | Does NOT Do |
 |-------|---------------|-------------|
@@ -152,6 +152,8 @@ researcher → architect (plan) → developer
 | **debugger** | Root cause analysis | Fix implementation |
 | **reviewer** | All reviews, security, threat modeling | Writing code |
 | **optimizer** | Performance, database design, queries | Code changes |
+| **prompt-engineer** | System prompts, guardrails, prompt evals, LLM-judge rubrics | General app code, library research |
+| **mcp-builder** | MCP servers, tool schemas, transports, secret launchers | Library research, generic CI/CD |
 | **tech-writer** | All documentation | Code changes |
 | **devops** | CI/CD, infrastructure | Feature implementation |
 

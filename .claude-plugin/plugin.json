@@ -1,7 +1,7 @@
 {
   "name": "scaffolding",
   "version": "2.7.3",
-  "description": "11 agents, 35 skills, 18 commands, 9 hooks — spec-driven multi-agent orchestration for Claude Code, with optional cross-device semantic memory.",
+  "description": "13 agents, 35 skills, 18 commands, 9 hooks — spec-driven multi-agent orchestration for Claude Code, with optional cross-device semantic memory.",
   "author": {
     "name": "komluk",
     "url": "https://github.com/komluk"
