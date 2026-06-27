@@ -5,6 +5,77 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.8.0] - 2026-06-28
+
+All new behavior in this release is **opt-in or default-safe** — existing
+installs keep their previous behavior until a flag is set or an agent is
+explicitly invoked. Minor bump (additive, backward-compatible).
+
+### Added
+- **Two new agents — roster 11 → 13.**
+  - **`prompt-engineer`** — system prompts, prompt/template authoring, guardrail
+    rules, prompt evals, LLM-judge rubrics, and prompt-injection defense.
+  - **`mcp-builder`** — design, build, and test MCP servers: tool-schema design,
+    stdio/http transport, and MCP auth/secret launchers.
+  - Routing wired everywhere: `CLAUDE.md` agents table + decision tree,
+    `validators/validate-agent-output.sh` (`VALID_AGENTS` → 13-roster), and the
+    session-start protocol.
+- **Six new hooks (all opt-in or non-blocking).**
+  - `hooks/auto-init-check.sh` (SessionStart) — soft, idempotent auto-init check
+    that advises running `/init-scaffolding` when a project is unconfigured;
+    never mutates the repo.
+  - `hooks/post-edit-format.sh` (PostToolUse `Edit|Write`) — auto-formats only
+    the single edited file via a runtime-detected formatter (ruff/black,
+    prettier, `dotnet format`); always exits 0, never blocks. Opt-in via
+    `SCAFFOLDING_AUTOFORMAT=1`.
+  - `hooks/notify.sh` (Stop / Notification) — desktop/terminal notification when
+    a turn finishes or input is needed; pure no-op without a notifier. Opt-in via
+    `SCAFFOLDING_NOTIFY=1`.
+  - `hooks/completion-nudge.sh` (Stop) — nudges toward finishing the delegation
+    chain; loop-guarded via `stop_hook_active`. Opt-in via
+    `SCAFFOLDING_COMPLETION_NUDGE=1` (advisory) or `=block` (strict).
+  - `hooks/block-subagent.sh` (PreToolUse `Task`) — hard-denies the
+    `general-purpose` and `explore` subagent types.
+  - `hooks/file-size-warn.sh` (PostToolUse `Write`) — warn-only when a written
+    file exceeds 500 lines; never blocks.
+- **`/init-rules` command + `templates/nested-claude.md`** — scaffolds opt-in,
+  path-scoped nested `CLAUDE.md` rule files so per-area conventions lazy-load
+  only when Claude works under that directory, while routing stays always-loaded.
+- **Per-phase model tiers (opt-in by infra).** `analyst`, `architect`, and
+  `reviewer` frontmatter now declare `model: opus` + `effort: high`; `developer`
+  and all other agents stay `model: inherit`. Pinning the reviewer to a higher
+  tier than the implementer breaks same-model self-review — the reviewer now
+  records a `cross_model` field in its report (true when judged on a higher tier,
+  false when an infra fallback collapses both onto the same tier).
+- **`docs/model-tiers.md`** — documents the model-tier + cross-model-review
+  contract and the aiproxy/litellm mapping (the plugin emits only the literal
+  names `sonnet`/`opus`/`haiku`; backend mapping and any cross-vendor review live
+  on the aiproxy side).
+- **`docs/orchestration-pattern.md`** — multi-agent orchestration pattern guide.
+- **Experimental agent-teams mode + `docs/agent-teams.md`**, gated behind
+  `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` (off by default).
+- **`context: fork`** on four heavy skills (`ui-ux-pro-max`, `mui-styling`,
+  `logging-standards`, `monitoring-observability`) so they run in a forked
+  context instead of inflating the main thread.
+- **`` !`command` `` dynamic injection** in the `git-operations`,
+  `worktree-management`, and `context-engineering` skills, injecting live command
+  output at skill-load time.
+
+### Changed
+- **Critical rules emphasized with `<important>`** in `CLAUDE.md` (blocked
+  subagent types, delegation mandate) for stronger adherence.
+- **Softened forced delegation.** Trivial, conversational, or factual questions
+  may now be answered directly; real engineering work (code, design, debugging,
+  multi-step tasks) is still always delegated.
+- **Key Rule 3 demoted to a pre-commit-hook pointer** — validate-before-commit is
+  enforced deterministically by `hooks/pre-commit-validation.sh`, so the rule now
+  points at the hook rather than restating the policy.
+
+### Fixed
+- **Corrected stale component counts in `README.md` and `docs/`** — commands
+  18 → 19 (adds `/init-rules`), hooks 9 → 15, and refreshed the version badge from
+  the stale 2.7.1 to 2.8.0.
+
 ## [2.7.3] - 2026-06-25
 
 ### Changed
