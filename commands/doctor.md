@@ -138,9 +138,58 @@ fi
 # Check 5 — in-repo CLAUDE.md (per-project routing)
 if [ -f "./CLAUDE.md" ]; then
   pass "In-repo CLAUDE.md present — routing protocol travels to this repo"
+  # Check 5b — routing section intact (HARD INVARIANT: never relocate routing
+  # into nested CLAUDE.md). Guards against Item 1 extraction gone wrong.
+  if grep -q 'subagent_type="scaffolding:' "./CLAUDE.md" 2>/dev/null; then
+    pass "Routing section present in ./CLAUDE.md (always-loaded protocol intact)"
+  else
+    RECOMMENDED=$((RECOMMENDED+1))
+    fail "./CLAUDE.md is missing the routing protocol (Task subagent_type=\"scaffolding:...\")" "restore the Protocol + Decision Tree + Agents table to the project-root CLAUDE.md — routing must stay always-loaded, never only in a nested CLAUDE.md"
+  fi
 else
   RECOMMENDED=$((RECOMMENDED+1))
   fail "No ./CLAUDE.md — agent routing protocol won't apply in this project" "/init-scaffolding"
+fi
+
+# Check 5c — skills: references resolve + every skill has a description
+# (orchestration contract, Item 4). Validates the plugin install, not the repo.
+if [ -n "$PLUGIN_ROOT" ] && [ -d "$PLUGIN_ROOT/agents" ] && [ -d "$PLUGIN_ROOT/skills" ]; then
+  SKILL_ISSUES=$(python3 - "$PLUGIN_ROOT" <<'PY' 2>/dev/null || echo "ERR"
+import os, re, sys
+root = sys.argv[1]
+problems = []
+skills_dir = os.path.join(root, "skills")
+# Every skill must have a non-empty description in its frontmatter.
+for name in sorted(os.listdir(skills_dir)):
+    sk = os.path.join(skills_dir, name, "SKILL.md")
+    if not os.path.isfile(sk):
+        continue
+    head = open(sk, encoding="utf-8", errors="ignore").read()[:4000]
+    if not re.search(r'(?m)^description:\s*\S', head):
+        problems.append(f"skill '{name}' has no description:")
+# Every skills: reference in an agent must exist on disk.
+agents_dir = os.path.join(root, "agents")
+for fn in sorted(os.listdir(agents_dir)):
+    if not fn.endswith(".md"):
+        continue
+    txt = open(os.path.join(agents_dir, fn), encoding="utf-8", errors="ignore").read()
+    m = re.search(r'(?ms)^skills:\s*\n((?:\s*-\s*\S+\s*\n)+)', txt)
+    if not m:
+        continue
+    for ref in re.findall(r'-\s*([A-Za-z0-9_-]+)', m.group(1)):
+        if not os.path.isfile(os.path.join(skills_dir, ref, "SKILL.md")):
+            problems.append(f"agent '{fn}' references missing skill '{ref}'")
+print("\n".join(problems))
+PY
+)
+  if [ -z "$SKILL_ISSUES" ]; then
+    pass "All agent skills: references resolve and every skill has a description"
+  elif [ "$SKILL_ISSUES" = "ERR" ]; then
+    : # python failed — skip silently, this is a soft check
+  else
+    RECOMMENDED=$((RECOMMENDED+1))
+    fail "Orchestration contract issues: $(echo "$SKILL_ISSUES" | tr '\n' ';')" "fix the named skill description(s) / agent skills: reference(s) in the plugin source"
+  fi
 fi
 
 # Check 6 — .scaffolding/ present (file-based memory tiers)

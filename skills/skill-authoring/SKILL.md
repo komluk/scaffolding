@@ -91,6 +91,22 @@ Guidelines:
 
 ---
 
+## Preloaded vs Invoked (orchestration contract)
+
+A skill reaches an agent in one of two ways, and the author should decide which
+on purpose:
+
+| Mode | Mechanism | Use when |
+|------|-----------|----------|
+| **Preloaded** | Listed in an agent's `skills:` frontmatter — in context from turn one. | The agent needs the skill on **nearly every task** it runs. |
+| **Invoked** | Auto-loaded on demand when the task matches the skill's `description:` `TRIGGER`/`SKIP`. | The skill is **situational**. |
+
+Decision rule: *preload* a skill when an agent needs it almost every task;
+otherwise leave it *invoked* and rely on a precise `description:`. Preloading is a
+context-budget decision (skills < 300 tokens each) — prefer invoked when in
+doubt. The full Command → Agent → Skill responsibility split lives in
+`docs/orchestration-pattern.md`.
+
 ## The 500-Line Rule
 
 A `SKILL.md` file MUST stay **under 500 lines**. Auto-injected skill context is
