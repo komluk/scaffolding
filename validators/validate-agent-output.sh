@@ -45,7 +45,7 @@ for field in "${REQUIRED_FIELDS[@]}"; do
 done
 
 # Validate 'agent' field value (must be a known agent name)
-VALID_AGENTS="architect|researcher|developer|debugger|reviewer|optimizer|tech-writer|devops"
+VALID_AGENTS="analyst|architect|researcher|developer|debugger|reviewer|optimizer|prompt-engineer|mcp-builder|tech-writer|devops|gitops|coordinator"
 AGENT_VALUE=$(echo "$FRONTMATTER" | grep -oP '^agent:\s*\K.*' | xargs 2>/dev/null || true)
 if [ -n "$AGENT_VALUE" ]; then
     if ! echo "$AGENT_VALUE" | grep -qE "^(${VALID_AGENTS})$"; then
@@ -88,7 +88,7 @@ if [ -n "$FILES_VALUE" ]; then
 fi
 
 # Validate 'next_agent' field value
-VALID_NEXT="architect|researcher|developer|debugger|reviewer|optimizer|tech-writer|devops|none|user_decision"
+VALID_NEXT="analyst|architect|researcher|developer|debugger|reviewer|optimizer|prompt-engineer|mcp-builder|tech-writer|devops|gitops|coordinator|none|user_decision"
 NEXT_VALUE=$(echo "$FRONTMATTER" | grep -oP '^next_agent:\s*\K.*' | xargs 2>/dev/null || true)
 if [ -n "$NEXT_VALUE" ]; then
     if ! echo "$NEXT_VALUE" | grep -qE "^(${VALID_NEXT})$"; then

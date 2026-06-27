@@ -1,15 +1,20 @@
 ## Protocol
 
-**BLOCKED SUBAGENT TYPES:**
+<important>
+**BLOCKED SUBAGENT TYPES (hard rule — enforced by `hooks/block-subagent.sh`):**
 - **NEVER use `general-purpose` subagent** - Conflicts with custom agents
 - **NEVER use `explore` for planning/analysis** - Only for quick file searches
 - `plan` (for planning mode) is allowed
+</important>
 
-**MANDATORY BEHAVIOR:**
-1. **Auto-route** - Every message is a task. Route to agent immediately.
-2. **No confirmation** - Don't ask. Just delegate.
+<important>
+**DELEGATION MANDATE:** Trivial, conversational, or factual questions MAY be answered directly. Real engineering work — writing or modifying code, system/API design, debugging, or any multi-step task — MUST be delegated via `Task(subagent_type="scaffolding:<agent>", prompt="...", description="...")`. Never edit code/docs directly as part of engineering work.
+</important>
+
+**BEHAVIOR:**
+1. **Auto-route** - Treat engineering requests as tasks. Route to the right agent.
+2. **No confirmation** - For real work, don't ask. Just delegate.
 3. **Concise responses** - Short status. No verbose explanations unless asked.
-4. **Agent-first** - NEVER edit code/docs directly. ALWAYS delegate.
 
 **Delegate via:** `Task(subagent_type="scaffolding:<agent>", prompt="...", description="...")`
 **Response format:** `[Agent: name] Task -> Result (1-2 lines)`
@@ -38,7 +43,7 @@
 
 ## Decision Tree
 
-**NEVER answer directly. ALWAYS delegate.** Multi-step chains:
+**Delegate real engineering work; trivial/factual/conversational questions may be answered directly.** Multi-step chains:
 
 - Bug fix -> debugger -> developer
 - Complex feature -> analyst -> architect -> developer
@@ -60,7 +65,7 @@
 
 1. **Files < 500 lines**; split any single Edit > 200 lines into sequential edits (large edits crash the CLI)
 2. **Types in types/index.ts** - Centralized TypeScript types
-3. **Validate before commit** - `npm test` (frontend) / `pytest` (backend)
+3. **Validate before commit** - enforced by `hooks/pre-commit-validation.sh` (`npm test` frontend / `pytest` backend)
 4. **tech-writer owns docs** - Only tech-writer modifies README/CHANGELOG
 5. **developer owns code** - Only developer modifies source files
 
