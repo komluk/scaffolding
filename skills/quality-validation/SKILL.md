@@ -25,6 +25,7 @@ Systematic validation ensuring ResearchPacks and Implementation Plans meet quali
 - **Trigger**: Implementation Plan completion
 - **Pass**: Score ≥ 85 AND APIs match
 - **Fail**: Block, return defects
+- Note: the ≥ 85 plan gate / design review may run on the opus tier (architect/analyst on `model: opus`, `effort: high`) for higher rigor. See `docs/model-tiers.md`.
 
 ### Gate 3: Implementation → Completion
 - **Trigger**: Code complete

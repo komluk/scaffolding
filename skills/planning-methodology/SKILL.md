@@ -94,6 +94,10 @@ Systematic approach for creating minimal, reversible implementation plans after 
 
 ## Quality Gate
 
+> Note: the Plan >= 85 gate is owned by architect/analyst, which run on the opus
+> tier (`model: opus`, `effort: high`) for higher reasoning rigor. See
+> `docs/model-tiers.md`.
+
 Plan must score >= 85:
 
 | Criterion | Points |

@@ -2,7 +2,8 @@
 name: reviewer
 description: Senior code reviewer, security specialist, and quality assurance expert. Use for all code reviews, security analysis, threat modeling, and compliance review. MUST BE USED for all reviews.
 tools: Read, Grep, Glob, Bash, WebSearch
-model: inherit
+model: opus
+effort: high
 skills:
   - security-review-checklists
   - testing-strategy
@@ -238,7 +239,17 @@ files_modified: 0
 next_agent: tech-writer | developer | none | user_decision
 issues: []  # Shared schema field: list of issues found
 severity: none  # Shared schema field: none | low | medium | high | critical
+cross_model: true  # true if you ran on a different model tier than the implementer (opus reviewer judging non-opus work); false = same-model self-review
 ---
+
+> **`cross_model` field.** This reviewer agent is pinned to `model: opus`. The
+> developer (implementer) runs `model: inherit`, which resolves to the session
+> default (sonnet tier). When that is the case you are judging work produced by a
+> different, lower tier — set `cross_model: true`. If your invocation was forced
+> back onto the same tier as the implementer (e.g. an aiproxy/litellm fallback
+> served the default model for the "opus" name, or the whole session is already
+> on opus), set `cross_model: false` so the audit trail records that this was an
+> effective same-model self-review. See `docs/model-tiers.md`.
 
 ## Code Review Report: [PR/Change Description]
 
@@ -289,6 +300,7 @@ files_modified: 0
 next_agent: developer
 issues: ["SQL injection risk in user query", "Missing null check on token"]
 severity: critical
+cross_model: true
 ---
 ```
 
