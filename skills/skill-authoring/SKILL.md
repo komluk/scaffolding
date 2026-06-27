@@ -37,9 +37,13 @@ Every `SKILL.md` MUST begin with a YAML frontmatter block delimited by `---`:
 |-------|------|
 | `name` | Required. Kebab-case `^[a-z][a-z0-9-]*$`. MUST equal the parent directory name. |
 | `description` | Required. Non-empty, 1–340 characters. Follows the Description Contract below. |
+| `context` | Optional. Only value: `fork` — run the skill in an isolated forked subagent. See "Context: fork". |
+| `agent` | Optional. Sub-agent for a forked skill: `Explore`, `Plan`, or `general-purpose`. |
+| `effort` | Optional. Reasoning-effort hint: `low`, `medium`, or `high`. |
 
-No other frontmatter fields are used by scaffolding skills. The `name` /
-directory-name match is mechanically enforced by `validators/validate-skill.sh`.
+`name` and `description` are the only **required** fields. `context`, `agent`,
+and `effort` are optional delivery-tuning fields. All five are value-checked by
+`validators/validate-skill.sh`; any other frontmatter key is left untouched.
 
 ---
 
@@ -106,6 +110,53 @@ otherwise leave it *invoked* and rely on a precise `description:`. Preloading is
 context-budget decision (skills < 300 tokens each) — prefer invoked when in
 doubt. The full Command → Agent → Skill responsibility split lives in
 `docs/orchestration-pattern.md`.
+
+## Context: fork (delivery mode)
+
+`context: fork` runs a skill in an isolated forked subagent so its large body and
+working notes never pollute the main thread's context. It is a **third delivery
+mode** alongside preloaded and invoked.
+
+| When to fork | When NOT to fork |
+|--------------|------------------|
+| Skill is **heavy** (large reference catalog) AND **one-shot** (consulted once to produce an artifact, no interleaving with main reasoning). | Skill is **iterative** — it must see the *current* main-thread code/decisions on every step (e.g. `testing-strategy`, `pattern-recognition`). |
+
+Pair `context: fork` with an `agent:` to pick the fork's sub-agent:
+
+| `agent:` | Loads | Use for |
+|----------|-------|---------|
+| `Explore` | lighter (skips CLAUDE.md + git) | read-only investigation; the fork produces advice only, writes nothing. |
+| `Plan` | lighter (skips CLAUDE.md + git) | planning passes. |
+| `general-purpose` | CLAUDE.md + history | reference skills that read context AND may need to write/apply guidance. |
+
+Reference skills that apply guidance (and may write) should use
+`agent: general-purpose`. Never fork an iterative skill — it would lose the live
+context it depends on. Reverting is trivial: delete the two lines.
+
+## Dynamic injection (`!command`)
+
+A skill body may inject **live shell output** at load time. Claude Code executes
+a bang-prefixed command (the bang at line start or after whitespace) and inlines
+its stdout when the skill loads. Use this only for cheap, read-only, secret-free
+context.
+
+The syntax is a bang immediately followed by a backtick-wrapped command. Shown
+here in a fenced block (NOT inline) so this doc itself does not execute anything
+on load:
+
+```
+Current branch: !`git branch --show-current 2>/dev/null || true`
+```
+
+Rules:
+
+| Rule | Detail |
+|------|--------|
+| **Cheap only** | Instant commands (`git branch`, `git worktree list`). No network, no test runs, no `find /`. It runs on **every** skill load. |
+| **No secrets** | NEVER inject `printenv`, env dumps, tokens, or `cat .env`. Read-only git/status only. |
+| **Fail quietly** | Append `2>/dev/null || true` so a non-git directory load does not error. |
+| **Portable** | Use universally available commands (git). No project-specific binaries. |
+| **Doc examples** | In documentation, always wrap bang-command examples in **fenced code blocks**, never inline backticks — inline backticked bang-commands in docs can be wrongly executed by the parser. |
 
 ## The 500-Line Rule
 

@@ -8,6 +8,8 @@ description: "Git command patterns, branching strategy, and safety protocols. TR
 ## Purpose
 Core git command patterns, branching strategies, and safety protocols for a project.
 
+Current branch: !`git branch --show-current 2>/dev/null || true`
+
 ## Branching Convention
 
 | Branch Pattern | Purpose |

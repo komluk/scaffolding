@@ -1,6 +1,8 @@
 ---
 name: monitoring-observability
 description: "Monitoring, metrics, alerting, and observability standards. TRIGGER when: implementing health checks, collecting metrics, or defining alert rules. SKIP: log statement formatting (use logging-standards); CI pipeline setup (use github-actions-template)."
+context: fork
+agent: general-purpose
 ---
 
 # Monitoring & Observability Skill
