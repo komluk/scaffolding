@@ -1,8 +1,8 @@
 # claude-scaffolding
 
-[![Version](https://img.shields.io/badge/version-2.7.1-blue?style=flat-square)](https://github.com/komluk/scaffolding/releases) [![License: MIT](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Works with Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2?style=flat-square)](https://github.com/komluk/scaffolding) [![Agents](https://img.shields.io/badge/agents-11-orange?style=flat-square)](agents/) [![Skills](https://img.shields.io/badge/skills-35-orange?style=flat-square)](skills/) [![Commands](https://img.shields.io/badge/commands-18-orange?style=flat-square)](commands/) [![Listed on ClaudePluginHub](https://www.claudepluginhub.com/badge/komluk-scaffolding)](https://www.claudepluginhub.com/plugins/komluk-scaffolding?ref=badge)
+[![Version](https://img.shields.io/badge/version-2.7.1-blue?style=flat-square)](https://github.com/komluk/scaffolding/releases) [![License: MIT](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Works with Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2?style=flat-square)](https://github.com/komluk/scaffolding) [![Agents](https://img.shields.io/badge/agents-13-orange?style=flat-square)](agents/) [![Skills](https://img.shields.io/badge/skills-35-orange?style=flat-square)](skills/) [![Commands](https://img.shields.io/badge/commands-18-orange?style=flat-square)](commands/) [![Listed on ClaudePluginHub](https://www.claudepluginhub.com/badge/komluk-scaffolding)](https://www.claudepluginhub.com/plugins/komluk-scaffolding?ref=badge)
 
-Portable Claude Code configuration: 11 agents, 35 skills, 18 commands, 9 hooks,
+Portable Claude Code configuration: 13 agents, 35 skills, 18 commands, 9 hooks,
 spec-driven workflows. Installs as a Claude Code plugin.
 
 ## Overview
@@ -16,7 +16,7 @@ long-running process required.
 ## Why use this
 
 - **Spec-driven workflows** — OpenSpec-style specs keep work grounded and reproducible.
-- **11 specialized agents** — analyst, architect, developer, reviewer, debugger, and more, each with a focused role.
+- **13 specialized agents** — analyst, architect, developer, reviewer, debugger, prompt-engineer, mcp-builder, and more, each with a focused role.
 - **Parallel multi-agent orchestration** — fan out work across agents and coordinate results.
 - **Opinionated guardrail hooks** — 9 safety and lifecycle hooks block destructive commands and enforce conventions.
 - **Extensible & self-improving** — `/create-skill` scaffolds your own scaffolding-compatible skills, and `/learn` closes the loop by distilling reusable insights from finished conversations.
@@ -98,9 +98,9 @@ on top — enable it per device with `/memory enable` (see
 
 ```
 claude-scaffolding/
-├── agents/         11 agents (analyst, architect, coordinator, developer,
-│                    debugger, devops, gitops, optimizer,
-│                    researcher, reviewer, tech-writer)
+├── agents/         13 agents (analyst, architect, coordinator, developer,
+│                    debugger, devops, gitops, mcp-builder, optimizer,
+│                    prompt-engineer, researcher, reviewer, tech-writer)
 ├── skills/         35 skills (api-design, error-handling, pattern-recognition,
 │                    skill-authoring, spec-*, mui-styling, python-patterns,
 │                    sofa-search, testing-strategy, ...)

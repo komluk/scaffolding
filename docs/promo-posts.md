@@ -24,8 +24,8 @@ process.
 claude-scaffolding is a plugin that fixes that. It turns Claude Code into a small
 team of specialized agents that hand work off to each other:
 
-- **11 agents** — analyst, architect, researcher, developer, debugger, reviewer,
-  optimizer, tech-writer, devops, gitops, coordinator
+- **13 agents** — analyst, architect, researcher, developer, debugger, reviewer,
+  optimizer, prompt-engineer, mcp-builder, tech-writer, devops, gitops, coordinator
 - **Auto-routing** — every request is routed to the right agent (bug → debugger →
   developer; feature → analyst → architect → developer; etc.)
 - **32 skills + 15 commands + 8 hooks** for common workflows

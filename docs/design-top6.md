@@ -11,7 +11,7 @@ reversible, default-safe, and must not weaken always-loaded routing or hook exit
 
 ## Context
 
-The scaffolding plugin is a Claude Code plugin: 11 agents (`agents/*.md`), ~35 skills
+The scaffolding plugin is a Claude Code plugin: 13 agents (`agents/*.md`), ~35 skills
 (`skills/*/SKILL.md`), 18 commands (`commands/*.md`), 9 registered hooks (`hooks/*.sh` wired in
 both `settings.json` and `.claude-plugin/plugin.json`). It routes all work through a delegation
 protocol declared in the project-root `CLAUDE.md`, and all model traffic flows through
@@ -27,7 +27,7 @@ Relevant current state confirmed by reading the repo:
   `hooks/pre-commit-validation.sh` (PreToolUse `Bash(git commit:*)`, `exit 1` on failure).
 - "Blocked subagents" and "file-size limits" are **prose-only** in `CLAUDE.md` — not harness-enforced.
 - The `Stop` hook currently runs **only** `hooks/notify.sh` (opt-in, `SCAFFOLDING_NOTIFY=1`).
-- All 11 agents are `model: inherit`. `ultrathink` exists only as **prose** "Extended Thinking
+- All 13 agents are `model: inherit`. `ultrathink` exists only as **prose** "Extended Thinking
   Triggers" sections in `agents/analyst.md` and `agents/architect.md` — not frontmatter.
 - No skill uses `context: fork`. No skill uses `` !`command` `` dynamic injection.
 - `reviewer` is `model: inherit` → **self-review by the same model** as the implementer.

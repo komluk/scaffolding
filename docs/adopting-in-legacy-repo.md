@@ -27,7 +27,7 @@ unless you run `/init-scaffolding` inside the project.
 3. /reload-plugins
 ```
 
-After this, every project on the machine gets `scaffolding`'s 11 agents,
+After this, every project on the machine gets `scaffolding`'s 13 agents,
 31 skills, 15 commands, and 8 hooks via the plugin runtime, namespaced as
 `scaffolding:<agent>`. Project-level files in `<project>/.claude/agents/` are
 unaffected and continue to be available as bare names.

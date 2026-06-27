@@ -85,14 +85,14 @@ else
   fail "Plugin not installed / not found" "/plugin marketplace add komluk/scaffolding   then   /plugin install scaffolding@komluk-scaffolding"
 fi
 
-# Check 1b — agent files present (11) — needed for resolution
+# Check 1b — agent files present (13) — needed for resolution
 if [ -n "$PLUGIN_ROOT" ]; then
   AGENT_COUNT=$(find "$PLUGIN_ROOT/agents" -maxdepth 1 -name '*.md' 2>/dev/null | wc -l | tr -d ' ')
-  if [ "$AGENT_COUNT" = "11" ]; then
-    pass "All 11 agent definitions present in plugin root"
+  if [ "$AGENT_COUNT" = "13" ]; then
+    pass "All 13 agent definitions present in plugin root"
   else
     BLOCKING=$((BLOCKING+1))
-    fail "Incomplete install — found ${AGENT_COUNT:-0}/11 agent files" "/plugin update scaffolding@komluk-scaffolding   then   /reload-plugins"
+    fail "Incomplete install — found ${AGENT_COUNT:-0}/13 agent files" "/plugin update scaffolding@komluk-scaffolding   then   /reload-plugins"
   fi
 fi
 
@@ -260,7 +260,7 @@ scaffolding /doctor
 BLOCKING
   [PASS/FAIL] Plugin installed/loaded            — <fix if FAIL>
   [PASS/FAIL] Agents resolve (live probe)        — /reload-plugins if FAIL
-  [PASS/FAIL] 11 agent definitions present       — <fix if FAIL>
+  [PASS/FAIL] 13 agent definitions present       — <fix if FAIL>
   [PASS/FAIL] plugin.json valid + hooks wired    — <fix if FAIL>
 RECOMMENDED
   [PASS/FAIL] settings.json valid                — <fix if FAIL>

@@ -58,7 +58,7 @@ Comprehensive code review and security specialist. Handles all review types: qua
 **Output**: Review report with findings, security analysis, STRIDE assessment
 **Commands**: /code-review, /security-review, /test-coverage
 
-## Tier 3: Specialized (3 Agents)
+## Tier 3: Specialized (5 Agents)
 
 ### optimizer
 Performance and database specialist. Handles profiling, benchmarking, query optimization, schema design, migrations, and bottleneck identification.
@@ -66,6 +66,20 @@ Performance and database specialist. Handles profiling, benchmarking, query opti
 **Triggers**: Performance issues, database design, schema changes, migration planning, query optimization
 **Tools**: Read, Grep, Glob, Bash
 **Output**: Performance analysis, schema design, migration plan, optimization recommendations
+
+### prompt-engineer
+Prompt & guardrail engineering specialist. Designs system prompts and templates, guardrail rules, prompt eval suites, and LLM-judge rubrics; hardens against prompt injection.
+
+**Triggers**: System-prompt design, prompt templates, guardrail rules, prompt evals, LLM-judge rubrics, injection defense
+**Tools**: Read, Edit, Write, Grep, Glob, Bash
+**Output**: Versioned prompts/guardrails, eval results, injection-defense report
+
+### mcp-builder
+MCP server specialist. Designs, builds, and tests MCP servers (stdio/http transports), tool schemas, and secret-safe launchers (Vault-launcher pattern).
+
+**Triggers**: Build/modify MCP servers, tool schema design, transport choice, MCP auth/secret launchers
+**Tools**: Read, Edit, Write, Bash, Grep, Glob
+**Output**: MCP server implementation, tool schemas, smoke-test results
 
 ### tech-writer
 Documentation owner. Manages ALL markdown files: README, CHANGELOG, docs/. Sole authority for documentation.
@@ -111,6 +125,8 @@ CI/CD and infrastructure specialist. Manages pipelines, deployment, environment 
 | Code review | reviewer | - |
 | Research | researcher | - |
 | CI/CD | devops | - |
+| Prompt / guardrail / eval | prompt-engineer | reviewer |
+| MCP server build | mcp-builder | reviewer |
 
 ## Files
 
@@ -122,5 +138,7 @@ CI/CD and infrastructure specialist. Manages pipelines, deployment, environment 
 | debugger | .claude/agents/debugger.md |
 | reviewer | .claude/agents/reviewer.md |
 | optimizer | .claude/agents/optimizer.md |
+| prompt-engineer | .claude/agents/prompt-engineer.md |
+| mcp-builder | .claude/agents/mcp-builder.md |
 | tech-writer | .claude/agents/tech-writer.md |
 | devops | .claude/agents/devops.md |
