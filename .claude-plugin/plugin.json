@@ -20,6 +20,15 @@
   "hooks": {
     "PreToolUse": [
       {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/block-subagent.sh"
+          }
+        ]
+      },
+      {
         "matcher": "Bash(git commit:*)",
         "hooks": [
           {
@@ -90,6 +99,15 @@
           {
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/file-staleness-update.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/file-size-warn.sh"
           }
         ]
       }
