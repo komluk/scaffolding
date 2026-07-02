@@ -16,7 +16,8 @@ MUST be a UUID (`xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`).
 ## What It Does
 
 1. Resolves the `conversation_id`
-2. Locates `context.md` and the design `## Decisions` section
+2. Locates `context.md`, the design `## Decisions` section, and drains any
+   low-confidence candidates queued in `.scaffolding/.ingest-queue`
 3. Exits cleanly if there is nothing to distill
 4. Distills the conversation into knowledge candidates
 5. Classifies each candidate: memory entry vs new-skill proposal
@@ -67,10 +68,22 @@ if [ -f "$DESIGN_FILE" ]; then
 else
   echo "No design.md — distilling from context.md only."
 fi
+
+# Drain low-confidence candidates queued by the memory-ingest Stop hook.
+INGEST_QUEUE=".scaffolding/.ingest-queue"
+if [ -s "$INGEST_QUEUE" ]; then
+  echo "Found ingest queue: $INGEST_QUEUE ($(wc -l < "$INGEST_QUEUE") lines)"
+fi
 ```
 
 The absence of `context.md` is the explicit "nothing to distill" clean-exit
 branch — it is a success, not an error.
+
+`.scaffolding/.ingest-queue` is an additional, optional source of
+**low-confidence (< 0.8) candidates** dropped by the auto-ingest Stop hook
+(JSONL breadcrumbs + candidates). Treat each queued entry as a candidate for the
+same propose-then-confirm flow below. After a candidate is applied (or the user
+declines it), drop its line so the queue does not re-propose it.
 
 ### 3. Distill the conversation
 

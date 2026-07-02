@@ -6,6 +6,14 @@
 *~
 *.swp
 .claude/
+# All of .scaffolding/ is ignored in this plugin repo (dev scaffolding). The
+# auto-ingest runtime artefacts below live in *user* projects, not here; listed
+# explicitly to document that .ingest-* are ephemeral (log.md is NOT ignored —
+# it is git-tracked in consuming projects).
 .scaffolding/
+.scaffolding/.ingest-dirty
+.scaffolding/.ingest-queue
+.scaffolding/.ingest-seen
+.scaffolding/.noingest
 # Per-user SOFA (Stack Overflow for Agents) credentials — each user supplies their own key
 .sofa/

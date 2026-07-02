@@ -50,6 +50,46 @@ This directory contains hooks that run automatically during Claude Code workflow
 - Pure no-op when no notifier is available
 - **Opt-in:** gated behind env `SCAFFOLDING_NOTIFY=1` (default off — noisy in CI)
 
+### 5. memory-ingest-mark.sh
+**Type:** SubagentStop hook
+**Triggers:** When a scaffolding subagent finishes (a `Task()` completes)
+**Purpose:** Cheap "source finished" dirty-mark so end-of-turn ingest can fire
+
+**What it does:**
+- Pure bash file checks — **no LLM, no network, no MCP**, sub-50ms
+- Throttle: only marks when a `.scaffolding/conversations/**/context.md` is newer
+  than the last ingest (`.scaffolding/.ingest-seen`)
+- On a significant subagent: `touch .scaffolding/.ingest-dirty` and appends a
+  JSONL breadcrumb to `.scaffolding/.ingest-queue`
+- **Always exits 0**; opt-out via `SCAFFOLDING_MEMORY_INGEST=off` or `.noingest`
+
+### 6. memory-ingest.sh
+**Type:** Stop hook
+**Triggers:** When the main agent finishes a turn
+**Purpose:** Enforce a memory ingest exactly once per turn when the session is dirty
+
+**What it does:**
+- **Loop guard:** reads `stop_hook_active` from stdin; exits 0 if already
+  re-triggered (same pattern as `completion-nudge.sh`) — a block fires at most
+  once/turn
+- No-op unless `.scaffolding/.ingest-dirty` exists
+- The hook performs **no ingest itself** — it emits a directive (`reason`) telling
+  the agent to run `distill` INLINE (no subagents), auto-`semantic_store` high-
+  confidence (>= 0.8) candidates, queue the rest to `.ingest-queue`, append a line
+  to `.scaffolding/agent-memory/log.md`, then clear `.ingest-dirty`
+- **Tri-state** env `SCAFFOLDING_MEMORY_INGEST` (see table below)
+- **Always exits 0**
+
+#### Runtime artefacts (created in the user's project `.scaffolding/`)
+
+| Path | Role | Lifecycle |
+|------|------|-----------|
+| `.scaffolding/.ingest-dirty` | "needs ingest" sentinel | set by mark, cleared after ingest |
+| `.scaffolding/.ingest-queue` | JSONL breadcrumbs + low-conf candidates | drained by `/learn` |
+| `.scaffolding/.ingest-seen` | md5 dedup ledger | append-only, per-repo |
+| `.scaffolding/agent-memory/log.md` | append-only ingest log | git-tracked |
+| `.scaffolding/.noingest` | per-repo opt-out | manual `touch` |
+
 ## PostToolUse(Edit|Write) ordering — CRITICAL
 
 The registered order in **both** `.claude-plugin/plugin.json` and `settings.json`
@@ -75,6 +115,7 @@ the last position.
 |------|---------|--------|
 | `SCAFFOLDING_AUTOFORMAT` | off | `=1` enables `post-edit-format.sh` auto-formatting |
 | `SCAFFOLDING_NOTIFY` | off | `=1` enables `notify.sh` desktop/terminal notifications |
+| `SCAFFOLDING_MEMORY_INGEST` | advisory | unset → advisory (stderr nudge); `=block` → enforce (`decision:block`); `=off` → disabled. `memory-ingest{,-mark}.sh` |
 
 ## Hook Configuration
 

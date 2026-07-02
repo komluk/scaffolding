@@ -30,6 +30,10 @@ An insight qualifies as a knowledge candidate when it meets ANY of these:
 | Pattern keyword | 0.5 fixed | shared |
 | Stale reference | 0.9 fixed | cleanup action |
 
+Auto-store threshold: candidates scoring **>= 0.8** are auto-stored to the vector
+store (silent, cold layer) via `semantic_store` — see the memory-ingest Stop
+hook. This is the single source of truth for that threshold.
+
 ## Tier Routing
 
 | Target | When | Path |
