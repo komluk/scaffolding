@@ -1,6 +1,6 @@
 ---
 name: agent-comms
-description: "Inter-agent SendMessage recipient validation and worktreePath safety (CWE-59). TRIGGER when: an agent validates a SendMessage `to:` recipient against the agent whitelist, or validates a `worktreePath` received from another agent before acting on it. SKIP: routing/handoff topology decisions (see each agent's own Comms Protocol block); branch/commit/merge operations (use git-operations); worktree lifecycle recovery (use worktree-management)."
+description: "SendMessage recipient validation and worktreePath safety (CWE-59). TRIGGER when: validating a SendMessage `to:` recipient against the agent whitelist, or a worktreePath from another agent before acting on it. SKIP: routing topology (agent Comms Protocol); git ops (use git-operations); worktree recovery (use worktree-management)."
 ---
 
 # Agent Comms Skill

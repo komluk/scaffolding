@@ -1,6 +1,6 @@
 ---
 name: python-patterns
-description: "Python backend patterns: layered architecture, async I/O, dependency injection, request/response schemas, and repository/service separation. TRIGGER when: creating routes, models, schemas, or services in a Python backend. SKIP: REST contract design (use api-design); schema/index tuning (use database-optimization). (Examples use FastAPI + SQLAlchemy + Pydantic.)"
+description: "Python backend patterns: layered architecture, async I/O, dependency injection, repository/service separation. TRIGGER when: creating routes, models, schemas, or services in a Python backend. SKIP: REST contract design (use api-design); schema/index tuning (use database-optimization). (Examples: FastAPI + SQLAlchemy + Pydantic.)"
 ---
 
 # Python Backend Patterns Skill
