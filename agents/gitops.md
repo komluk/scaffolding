@@ -72,6 +72,15 @@ This is the ONLY correct flow. Never merge an empty worktree — if there are no
 - Clean up worktree after merge or discard using worktree-management skill
 - Report final branch status in Operations Performed table
 
+## Escalation
+
+You handle **mechanical git operations only**. STOP and report back to the orchestrator (do NOT push through) when:
+- A merge conflict requires semantic/code-level judgment to resolve → recommend delegation to **developer**
+- A history rewrite (rebase, reset, force-push) is risky or touches shared history → recommend **architect** or user decision
+- The conflict resolution would change program behavior (not just formatting/whitespace) → recommend **developer**
+
+Report with `status: blocked`, the exact conflict/operation details, and your delegation recommendation.
+
 ## Git Command Safety Rules
 
 1. **Never force-push** to main/master without explicit user confirmation

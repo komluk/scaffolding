@@ -1,6 +1,6 @@
 ---
 name: developer
-description: Expert software engineer. Use proactively to implement features, fix bugs, write tests, style UI, and make code changes. MUST BE USED for all development tasks.
+description: Expert software engineer. Use proactively to implement features, fix bugs, write tests, style UI, and make code changes. MUST BE USED for all development tasks. Direct target for small, clearly-scoped changes — no analyst/architect needed first.
 tools: Read, Edit, Write, Bash, Glob, Grep
 model: sonnet
 effort: high
@@ -120,6 +120,15 @@ When invoked for development tasks:
    - Verify all tests pass
    - Check accessibility if UI changes made
    - NOTE: Do NOT update README/CHANGELOG - tech-writer owns documentation
+
+## Effort Escalation
+
+Default effort is `high`. For large multi-file implementations or gnarly refactors,
+the orchestrator should pass an effort override (`effort: xhigh`) in the Task
+invocation. If you complete a task and believe it warranted higher effort
+(e.g. you had to cut corners, skip edge cases, or the change spanned many files),
+flag this in the Notes section of your final report so the orchestrator can
+re-invoke with `xhigh` next time.
 
 ## Critical Rules
 

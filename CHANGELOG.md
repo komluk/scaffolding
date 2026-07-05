@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.10.0] - 2026-07-05
+
+Orchestration optimizations: cheaper defaults with explicit escalation paths,
+budget-aware planning, and a framework-agnostic pre-commit gate. Minor bump
+(additive, backward-compatible).
+
+### Added
+- **Escalation rules for haiku agents.** gitops escalates semantic merge
+  conflicts to developer and risky history rewrites to architect/user;
+  tech-writer escalates architectural or new technical content to a higher
+  tier.
+- **Budget-aware coordinator.** Accepts a budget hint (`small|medium|large`
+  or a token count), produces tier-aware plans with a mandatory `tier_reason`
+  for opus steps, and short-circuits trivial tasks into a single developer
+  step.
+- **Mandatory delegation prompt template in coordinator** (Objective /
+  Output / Constraints / Done when).
+- **Developer effort-escalation note** — `xhigh` override for large
+  multi-file work.
+
+### Changed
+- **Reviewer is now two-tier:** default sonnet/high for routine reviews;
+  escalation to opus (per-invocation model override) for security-sensitive,
+  architectural, or explicitly-requested deep reviews.
+- **`hooks/pre-commit-validation.sh` rewritten framework-agnostic.** Detects
+  project validation by convention (Makefile, justfile, package.json +
+  lockfile-detected package manager, pytest, cargo, go, composer,
+  gradle/maven) and runs the first match; warns and passes when none is
+  found. Plugin repos additionally run the skill + agent-frontmatter
+  validators.
+- **Prescriptive agent descriptions:** analyst explicitly excludes small
+  clear-scope changes; developer is the direct target for them.
+
 ## [2.9.0] - 2026-07-05
 
 Model tiering across the roster: opus = analysis, sonnet = build, haiku =

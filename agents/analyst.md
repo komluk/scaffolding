@@ -1,6 +1,6 @@
 ---
 name: analyst
-description: Requirements analyst. MUST BE USED for ambiguous requests, requirements gathering, scope assessment, feasibility checks, and proposal writing. PROACTIVELY interprets user intent and produces proposal.md specs.
+description: Requirements analyst. MUST BE USED for ambiguous requests, requirements gathering, scope assessment, feasibility checks, and proposal writing. NOT for small, clearly-scoped changes (those go directly to developer). PROACTIVELY interprets user intent and produces proposal.md specs.
 tools: Read, Glob, Grep, Bash, Write
 model: opus
 effort: high

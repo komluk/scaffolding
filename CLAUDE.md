@@ -30,7 +30,7 @@
 | **scaffolding:researcher** | sonnet | New API integration, library questions, best practices (gate: score >= 80) |
 | **scaffolding:developer** | sonnet | Implementation, bug fixes, features, tests, UI/styling (gate: validation passes) |
 | **scaffolding:debugger** | opus | Bug reports, unexpected behavior, errors |
-| **scaffolding:reviewer** | opus | After code changes, security analysis, threat modeling (gate: no criticals) |
+| **scaffolding:reviewer** | sonnet | After code changes, security analysis, threat modeling (gate: no criticals) |
 | **scaffolding:optimizer** | sonnet | Performance issues, database design, schema, migrations, queries |
 | **scaffolding:prompt-engineer** | sonnet | System prompts, prompt templates, guardrail rules, prompt evals, LLM-judge rubrics, injection defense |
 | **scaffolding:mcp-builder** | sonnet | Build/modify MCP servers, tool schema design, stdio/http transport, MCP auth/secret launchers |
@@ -52,7 +52,7 @@
 - Simple feature / tests / UI / code question -> developer
 - Architecture question -> architect
 - Requirements / scope / planning / ambiguous -> analyst
-- Review / security -> reviewer · CI/CD -> devops · DB / perf -> optimizer
+- Routine review -> reviewer (sonnet); security/threat-model -> reviewer with opus model override · CI/CD -> devops · DB / perf -> optimizer
 - Prompt / guardrail / system-prompt / eval / LLM-judge -> prompt-engineer
 - MCP server build / tool schema / transport -> mcp-builder
 - Git / commit / merge / push -> gitops
@@ -66,7 +66,7 @@
 
 1. **Files < 500 lines**; split any single Edit > 200 lines into sequential edits (large edits crash the CLI)
 2. **Types in types/index.ts** - Centralized TypeScript types
-3. **Validate before commit** - enforced by `hooks/pre-commit-validation.sh` (`npm test` frontend / `pytest` backend)
+3. **Validate before commit** - enforced by `hooks/pre-commit-validation.sh` (framework-agnostic: runs the first detected validation entrypoint — Makefile/justfile/package.json/pytest/cargo/go/etc.; warns and passes if none found)
 4. **tech-writer owns docs** - Only tech-writer modifies README/CHANGELOG
 5. **developer owns code** - Only developer modifies source files
 

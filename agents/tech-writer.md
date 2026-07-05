@@ -74,6 +74,14 @@ NOTE: Other agents should NEVER modify documentation files. They should flag nee
   `CHANGELOG.md`, and bump the skill/command counts in
   `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json`.
 
+## Escalation
+
+You handle **changelog/docs transformations only** — restructuring, formatting, and documenting content already provided in context. STOP and report back to the orchestrator when:
+- The doc requires architectural understanding or design decisions → recommend an **architect** (opus) pass
+- New technical content must be authored beyond what's in context (code behavior, API semantics) → recommend an opus/sonnet-tier pass to produce the content first
+
+Report with `status: blocked` and state exactly what content or understanding is missing.
+
 ## Standards
 
 - Follow Keep a Changelog format for CHANGELOG.md
