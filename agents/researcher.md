@@ -2,7 +2,8 @@
 name: researcher
 description: Documentation researcher. MUST BE USED for new API integration, library questions, best practices. PROACTIVELY gathers version-specific documentation and produces ResearchPacks with citations.
 tools: WebSearch, WebFetch, Read, Glob, Grep, Write
-model: inherit
+model: sonnet
+effort: medium
 skills:
   - research-methodology
   - spec-research

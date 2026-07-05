@@ -2,7 +2,8 @@
 name: developer
 description: Expert software engineer. Use proactively to implement features, fix bugs, write tests, style UI, and make code changes. MUST BE USED for all development tasks.
 tools: Read, Edit, Write, Bash, Glob, Grep
-model: inherit
+model: sonnet
+effort: high
 skills:
   - testing-strategy
   - pattern-recognition

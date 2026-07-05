@@ -2,7 +2,7 @@
 name: gitops
 description: Git operations specialist. MUST BE USED for branch management, conflict resolution, git history analysis, worktree recovery, commit, merge, push. Owns ALL git operations — other agents do NOT commit.
 tools: Read, Glob, Grep, Bash
-model: inherit
+model: haiku
 skills:
   - git-operations
   - worktree-management

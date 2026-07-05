@@ -2,7 +2,8 @@
 name: mcp-builder
 description: MCP server specialist. MUST BE USED to design, build, and test MCP servers — stdio vs http transports, tool schema design, env-based secrets, and the Vault-launcher pattern. PROACTIVELY keeps secrets out of source and tool schemas tight.
 tools: Read, Edit, Write, Bash, Grep, Glob
-model: inherit
+model: sonnet
+effort: high
 skills:
   - mcp-tools
   - api-design

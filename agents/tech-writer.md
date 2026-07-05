@@ -2,7 +2,7 @@
 name: tech-writer
 description: Documentation owner. MUST BE USED for README, CHANGELOG, docs/ updates. PROACTIVELY manages all markdown files as sole authority for documentation.
 tools: Read, Write, Edit, Grep, Glob
-model: inherit
+model: haiku
 skills:
   - semantic-memory-mcp
 maxTurns: 25

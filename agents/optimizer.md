@@ -2,7 +2,8 @@
 name: optimizer
 description: Performance specialist. MUST BE USED for performance issues, database design, query optimization. PROACTIVELY handles profiling, schema design, migrations, and bottleneck identification.
 tools: Read, Grep, Glob, Bash
-model: inherit
+model: sonnet
+effort: high
 skills:
   - database-optimization
   - agent-memory

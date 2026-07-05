@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.9.0] - 2026-07-05
+
+Model tiering across the roster: opus = analysis, sonnet = build, haiku =
+mechanical. Minor bump (additive, backward-compatible).
+
+### Added
+- **Explicit model tiers for all 13 agents.** Every agent now pins `model` +
+  `effort` in frontmatter (previously 10 used `model: inherit`): opus/high =
+  analyst, architect, debugger, reviewer; sonnet/high = developer, optimizer,
+  mcp-builder, prompt-engineer; sonnet/medium = devops, researcher;
+  sonnet/low = coordinator; haiku (no effort) = gitops, tech-writer.
+- **`validators/validate-agent-frontmatter.sh`** — validates the model/effort
+  whitelist and enforces that haiku agents must not set `effort`.
+- **Optional `complexity` input in `workflow.yaml`.** `complexity: small`
+  skips propose/research/design and runs a direct implement step.
+- **Tier column** added to the agents table in `CLAUDE.md`.
+
+### Changed
+- **`CLAUDE.md` decision tree:** small-change fast-path routes straight to
+  developer; default routing no longer sends everything to analyst.
+
 ## [2.8.0] - 2026-06-28
 
 All new behavior in this release is **opt-in or default-safe** — existing

@@ -242,14 +242,14 @@ severity: none  # Shared schema field: none | low | medium | high | critical
 cross_model: true  # true if you ran on a different model tier than the implementer (opus reviewer judging non-opus work); false = same-model self-review
 ---
 
-> **`cross_model` field.** This reviewer agent is pinned to `model: opus`. The
-> developer (implementer) runs `model: inherit`, which resolves to the session
-> default (sonnet tier). When that is the case you are judging work produced by a
-> different, lower tier — set `cross_model: true`. If your invocation was forced
-> back onto the same tier as the implementer (e.g. an aiproxy/litellm fallback
-> served the default model for the "opus" name, or the whole session is already
-> on opus), set `cross_model: false` so the audit trail records that this was an
-> effective same-model self-review. See `docs/model-tiers.md`.
+> **`cross_model` field.** This reviewer agent is pinned to `model: opus`. Model
+> tiers are now explicitly pinned per agent in each agent's frontmatter — the
+> developer (implementer) is pinned to `model: sonnet`. When reviewing sonnet- or
+> haiku-tier work you are judging output from a different, lower tier — set
+> `cross_model: true`. If your invocation was forced back onto the same tier as
+> the implementer (e.g. an aiproxy/litellm fallback served a different model for
+> the "opus" name), set `cross_model: false` so the audit trail records that this
+> was an effective same-model self-review. See `docs/model-tiers.md`.
 
 ## Code Review Report: [PR/Change Description]
 

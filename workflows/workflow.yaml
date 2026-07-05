@@ -9,6 +9,12 @@ inputs:
   conversation_id:
     type: string
     required: false
+  # Complexity gate: "small" = single-file / clear-scope task — skips
+  # propose+design and runs the developer directly (implement-direct).
+  # Anything else (or unset) runs the full propose -> design pipeline.
+  complexity:
+    type: string
+    required: false
 
 settings:
   max_steps: 20
@@ -19,6 +25,7 @@ steps:
     agent: analyst
     max_turns: 10
     timeout: 600
+    condition: "inputs.complexity != 'small'"
     prompt_template: |
       Interpret user intent, assess scope and feasibility, and write a proposal.
       Description: {description}
@@ -34,7 +41,7 @@ steps:
     agent: researcher
     max_turns: 15
     timeout: 600
-    condition: "steps.propose.needs_research == True"
+    condition: "inputs.complexity != 'small' and steps.propose.needs_research == True"
     prompt_template: |
       Research external APIs, libraries, and best practices needed for the proposal.
       Original user request: {original_prompt}
@@ -52,6 +59,7 @@ steps:
     agent: architect
     max_turns: 15
     timeout: 900
+    condition: "inputs.complexity != 'small'"
     depends_on: [propose, research]
     prompt_template: |
       Read proposal.md and research findings.
@@ -112,13 +120,32 @@ steps:
 
   - id: implement
     type: dynamic
+    condition: "inputs.complexity != 'small'"
     depends_on: [design]
+
+  # Light path: small/clear-scope tasks skip propose+design+dynamic implement
+  # and go directly to the developer.
+  - id: implement-direct
+    agent: developer
+    max_turns: 30
+    timeout: 900
+    condition: "inputs.complexity == 'small'"
+    prompt_template: |
+      Implement the following small, clearly-scoped change directly
+      (no proposal/design phase for this task):
+      {description}
+      Conversation ID: {conversation_id}
+      Follow existing project patterns and run validation before finishing.
+      {language_instruction}
+    guardrails:
+      - frontmatter-valid:
+          lenient_on_exit_0: true
 
   - id: review
     agent: reviewer
     max_turns: 15
     timeout: 900
-    depends_on: [implement]
+    depends_on: [implement, implement-direct]
     prompt_template: |
       This is the INTEGRATION REVIEW step. Individual changes have already been
       reviewed by per-change reviewer agents in REVIEW-* steps.
@@ -126,6 +153,8 @@ steps:
       Your job is to review ALL changes TOGETHER for:
       - Cross-file consistency and integration correctness
       - Overall architecture alignment with: {specs_path}design.md
+        (small-complexity runs skip the design phase — if design.md does not
+        exist, review against existing project patterns instead)
       - Merge conflicts or incompatible changes between parallel branches
       - End-to-end test coverage across the combined changeset
       Original user request: {original_prompt}
@@ -145,6 +174,7 @@ steps:
     depends_on: [review]
     prompt_template: |
       Update documentation and CHANGELOG for changes described in: {specs_path}design.md
+      (small-complexity runs have no design.md — document the implemented change directly)
       Original user request: {original_prompt}
       {language_instruction}
 

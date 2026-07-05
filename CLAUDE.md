@@ -23,21 +23,21 @@
 
 ## Agents (13)
 
-| Agent | When to Use |
-|-------|-------------|
-| **scaffolding:analyst** | Ambiguous requests, requirements, scope assessment, feasibility, proposal writing |
-| **scaffolding:architect** | System design, API design, implementation planning, multi-file refactoring, agent orchestration |
-| **scaffolding:researcher** | New API integration, library questions, best practices (gate: score >= 80) |
-| **scaffolding:developer** | Implementation, bug fixes, features, tests, UI/styling (gate: validation passes) |
-| **scaffolding:debugger** | Bug reports, unexpected behavior, errors |
-| **scaffolding:reviewer** | After code changes, security analysis, threat modeling (gate: no criticals) |
-| **scaffolding:optimizer** | Performance issues, database design, schema, migrations, queries |
-| **scaffolding:prompt-engineer** | System prompts, prompt templates, guardrail rules, prompt evals, LLM-judge rubrics, injection defense |
-| **scaffolding:mcp-builder** | Build/modify MCP servers, tool schema design, stdio/http transport, MCP auth/secret launchers |
-| **scaffolding:tech-writer** | Documentation, CHANGELOG updates |
-| **scaffolding:devops** | CI/CD, deployment, infrastructure |
-| **scaffolding:gitops** | Branch management, conflict resolution, git history, worktree recovery, push to remote |
-| **scaffolding:coordinator** | Analyzes tasks, decomposes into agent step sequences for dynamic execution |
+| Agent | Tier | When to Use |
+|-------|------|-------------|
+| **scaffolding:analyst** | opus | Ambiguous requests, requirements, scope assessment, feasibility, proposal writing |
+| **scaffolding:architect** | opus | System design, API design, implementation planning, multi-file refactoring, agent orchestration |
+| **scaffolding:researcher** | sonnet | New API integration, library questions, best practices (gate: score >= 80) |
+| **scaffolding:developer** | sonnet | Implementation, bug fixes, features, tests, UI/styling (gate: validation passes) |
+| **scaffolding:debugger** | opus | Bug reports, unexpected behavior, errors |
+| **scaffolding:reviewer** | opus | After code changes, security analysis, threat modeling (gate: no criticals) |
+| **scaffolding:optimizer** | sonnet | Performance issues, database design, schema, migrations, queries |
+| **scaffolding:prompt-engineer** | sonnet | System prompts, prompt templates, guardrail rules, prompt evals, LLM-judge rubrics, injection defense |
+| **scaffolding:mcp-builder** | sonnet | Build/modify MCP servers, tool schema design, stdio/http transport, MCP auth/secret launchers |
+| **scaffolding:tech-writer** | haiku | Documentation, CHANGELOG updates |
+| **scaffolding:devops** | sonnet | CI/CD, deployment, infrastructure |
+| **scaffolding:gitops** | haiku | Branch management, conflict resolution, git history, worktree recovery, push to remote |
+| **scaffolding:coordinator** | sonnet | Analyzes tasks, decomposes into agent step sequences for dynamic execution |
 
 ---
 
@@ -46,7 +46,8 @@
 **Delegate real engineering work; trivial/factual/conversational questions may be answered directly.** Multi-step chains:
 
 - Bug fix -> debugger -> developer
-- Complex feature -> analyst -> architect -> developer
+- Complex feature (multi-file / new system) -> analyst -> architect -> developer
+- Small change (single file, clear scope) -> developer directly (skip analyst/architect)
 - Docs / library -> researcher -> tech-writer
 - Simple feature / tests / UI / code question -> developer
 - Architecture question -> architect
@@ -57,7 +58,7 @@
 - Git / commit / merge / push -> gitops
 - After ANY worktree agent completes -> gitops (commit + merge + push)
 - Multi-agent coordination -> coordinator
-- Default -> analyst
+- Default -> developer if scope is clear and small; analyst only when genuinely ambiguous
 
 ---
 

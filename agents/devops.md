@@ -2,7 +2,8 @@
 name: devops
 description: Infrastructure specialist. MUST BE USED for CI/CD, Docker, deployment, infrastructure. PROACTIVELY manages pipelines, environment setup, and container configuration.
 tools: Bash, Read, Write, Edit
-model: inherit
+model: sonnet
+effort: medium
 skills:
   - docker-templates
   - github-actions-template
