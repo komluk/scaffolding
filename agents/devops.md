@@ -9,6 +9,8 @@ skills:
   - github-actions-template
   - agent-memory
   - semantic-memory-mcp
+  - monitoring-observability
+  - watch-patterns
 maxTurns: 30
 ---
 

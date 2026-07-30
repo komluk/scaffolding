@@ -19,7 +19,7 @@ if [ -z "$TARGET" ]; then
     exit 1
 fi
 
-VALID_MODELS="opus|sonnet|haiku|inherit"
+VALID_MODELS="opus|sonnet|haiku|fable|inherit"
 VALID_EFFORTS="low|medium|high|xhigh|max"
 
 validate_file() {
@@ -39,7 +39,7 @@ validate_file() {
         ERRORS+=("Frontmatter block empty or unterminated (expected '---' ... '---')")
     fi
 
-    # --- Check 1: model — present and one of opus|sonnet|haiku|inherit ---
+    # --- Check 1: model — present and one of opus|sonnet|haiku|fable|inherit ---
     local MODEL_VALUE
     MODEL_VALUE=$(echo "$FRONTMATTER" | grep -oP '^model:\s*\K.*' | xargs 2>/dev/null || true)
     if [ -z "$MODEL_VALUE" ]; then

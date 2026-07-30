@@ -7,6 +7,10 @@ effort: high
 skills:
   - agent-memory
   - semantic-memory-mcp
+  - monitoring-observability
+  - logging-standards
+  - pattern-recognition
+  - watch-patterns
 maxTurns: 30
 ---
 
@@ -125,6 +129,22 @@ Read [config files]
 ### Why This Wasn't Caught
 - [Reason: missing test, edge case, etc.]
 ```
+
+## Metrics & Logs First (service diagnosis)
+
+When diagnosing a running service, query the observability stack BEFORE
+guessing from code:
+
+- **Metrics**: `mcp__grafana__query_prometheus` — error rates, restarts,
+  saturation around the incident window
+- **Logs**: `mcp__grafana__query_loki_logs` — exact error lines and timestamps
+
+One aggregated query beats re-deriving state with ad hoc shell loops. To
+observe a bug reproduction (waiting for a crash, watching a log stream), build
+the watcher per the `watch-patterns` skill — terminal-state coverage, bounded
+loops, verified variable expansion.
+
+---
 
 ## Quality Standards
 
