@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.11.1] - 2026-07-31
+
+MCP server identifier rename for consistency with aiproxy/homelab gateway; stdio table cleanup.
+
+### Changed
+- MCP server identifier renamed `semantic-memory` → `memory` across agents/commands/skills/hooks for consistency with aiproxy/homelab gateway naming.
+- Removed dead `mcp__memory__*` stdio table row from mcp-tools skill.
+
 ## [2.11.0] - 2026-07-30
 
 Monitoring patterns skill, debugger/devops enrichment, frontmatter fixes.
