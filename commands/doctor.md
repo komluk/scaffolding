@@ -203,18 +203,18 @@ fi
 echo ""
 echo "=== OPTIONAL (opt-in cross-device semantic memory) ==="
 
-# Check 7 — MCP semantic-memory configured (opt-in — never a failure if absent)
-if command -v claude >/dev/null 2>&1 && claude mcp list 2>/dev/null | grep -qi 'semantic-memory'; then
-  pass "semantic-memory MCP wired"
+# Check 7 — MCP memory server configured (opt-in — never a failure if absent)
+if command -v claude >/dev/null 2>&1 && claude mcp list 2>/dev/null | grep -qi 'memory'; then
+  pass "memory MCP wired"
   # Check 8 — token only matters once #7 is wired
   if [ -n "${MEMORY_MCP_TOKEN:-}" ]; then
     pass "MEMORY_MCP_TOKEN is set"
   else
     OPTIONAL=$((OPTIONAL+1))
-    fail "semantic-memory wired but MEMORY_MCP_TOKEN unset — calls will 401" "export MEMORY_MCP_TOKEN=...   then   /memory status"
+    fail "memory MCP wired but MEMORY_MCP_TOKEN unset — calls will 401" "export MEMORY_MCP_TOKEN=...   then   /memory status"
   fi
 else
-  echo "  [SKIP] semantic-memory MCP not wired — OPTIONAL, off by default."
+  echo "  [SKIP] memory MCP not wired — OPTIONAL, off by default."
   echo "         enable cross-device memory with: /memory enable   (skip if not wanted)"
 fi
 
@@ -268,7 +268,7 @@ RECOMMENDED
   [PASS/FAIL] in-repo CLAUDE.md                  — /init-scaffolding if FAIL
   [PASS/FAIL] .scaffolding/ present              — /init-scaffolding if FAIL
 OPTIONAL
-  [PASS/SKIP] semantic-memory MCP                — /memory enable (opt-in)
+  [PASS/SKIP] memory MCP                         — /memory enable (opt-in)
   [PASS/FAIL] MEMORY_MCP_TOKEN (only if wired)   — export token if FAIL
 
 Summary: <N> blocking, <M> recommended, <K> optional issue(s).

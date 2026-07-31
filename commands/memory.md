@@ -7,7 +7,7 @@ until you enable it.
 ## Usage
 
 ```
-/memory enable     # wire the semantic-memory MCP backend into Claude Code (user scope)
+/memory enable     # wire the memory MCP backend into Claude Code (user scope)
 /memory disable    # remove it from this device (stored memories on the backend are kept)
 /memory status     # show whether it's wired and reachable
 ```
@@ -31,13 +31,13 @@ memory is yours only; anyone without it gets 401.
 2. **Register the MCP server** (user scope; default endpoint = homelab backend, override
    with `MEMORY_MCP_URL`):
    ```bash
-   claude mcp add --scope user --transport http semantic-memory \
+   claude mcp add --scope user --transport http memory \
      "${MEMORY_MCP_URL:-http://memory.bernardynska.waw.pl:8000/mcp}" \
      --header "Authorization: Bearer \${MEMORY_MCP_TOKEN}"
    ```
    (The literal `${MEMORY_MCP_TOKEN}` is stored and expanded at runtime — the token is
    never written to disk.)
-3. **Verify**: `claude mcp list | grep semantic-memory`
+3. **Verify**: `claude mcp list | grep memory`
 4. **(Optional) Wire token auto-refresh from Vault.** Offer this only if the user wants
    the token kept fresh per-device without manual re-export. It installs a SessionStart
    hook (shipped with the plugin) into **user** settings — opt-in, never an always-on
@@ -65,12 +65,12 @@ memory is yours only; anyone without it gets 401.
    without them. **Skip** if the token is supplied another way (e.g. the `claude()`
    shell wrapper). Takes effect next session.
 5. **Tell the user to restart Claude Code** so the server + token load and connect. After
-   restart, `mcp__semantic-memory__*` tools are available and skills use them automatically.
+   restart, `mcp__memory__*` tools are available and skills use them automatically.
 
 ## disable
 
 ```bash
-claude mcp remove semantic-memory --scope user
+claude mcp remove memory --scope user
 ```
 If the optional auto-refresh hook was installed, also remove it:
 ```bash
@@ -82,7 +82,7 @@ deleted — re-enable any time with `/memory enable`.
 ## status
 
 ```bash
-claude mcp list | grep -i semantic-memory || echo "memory: not enabled on this device"
+claude mcp list | grep -i memory || echo "memory: not enabled on this device"
 ```
 If present, report the URL and whether `MEMORY_MCP_TOKEN` is set in the environment
 (connection needs both). Note: `Failed to connect` usually just means the current shell

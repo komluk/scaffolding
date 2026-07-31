@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# SessionStart hook — compute a stable per-project id for semantic-memory scoping.
+# SessionStart hook — compute a stable per-project id for memory scoping.
 #
 # Emits the project_id as additionalContext so agents pass it to the
-# mcp__semantic-memory__* tools, isolating memory per repository (shared across
+# mcp__memory__* tools, isolating memory per repository (shared across
 # the user's devices, since it derives from the git remote, not the local path).
 #
 # No-op-safe: if semantic memory isn't enabled, the injected note is harmless.
@@ -23,7 +23,7 @@ pid="scaffold:${h}"
 mkdir -p "$dir/.scaffolding" 2>/dev/null || true
 printf '%s\n' "$pid" > "$dir/.scaffolding/project-id" 2>/dev/null || true
 
-ctx="semantic-memory project_id = ${pid}. When the mcp__semantic-memory__* tools are available, ALWAYS pass project_id=\"${pid}\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices)."
+ctx="memory project_id = ${pid}. When the mcp__memory__* tools are available, ALWAYS pass project_id=\"${pid}\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices)."
 
 # SessionStart additionalContext injection.
 printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":%s}}\n' \

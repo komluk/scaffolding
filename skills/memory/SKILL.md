@@ -99,7 +99,7 @@ the human-readable name; the description matches the frontmatter `description`.
 4. Append a bullet to `MEMORY.md` (create the index if absent).
 5. If MCP semantic memory is available, call:
    ```
-   mcp__semantic-memory__semantic_store(
+   mcp__memory__semantic_store(
      content="<description + key facts from body, ≤500 chars>",
      agent_name="memory",
      content_type="learning",
@@ -134,14 +134,14 @@ the human-readable name; the description matches the frontmatter `description`.
 
 **Semantic query (if MCP available):**
 ```
-mcp__semantic-memory__semantic_search(
+mcp__memory__semantic_search(
   query="<natural-language query>",
   project_id="scaffold:831a4a3fd343b902"
 )
 ```
 or
 ```
-mcp__semantic-memory__semantic_recall(
+mcp__memory__semantic_recall(
   context="<task context summary>",
   project_id="scaffold:831a4a3fd343b902"
 )
@@ -167,7 +167,7 @@ If unsure, prefer UPDATE over creating a duplicate.
 
 ## MCP Availability
 
-If `mcp__semantic-memory__*` tools are not accessible (MCP server not wired or
+If `mcp__memory__*` tools are not accessible (MCP server not wired or
 returns an error), skip all MCP calls silently. File-based memory is always
 sufficient; semantic memory is an optional enhancement layer.
 
