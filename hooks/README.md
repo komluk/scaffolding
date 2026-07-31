@@ -90,6 +90,34 @@ This directory contains hooks that run automatically during Claude Code workflow
 | `.scaffolding/agent-memory/log.md` | append-only ingest log | git-tracked |
 | `.scaffolding/.noingest` | per-repo opt-out | manual `touch` |
 
+### 7. nfs-sync.sh
+**Type:** SessionStart (`startup`, `resume`) / Stop hook
+**Triggers:** `nfs-sync.sh pull` after `auto-init-check.sh` on session start/resume
+(not `compact`); `nfs-sync.sh push` after `memory-ingest.sh` on Stop
+**Purpose:** Mirror `.scaffolding/` to a TrueNAS NFS share as an off-box replica
+
+**What it does:**
+- **Opt-in only**, gated before any NFS access: `SCAFFOLDING_NFS_ROOT` env var,
+  or a `.scaffolding/.nfs-sync` sentinel file (empty = default root
+  `/mnt/scaffolding`, or an absolute path on its first line). No env var and no
+  sentinel → silent `exit 0`.
+- Target on the share: `$NFS_ROOT/projects/<slug>-<project_id_hash>/`, where
+  `<slug>` is the lowercased/sanitized project directory basename.
+- Reachability probe (`timeout ... test -d`) before touching the mount;
+  `flock -n` on `.scaffolding/.nfs-sync.lock` so concurrent sessions skip
+  rather than race.
+- `rsync -rlt --no-perms --no-owner --no-group --omit-dir-times --update`
+  (never `-a`, never `--delete`) — local `.scaffolding/` is always
+  authoritative, NFS is a non-authoritative replica; a pull never clobbers a
+  newer local file, a push never deletes anything on the share.
+- Excludes `worktrees/`, `.nfs-sync`, `.nfs-sync.lock`, `.ingest-dirty`,
+  `.ingest-queue`, `.ingest-seen`, `.noingest`, `*.lock`, `.git/` (pull also
+  excludes `project.json`).
+- On push, writes/refreshes `$TARGET/project.json` (project_id, project_path,
+  hostname, last_push, plugin_version).
+- **Always exits 0** — an unreachable/slow/read-only share only logs one
+  advisory line to stderr and never blocks a session.
+
 ## PostToolUse(Edit|Write) ordering — CRITICAL
 
 The registered order in **both** `.claude-plugin/plugin.json` and `settings.json`
@@ -116,6 +144,9 @@ the last position.
 | `SCAFFOLDING_AUTOFORMAT` | off | `=1` enables `post-edit-format.sh` auto-formatting |
 | `SCAFFOLDING_NOTIFY` | off | `=1` enables `notify.sh` desktop/terminal notifications |
 | `SCAFFOLDING_MEMORY_INGEST` | advisory | unset → advisory (stderr nudge); `=block` → enforce (`decision:block`); `=off` → disabled. `memory-ingest{,-mark}.sh` |
+| `SCAFFOLDING_NFS_ROOT` | unset (off) | Opt in to `nfs-sync.sh` and set the NFS root path (or use the `.scaffolding/.nfs-sync` sentinel instead) |
+| `SCAFFOLDING_NFS_TIMEOUT` | `20` (seconds) | Bound on the rsync transfer in `nfs-sync.sh` |
+| `SCAFFOLDING_NFS_PROBE_TIMEOUT` | `5` (seconds) | Bound on the reachability probe in `nfs-sync.sh` |
 
 ## Hook Configuration
 

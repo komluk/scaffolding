@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.12.0] - 2026-07-31
+
+New opt-in hook to mirror `.scaffolding/` to a TrueNAS NFS share as an
+off-box replica. Default off everywhere; no behavioural change unless a
+repo explicitly opts in.
+
+### Added
+- **`hooks/nfs-sync.sh`** — opt-in rsync mirror of `.scaffolding/` to an NFS
+  share. Wired as `nfs-sync.sh pull` on `SessionStart` (`startup`, `resume`,
+  after `auto-init-check.sh`) and `nfs-sync.sh push` on `Stop` (after
+  `memory-ingest.sh`). Opt-in via `SCAFFOLDING_NFS_ROOT` env var or a
+  `.scaffolding/.nfs-sync` sentinel file; silent no-op otherwise. Local
+  `.scaffolding/` is always authoritative — the hook probes reachability with
+  a timeout, uses `flock -n` to avoid concurrent runs, and uses
+  `rsync -rlt --no-perms --no-owner --no-group --omit-dir-times --update`
+  (never `-a`, never `--delete`) so it can never lose or clobber local data.
+  Writes a `project.json` manifest on push. Always exits 0.
+
 ## [2.11.0] - 2026-07-30
 
 Monitoring patterns skill, debugger/devops enrichment, frontmatter fixes.
