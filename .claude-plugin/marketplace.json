@@ -8,7 +8,7 @@
     {
       "name": "scaffolding",
       "source": "./",
-      "description": "13 agents, 35 skills, 19 commands, 15 hooks — spec-driven, multi-agent orchestration for Claude Code with per-phase model tiers, opt-in lifecycle hooks, and optional cross-device semantic memory."
+      "description": "Spec-driven multi-agent orchestration for Claude Code — pure markdown, zero backend, runs on the stock runtime. 13 agents, 35 skills, 19 commands, 15 hooks, per-phase model tiers, opt-in lifecycle hooks, optional cross-device semantic memory."
     }
   ]
 }

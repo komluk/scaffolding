@@ -2,8 +2,9 @@
 
 [![Version](https://img.shields.io/badge/version-2.8.0-blue?style=flat-square)](https://github.com/komluk/scaffolding/releases) [![License: MIT](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Works with Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2?style=flat-square)](https://github.com/komluk/scaffolding) [![Agents](https://img.shields.io/badge/agents-13-orange?style=flat-square)](agents/) [![Skills](https://img.shields.io/badge/skills-35-orange?style=flat-square)](skills/) [![Commands](https://img.shields.io/badge/commands-19-orange?style=flat-square)](commands/) [![Listed on ClaudePluginHub](https://www.claudepluginhub.com/badge/komluk-scaffolding)](https://www.claudepluginhub.com/plugins/komluk-scaffolding?ref=badge)
 
-Portable Claude Code configuration: 13 agents, 35 skills, 19 commands, 15 hooks,
-spec-driven workflows. Installs as a Claude Code plugin.
+Spec-driven multi-agent orchestration for Claude Code — pure markdown, zero backend,
+runs on the stock runtime. 13 agents, 35 skills, 19 commands, 15 hooks, per-phase model
+tiers, opt-in lifecycle hooks, optional cross-device semantic memory.
 
 ## Overview
 
@@ -15,18 +16,21 @@ long-running process required.
 
 ## Why use this
 
-- **Spec-driven workflows** — OpenSpec-style specs keep work grounded and reproducible.
-- **13 specialized agents** — analyst, architect, developer, reviewer, debugger, prompt-engineer, mcp-builder, and more, each with a focused role.
-- **Parallel multi-agent orchestration** — fan out work across agents and coordinate results.
-- **Opinionated guardrail hooks** — 15 safety and lifecycle hooks block destructive commands, hard-deny disallowed subagents, and enforce conventions.
-- **Extensible & self-improving** — `/create-skill` scaffolds your own scaffolding-compatible skills, and `/learn` closes the loop by distilling reusable insights from finished conversations.
-- **Zero backend required** — pure markdown and Claude Code runtime; no database, server, or process to run.
+**Pure markdown, zero backend, runs on stock Claude Code.**
+Everything is markdown files — agents, skills, commands, hooks. No database, no backend service, no long-running process. All orchestration logic runs in Claude Code's built-in environment. Optional (not required) semantic-memory backend for cross-device recall; gracefully degrades without it.
 
-## What's new in 2.8.0
+**Multi-agent orchestration purpose-built for software engineering.**
+- **13 specialized agents** — analyst, architect, developer, reviewer, debugger, prompt-engineer, mcp-builder, and more, each with a focused role.
+- **Spec-driven workflows** — OpenSpec-style specs keep work grounded and reproducible.
+- **Parallel multi-agent coordination** — fan out work across agents and route results via peer-to-peer comms.
+- **Opinionated guardrails** — 15 safety and lifecycle hooks block destructive commands, hard-deny disallowed subagents, and enforce per-phase conventions.
+- **Extensible** — `/create-skill` scaffolds your own orchestration-compatible skills; `/learn` distills insights into reusable skills and memory entries.
+
+## Highlights
 
 Everything below is **opt-in or default-safe** — existing installs behave exactly
 as before until you set a flag or invoke a new agent. See the [CHANGELOG](CHANGELOG.md)
-for the full list.
+for full release history and current version.
 
 - **Two new agents (roster 11 → 13):** **`prompt-engineer`** (system prompts,
   guardrail rules, prompt evals, LLM-judge rubrics, injection defense) and
@@ -64,6 +68,10 @@ All flags are **off by default**; the plugin's behavior is unchanged unless you 
 | `SCAFFOLDING_NOTIFY` | off | `=1` enables `notify.sh` — desktop/terminal notification on turn-finish or input-needed. |
 | `SCAFFOLDING_COMPLETION_NUDGE` | off | `=1` advisory nudge to finish the delegation chain; `=block` enforces it (loop-guarded). |
 | `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` | off | `=1` enables the experimental agent-teams mode (see [docs/agent-teams.md](docs/agent-teams.md)). |
+
+<!-- TODO: Video demo slot — add asciinema/GIF recording here -->
+
+> 📹 Demo: _(asciinema/GIF coming soon)_
 
 ## Install
 
@@ -119,18 +127,6 @@ on top — enable it per device with `/memory enable` (see
 | Shared | `.scaffolding/agent-memory/shared/KNOWLEDGE.md` | Whole-project facts, written/read by any agent |
 | Agent | `.scaffolding/agent-memory/agents/{agent-name}/MEMORY.md` | Per-agent domain knowledge |
 | Conversation | `.scaffolding/conversations/{conversation_id}/agent-memory/context.md` | Per-conversation context and handoffs |
-
-## Common gotchas
-
-**`Agent type 'developer' not found`**
-- Forgot `/reload-plugins` after install, OR used the bare name. Use `scaffolding:developer`.
-
-**"Claude ignores the delegation protocol"**
-- Plugin loaded but `/reload-plugins` was not run after install.
-
-**"I installed the plugin, but nothing works in a new session"**
-- Restart Claude Code entirely — the plugin cache may be stale. `/reload-plugins`
-  is faster if a session is already active.
 
 ## Requirements
 
@@ -216,6 +212,8 @@ and hooks copied in.
 
 ## Documentation
 
+- [docs/troubleshooting.md](docs/troubleshooting.md) —
+  common gotchas and how to fix them
 - [docs/adopting-in-legacy-repo.md](docs/adopting-in-legacy-repo.md) —
   how to add this to an existing project that already has its own `.claude/`
 - [docs/orchestration-pattern.md](docs/orchestration-pattern.md) —
