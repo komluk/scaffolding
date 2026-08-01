@@ -6,7 +6,7 @@ The plugin organizes orchestration logic into four core directories:
 
 - **`agents/`** (13 agents) — Each `.md` file defines one agent with YAML frontmatter (`name`, `description`, `model`, `effort`, `skills`, `disallowedTools`), then agent-specific guidance. Example: `agents/developer.md` (sonnet/high, can use Edit/Write), `agents/tech-writer.md` (haiku, read-only).
 
-- **`skills/`** (35 skills) — Directory per skill with `SKILL.md` frontmatter (`name`, `description`) and content. Skills auto-invoke based on trigger keywords in agent descriptions. Examples: `error-handling/SKILL.md` (guidelines for exception handling), `spec-develop/SKILL.md` (how to build to spec).
+- **`skills/`** (36 skills) — Directory per skill with `SKILL.md` frontmatter (`name`, `description`) and content. Skills auto-invoke based on trigger keywords in agent descriptions. Examples: `error-handling/SKILL.md` (guidelines for exception handling), `spec-develop/SKILL.md` (how to build to spec).
 
 - **`commands/`** (19 commands) — 9 top-level slash commands (`/context`, `/learn`, `/memory`, etc.) + 10 OpenSpec subcommands (`/specs new`, `/specs apply`). Each `.md` file is runnable as a Claude Code command.
 
@@ -53,7 +53,7 @@ Source of truth: `.claude-plugin/plugin.json` (`version` field).
 
 1. **Count verification** (must stay in sync):
    - Count agents in `agents/*.md` → should match `plugin.json` / `README.md` / `CLAUDE.md` ("13 agents")
-   - Count skills in `skills/*/SKILL.md` → should match "35 skills"
+   - Count skills in `skills/*/SKILL.md` → should match "36 skills"
    - Count commands: `commands/*.md` (9 top-level) + `commands/specs/*.md` (10) = 19 total
    - Count hooks in `hooks/*.sh` → should match "15 hooks"
 
