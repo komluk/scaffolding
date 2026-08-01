@@ -271,7 +271,8 @@
   },
   "skipDangerousModePermissionPrompt": true,
   "description": "Claude Code settings for (project) - AUTONOMOUS MODE",
-  "autoCompact": "instant",
+  "autoCompactEnabled": true,
+  "fileCheckpointingEnabled": true,
   "agents": {
     "description": "Agent configuration (hooks trigger suggestions, not auto-execution)"
   },

@@ -28,7 +28,7 @@ This skill is **optional**. If no semantic memory service is configured, agents 
 
 Before attempting to store or search, verify a semantic memory backend is reachable:
 
-- If `mcp__semantic-memory__*` MCP tools are available, use those (see the `semantic-memory-mcp` skill).
+- If `mcp__memory__*` MCP tools are available, use those (see the `semantic-memory-mcp` skill).
 - If an optional backend service is configured for the project, use its documented interface.
 - If neither is available, **skip this skill entirely** and use file-based memory from the `agent-memory` skill. Do not block on missing infrastructure.
 

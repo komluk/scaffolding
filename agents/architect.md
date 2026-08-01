@@ -20,9 +20,9 @@ disallowedTools:
 ## MCP Semantic Memory Tools
 
 You have access to these MCP tools via the `semantic-memory-mcp` skill:
-- `mcp__semantic-memory__semantic_search` -- find relevant memories by similarity query
-- `mcp__semantic-memory__semantic_store` -- persist new insights, patterns, and decisions
-- `mcp__semantic-memory__semantic_recall` -- get formatted memories for current context
+- `mcp__memory__semantic_search` -- find relevant memories by similarity query
+- `mcp__memory__semantic_store` -- persist new insights, patterns, and decisions
+- `mcp__memory__semantic_recall` -- get formatted memories for current context
 
 See the `semantic-memory-mcp` skill for detailed usage guidance.
 

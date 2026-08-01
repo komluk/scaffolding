@@ -19,7 +19,6 @@ description: "MCP tool decision tree and MCP-first fallback strategy. TRIGGER wh
 | playwright | stdio | `mcp__playwright__browser_navigate`, `mcp__playwright__browser_screenshot` | developer, debugger |
 | eslint | stdio | `mcp__eslint__*` | developer, reviewer |
 | sonarqube | docker | `mcp__sonarqube__*` | developer, reviewer |
-| memory | stdio | `mcp__memory__*` | developer, architect |
 | sequential-thinking | stdio | `mcp__sequential-thinking__*` | architect, debugger |
 | postgres-mcp | stdio | `mcp__postgres-mcp__*` | developer, optimizer |
 | redis-mcp | stdio | `mcp__redis-mcp__*` | developer, devops, debugger |
@@ -32,7 +31,7 @@ description: "MCP tool decision tree and MCP-first fallback strategy. TRIGGER wh
 | asana | sse | `mcp__asana__*` | architect |
 | supabase | http | `mcp__supabase__*` | optimizer |
 | firebase | stdio | `mcp__firebase__*` | devops, optimizer |
-| semantic-memory | stdio | `mcp__semantic-memory__semantic_search`, `mcp__semantic-memory__semantic_store`, `mcp__semantic-memory__semantic_recall` | all agents (see below) |
+| memory | stdio | `mcp__memory__semantic_search`, `mcp__memory__semantic_store`, `mcp__memory__semantic_recall` | all agents (see below) |
 
 ## Semantic Memory MCP
 
@@ -70,5 +69,5 @@ For detailed usage guidance (when to search, when to store, quality gates), see 
 | Cache inspection | redis-mcp | `redis-cli` via Bash |
 | Container ops | docker | `docker` via Bash |
 | Git operations | github | `gh` CLI via Bash |
-| Memory search | semantic-memory | File-based agent-memory |
+| Memory search | memory | File-based agent-memory |
 | Remote server | ssh-mcp | `ssh` via Bash |
