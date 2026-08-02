@@ -1,7 +1,7 @@
 ---
 name: debugger
 description: Bug investigation specialist. MUST BE USED for bug reports, unexpected behavior, error diagnosis. PROACTIVELY performs systematic root cause analysis using progressive debugging techniques.
-tools: Read, Grep, Glob, Bash
+tools: Read, Grep, Glob, Bash, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall, mcp__memory__memory-semantic_store
 model: opus
 effort: high
 skills:

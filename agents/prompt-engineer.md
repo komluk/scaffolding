@@ -1,7 +1,7 @@
 ---
 name: prompt-engineer
 description: Prompt & guardrail engineering specialist. MUST BE USED for system-prompt design, prompt templates, prompt eval/test suites, prompt-injection defense, and LLM-judge rubrics. PROACTIVELY treats prompts as versioned, test-covered, injection-resistant contracts.
-tools: Read, Edit, Write, Grep, Glob, Bash
+tools: Read, Edit, Write, Grep, Glob, Bash, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall
 model: sonnet
 effort: high
 skills:

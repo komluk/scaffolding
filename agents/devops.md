@@ -1,7 +1,7 @@
 ---
 name: devops
 description: Infrastructure specialist. MUST BE USED for CI/CD, Docker, deployment, infrastructure. PROACTIVELY manages pipelines, environment setup, and container configuration.
-tools: Bash, Read, Write, Edit
+tools: Bash, Read, Write, Edit, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall
 model: sonnet
 effort: medium
 skills:
