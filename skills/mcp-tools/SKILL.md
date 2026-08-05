@@ -31,7 +31,7 @@ description: "MCP tool decision tree and MCP-first fallback strategy. TRIGGER wh
 | asana | sse | `mcp__asana__*` | architect |
 | supabase | http | `mcp__supabase__*` | optimizer |
 | firebase | stdio | `mcp__firebase__*` | devops, optimizer |
-| memory | stdio | `mcp__memory__semantic_search`, `mcp__memory__semantic_store`, `mcp__memory__semantic_recall` | all agents (see below) |
+| memory | stdio | 13 tools across search/store/notes/ingest/session tiers (see below) | tiered — see Access Control |
 
 ## Semantic Memory MCP
 
@@ -40,20 +40,34 @@ description: "MCP tool decision tree and MCP-first fallback strategy. TRIGGER wh
 - **Auth**: `DATABASE_URL` (PostgreSQL connection string), `SEMANTIC_MEMORY_ENABLED=true`
 - **Config**: `.mcp.json` at project root
 
-### Tools
+### Tools (13 total)
 
 | Tool | Purpose | Parameters |
 |------|---------|------------|
+| `search_context` | Search ingested context chunks (Qdrant hybrid retrieval) | `query` (required), `project_id`, `top_k` |
 | `semantic_search` | Search memories by similarity | `query` (required), `project_id`, `agent_name`, `top_k`, `threshold` |
-| `semantic_store` | Store a new memory with embedding | `content` (required), `agent_name` (required), `project_id`, `conversation_id`, `task_id`, `tags`, `content_type` |
 | `semantic_recall` | Recall relevant memories as markdown | `context` (required), `agent_name`, `project_id`, `top_k` |
+| `semantic_store` | Store a new memory with embedding | `content` (required), `agent_name` (required), `project_id`, `conversation_id`, `task_id`, `tags`, `content_type` |
+| `store_note` | Persist a note document | `project`, `relative_path`, `content` (see notes-tier agents) |
+| `read_note` | Read a note document | `project`, `relative_path` |
+| `list_notes` | List note documents | `project` |
+| `trigger_ingest` | Queue ONE document (`project` + `relative_path`) for immediate re-indexing so a note just written via `store_note` becomes searchable in seconds instead of up to 15 minutes. Path-scoped only — cannot trigger a full backfill. Returns once queued; does not wait for indexing to finish (~3s to become searchable). Only useful to agents that also have `store_note` — otherwise you'd be re-indexing someone else's file. | `project` (required), `relative_path` (required) |
+| `list_sessions` | List memory sessions (catalog) | — |
+| `get_session` | Get a session's details | `session_id` |
+| `semantic_list` | List stored memories (catalog) | `project_id` |
+| `semantic_delete` | Delete a memory | `memory_id` (granted to no agent) |
+| `archive_session` | Archive a session | `session_id` (granted to no agent) |
 
 ### Access Control
 
-| Permission | Agents |
-|------------|--------|
-| Read + Write (all 3 tools) | developer, architect, debugger, analyst, researcher, reviewer, optimizer |
-| Read-only (`semantic_search`, `semantic_recall`) | tech-writer, devops, gitops |
+| Tier | Tools | Agents |
+|------|-------|--------|
+| Write (search/recall/store) | `search_context`, `semantic_search`, `semantic_recall`, `semantic_store` | developer, architect, debugger, analyst, researcher, reviewer, optimizer |
+| Read-only | `search_context`, `semantic_search`, `semantic_recall` | tech-writer, devops, gitops, mcp-builder, prompt-engineer |
+| Notes | `store_note`, `read_note`, `list_notes` | architect, researcher |
+| Ingest trigger | `trigger_ingest` | architect, researcher — narrow grant, restricted to the two agents that also hold `store_note`; broader access would invite wasted LLM context-gen calls re-indexing files the caller didn't write |
+| Session catalog | `list_sessions`, `get_session`, `semantic_list` | coordinator |
+| Delete/archive | `semantic_delete`, `archive_session` | nobody |
 
 For detailed usage guidance (when to search, when to store, quality gates), see the `semantic-memory-mcp` skill.
 

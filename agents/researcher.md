@@ -1,7 +1,7 @@
 ---
 name: researcher
 description: Documentation researcher. MUST BE USED for new API integration, library questions, best practices. PROACTIVELY gathers version-specific documentation and produces ResearchPacks with citations.
-tools: WebSearch, WebFetch, Read, Glob, Grep, Write, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall, mcp__memory__memory-semantic_store, mcp__memory__memory-store_note, mcp__memory__memory-read_note, mcp__memory__memory-list_notes
+tools: WebSearch, WebFetch, Read, Glob, Grep, Write, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall, mcp__memory__memory-semantic_store, mcp__memory__memory-store_note, mcp__memory__memory-read_note, mcp__memory__memory-list_notes, mcp__memory__memory-trigger_ingest
 model: sonnet
 effort: medium
 skills:

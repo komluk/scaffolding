@@ -5,18 +5,27 @@ description: "Proactive use of semantic-memory MCP tools (semantic_search, seman
 
 # Semantic Memory MCP Usage
 
-You have access to three MCP tools for semantic memory. Use them PROACTIVELY -- do not wait to be asked.
+You have access to a subset of the 13 memory MCP tools, depending on your agent's tier. Use the search/recall tools PROACTIVELY -- do not wait to be asked. Only call a tool your agent's `tools:` frontmatter actually grants — see the tier table below and the `mcp-tools` skill for the full 13-tool inventory.
 
 ## Tools Available
 
-| Tool | Purpose | All agents | Write agents only |
-|------|---------|------------|-------------------|
-| `semantic_search` | Find memories by similarity query | Yes | -- |
-| `semantic_recall` | Get formatted memories for current context | Yes | -- |
-| `semantic_store` | Store a new memory with embedding | -- | Yes |
+| Tool | Purpose | All agents | Write agents only | Notes agents only |
+|------|---------|------------|--------------------|--------------------|
+| `search_context` | Search ingested context chunks | Yes | -- | -- |
+| `semantic_search` | Find memories by similarity query | Yes | -- | -- |
+| `semantic_recall` | Get formatted memories for current context | Yes | -- | -- |
+| `semantic_store` | Store a new memory with embedding | -- | Yes | -- |
+| `store_note` / `read_note` / `list_notes` | Persist/read/list note documents | -- | -- | Yes |
+| `trigger_ingest` | Queue one just-written document (`project` + `relative_path`) for immediate indexing (~3s to become searchable) instead of waiting up to 15 minutes | -- | -- | Yes |
 
-Write agents: developer, architect, debugger, analyst, researcher, reviewer, optimizer.
-Read-only agents: tech-writer, devops, gitops.
+Write agents (search/recall/store): developer, architect, debugger, analyst, researcher, reviewer, optimizer.
+Read-only agents: tech-writer, devops, gitops, mcp-builder, prompt-engineer.
+Notes + trigger_ingest agents: architect, researcher only — `trigger_ingest` is deliberately withheld from the rest of the write tier because it's only useful paired with `store_note` (otherwise you're re-indexing a document you didn't write), and each call costs an LLM context-gen call.
+
+`trigger_ingest` is path-scoped to a single document — it cannot trigger a full
+backfill — and it is fire-and-forget: it returns once the document is queued,
+not once indexing completes. Don't expect a synchronous "done" result; the
+document becomes searchable a few seconds later.
 
 > **Uwaga**: Jesli ten skill jest aktywny w repozytorium bez MCP server `memory`, pomin te instrukcje. Agent bez dostepu do `mcp__memory__*` toolow powinien po prostu pracowac bez pamieci semantycznej -- file-based fallback w `.scaffolding/agent-memory/` wciaz dziala.
 

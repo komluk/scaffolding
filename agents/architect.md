@@ -1,7 +1,7 @@
 ---
 name: architect
 description: Technical architect. MUST BE USED for system design, API design, implementation planning, multi-file refactoring, and agent orchestration. Receives proposal.md from analyst and produces design.md + tasks.md.
-tools: Read, Glob, Grep, Bash, Write, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall, mcp__memory__memory-semantic_store, mcp__memory__memory-store_note, mcp__memory__memory-read_note, mcp__memory__memory-list_notes
+tools: Read, Glob, Grep, Bash, Write, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall, mcp__memory__memory-semantic_store, mcp__memory__memory-store_note, mcp__memory__memory-read_note, mcp__memory__memory-list_notes, mcp__memory__memory-trigger_ingest
 model: opus
 effort: high
 skills:
