@@ -44,14 +44,14 @@ description: "MCP tool decision tree and MCP-first fallback strategy. TRIGGER wh
 
 | Tool | Purpose | Parameters |
 |------|---------|------------|
-| `search_context` | Search ingested context chunks (Qdrant hybrid retrieval) | `query` (required), `project_id`, `top_k` |
+| `search_context` | Search ingested context chunks (Qdrant hybrid retrieval) | `query` (required), `corpus`, `top_k` |
 | `semantic_search` | Search memories by similarity | `query` (required), `project_id`, `agent_name`, `top_k`, `threshold` |
 | `semantic_recall` | Recall relevant memories as markdown | `context` (required), `agent_name`, `project_id`, `top_k` |
 | `semantic_store` | Store a new memory with embedding | `content` (required), `agent_name` (required), `project_id`, `conversation_id`, `task_id`, `tags`, `content_type` |
-| `store_note` | Persist a note document | `project`, `relative_path`, `content` (see notes-tier agents) |
-| `read_note` | Read a note document | `project`, `relative_path` |
-| `list_notes` | List note documents | `project` |
-| `trigger_ingest` | Queue ONE document (`project` + `relative_path`) for immediate re-indexing so a note just written via `store_note` becomes searchable in seconds instead of up to 15 minutes. Path-scoped only — cannot trigger a full backfill. Returns once queued; does not wait for indexing to finish (~3s to become searchable). Only useful to agents that also have `store_note` — otherwise you'd be re-indexing someone else's file. | `project` (required), `relative_path` (required) |
+| `store_note` | Persist a note document | `corpus`, `relative_path`, `content` (see notes-tier agents) |
+| `read_note` | Read a note document | `corpus`, `relative_path` |
+| `list_notes` | List note documents | `corpus` |
+| `trigger_ingest` | Queue ONE document (`corpus` + `relative_path`) for immediate re-indexing so a note just written via `store_note` becomes searchable in seconds instead of up to 15 minutes. Path-scoped only — cannot trigger a full backfill. Returns once queued; does not wait for indexing to finish (~3s to become searchable). Only useful to agents that also have `store_note` — otherwise you'd be re-indexing someone else's file. | `corpus` (required), `relative_path` (required) |
 | `list_sessions` | List memory sessions (catalog) | — |
 | `get_session` | Get a session's details | `session_id` |
 | `semantic_list` | List stored memories (catalog) | `project_id` |
@@ -68,6 +68,8 @@ description: "MCP tool decision tree and MCP-first fallback strategy. TRIGGER wh
 | Ingest trigger | `trigger_ingest` | architect, researcher — narrow grant, restricted to the two agents that also hold `store_note`; broader access would invite wasted LLM context-gen calls re-indexing files the caller didn't write |
 | Session catalog | `list_sessions`, `get_session`, `semantic_list` | coordinator |
 | Delete/archive | `semantic_delete`, `archive_session` | nobody |
+
+`corpus` (top-level NFS share directory: `homelab`, `platform`, `projects`) and `project_id` (`scaffold:<hash>`, one per repo) are different axes — `corpus` scopes the notes/ingest tools above, `project_id` scopes the `semantic_*` (mem0) tools. Don't pass one where the other is expected.
 
 For detailed usage guidance (when to search, when to store, quality gates), see the `semantic-memory-mcp` skill.
 

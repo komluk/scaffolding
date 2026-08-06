@@ -16,7 +16,7 @@ You have access to a subset of the 13 memory MCP tools, depending on your agent'
 | `semantic_recall` | Get formatted memories for current context | Yes | -- | -- |
 | `semantic_store` | Store a new memory with embedding | -- | Yes | -- |
 | `store_note` / `read_note` / `list_notes` | Persist/read/list note documents | -- | -- | Yes |
-| `trigger_ingest` | Queue one just-written document (`project` + `relative_path`) for immediate indexing (~3s to become searchable) instead of waiting up to 15 minutes | -- | -- | Yes |
+| `trigger_ingest` | Queue one just-written document (`corpus` + `relative_path`) for immediate indexing (~3s to become searchable) instead of waiting up to 15 minutes | -- | -- | Yes |
 
 Write agents (search/recall/store): developer, architect, debugger, analyst, researcher, reviewer, optimizer.
 Read-only agents: tech-writer, devops, gitops, mcp-builder, prompt-engineer.
@@ -52,7 +52,9 @@ document becomes searchable a few seconds later.
   `scaffold:<hash>` derived from the git remote); pass that exact value to
   every `semantic_search` / `semantic_recall` / `semantic_store` call. If no
   `project_id` is provided in session context, the backend uses a shared
-  `default` namespace.
+  `default` namespace. Note: `project_id` (this section's mem0 axis) is distinct
+  from `corpus` (used by `search_context`/notes/`trigger_ingest`, one of three
+  NFS share directories) — don't conflate the two.
 
 ### Examples:
 ```
