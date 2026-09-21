@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.12.0] - 2026-09-21
+
+Two new skills (systematic-debugging, verification-before-completion), enriched agent preloads, and corrected component counts.
+
+### Added
+- **`systematic-debugging` skill** — phase-based root cause investigation: reproduce,
+  observe, hypothesize, bisect, trace to root cause, verify. Preloaded on the `debugger`
+  agent. Closes the gap where `debugger` carried observability skills but no RCA methodology.
+- **`verification-before-completion` skill** — verify claims by executing, not asserting,
+  before declaring work done or delegating. Left invoked (cross-cutting, not preloaded).
+
+### Changed
+- **`gitops` agent** — new "Remote Authentication Standard" section: discover the fleet's
+  existing git auth mechanism before setup; ONE failed auth attempt = stop, never retry
+  with a different transport (HTTPS <-> SSH); a credential prompt signals skipped
+  indirection, not missing credentials; never write credentials to disk or add a
+  persistent `credential.helper`; report `status: blocked` rather than improvising.
+- **`developer` agent** — now preloads `react-patterns` (was defined but unreferenced;
+  parallels the existing `python-patterns` preload for the backend stack).
+- **`researcher` agent** — now preloads `quality-validation` (every researcher task ends in
+  a ResearchPack, which is exactly what this skill scores).
+
+### Fixed
+- **Stale counts in `README.md`, `plugin.json`, and `marketplace.json`** — skills 36 -> 38,
+  hooks 15 -> 17, README version badge 2.8.0 -> 2.12.0, validators list completed to all four.
+
 ## [2.11.1] - 2026-07-31
 
 MCP server identifier rename for consistency with aiproxy/homelab gateway; stdio table cleanup.

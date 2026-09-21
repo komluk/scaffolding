@@ -7,6 +7,7 @@ effort: medium
 skills:
   - research-methodology
   - spec-research
+  - quality-validation
   - semantic-memory-mcp
   - agent-comms
 maxTurns: 30

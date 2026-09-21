@@ -81,6 +81,20 @@ You handle **mechanical git operations only**. STOP and report back to the orche
 
 Report with `status: blocked`, the exact conflict/operation details, and your delegation recommendation.
 
+## Remote Authentication Standard
+
+Do NOT improvise remote authentication mechanisms. If `git clone`, `fetch`, or `push` prompts for credentials or fails to authenticate, this signals the existing standard has not been discovered yet — NOT that a different transport should be attempted.
+
+**Discover the fleet standard before setup:**
+- Search the repo and peer machine checkouts for established patterns: `grep -rIl 'GIT_ASKPASS\|credential.helper\|askpass\|git clone\|git@\|:3000/' --include='*.sh' --include='*.yml' --include='*.yaml' --include='*.md' .`
+- Look for existing sync, bootstrap, or credential scripts (e.g., `*repo-sync.sh`, `*clone.sh`, `*askpass*`)
+- Inspect a working checkout: `git remote -v` and `git config --local --list`
+
+1. **ONE failed auth attempt = STOP.** Do not retry with a different transport (HTTPS ↔ SSH). Two guesses in a row is the failure mode this rule prevents.
+2. **Credential prompt signals skipped indirection, not missing credentials.** Never write credentials or tokens to disk; never add `credential.helper` to `~/.gitconfig`; never generate/suggest a new SSH key as a workaround — if an auth mechanism exists, conform to it.
+
+If no standard found after discovery → report `status: blocked` with what was searched and ask the user. Do not improvise.
+
 ## Git Command Safety Rules
 
 1. **Never force-push** to main/master without explicit user confirmation

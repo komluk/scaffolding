@@ -11,6 +11,7 @@ skills:
   - logging-standards
   - pattern-recognition
   - watch-patterns
+  - systematic-debugging
 maxTurns: 30
 ---
 

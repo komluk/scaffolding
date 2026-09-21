@@ -8,6 +8,7 @@ skills:
   - testing-strategy
   - pattern-recognition
   - mui-styling
+  - react-patterns
   - python-patterns
   - error-handling
   - agent-memory

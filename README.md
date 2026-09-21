@@ -1,9 +1,9 @@
 # claude-scaffolding
 
-[![Version](https://img.shields.io/badge/version-2.8.0-blue?style=flat-square)](https://github.com/komluk/scaffolding/releases) [![License: MIT](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Works with Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2?style=flat-square)](https://github.com/komluk/scaffolding) [![Agents](https://img.shields.io/badge/agents-13-orange?style=flat-square)](agents/) [![Skills](https://img.shields.io/badge/skills-36-orange?style=flat-square)](skills/) [![Commands](https://img.shields.io/badge/commands-19-orange?style=flat-square)](commands/) [![Listed on ClaudePluginHub](https://www.claudepluginhub.com/badge/komluk-scaffolding)](https://www.claudepluginhub.com/plugins/komluk-scaffolding?ref=badge)
+[![Version](https://img.shields.io/badge/version-2.12.0-blue?style=flat-square)](https://github.com/komluk/scaffolding/releases) [![License: MIT](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Works with Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2?style=flat-square)](https://github.com/komluk/scaffolding) [![Agents](https://img.shields.io/badge/agents-13-orange?style=flat-square)](agents/) [![Skills](https://img.shields.io/badge/skills-38-orange?style=flat-square)](skills/) [![Commands](https://img.shields.io/badge/commands-19-orange?style=flat-square)](commands/) [![Listed on ClaudePluginHub](https://www.claudepluginhub.com/badge/komluk-scaffolding)](https://www.claudepluginhub.com/plugins/komluk-scaffolding?ref=badge)
 
 Spec-driven multi-agent orchestration for Claude Code — pure markdown, zero backend,
-runs on the stock runtime. 13 agents, 36 skills, 19 commands, 15 hooks, per-phase model
+runs on the stock runtime. 13 agents, 38 skills, 19 commands, 17 hooks, per-phase model
 tiers, opt-in lifecycle hooks, optional cross-device semantic memory.
 
 ## Overview
@@ -23,7 +23,7 @@ Everything is markdown files — agents, skills, commands, hooks. No database, n
 - **13 specialized agents** — analyst, architect, developer, reviewer, debugger, prompt-engineer, mcp-builder, and more, each with a focused role.
 - **Spec-driven workflows** — OpenSpec-style specs keep work grounded and reproducible.
 - **Parallel multi-agent coordination** — fan out work across agents and route results via peer-to-peer comms.
-- **Opinionated guardrails** — 15 safety and lifecycle hooks block destructive commands, hard-deny disallowed subagents, and enforce per-phase conventions.
+- **Opinionated guardrails** — 17 safety and lifecycle hooks block destructive commands, hard-deny disallowed subagents, and enforce per-phase conventions.
 - **Extensible** — `/create-skill` scaffolds your own orchestration-compatible skills; `/learn` distills insights into reusable skills and memory entries.
 
 ## Highlights
@@ -140,7 +140,7 @@ claude-scaffolding/
 ├── agents/         13 agents (analyst, architect, coordinator, developer,
 │                    debugger, devops, gitops, mcp-builder, optimizer,
 │                    prompt-engineer, researcher, reviewer, tech-writer)
-├── skills/         36 skills (api-design, error-handling, pattern-recognition,
+├── skills/         38 skills (api-design, error-handling, pattern-recognition,
 │                    skill-authoring, spec-*, mui-styling, python-patterns,
 │                    sofa-search, testing-strategy, ...)
 ├── commands/       19 slash commands: 9 top-level (context, create-skill,
@@ -148,13 +148,13 @@ claude-scaffolding/
 │                    doctor, sofa) + 10 in `commands/specs/` (apply, archive,
 │                    bulk-archive, continue, explore, ff, new, onboard, sync,
 │                    verify) — namespaced OpenSpec commands
-├── hooks/          15 safety + lifecycle hooks (block-destructive-rm,
+├── hooks/          17 safety + lifecycle hooks (block-destructive-rm,
 │                    block-subagent, block-env-write, pre-commit-validation,
 │                    post-edit-format, completion-nudge, file-size-warn, notify,
 │                    session-start-protocol, auto-init-check, memory-project-id, ...)
 ├── templates/      Shared agent reference docs (output-frontmatter schema,
 │                    agents/skills overview, responsibility matrix)
-├── validators/     Validation scripts (circuit-breaker, validate-agent-output)
+├── validators/     Validation scripts (circuit-breaker, validate-agent-frontmatter, validate-agent-output, validate-skill)
 ├── output-styles/  output-frontmatter definition
 ├── workflows/      YAML workflow and coordinate definitions
 ├── CLAUDE.md       Main project prompt
