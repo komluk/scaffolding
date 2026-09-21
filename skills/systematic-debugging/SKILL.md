@@ -1,6 +1,6 @@
 ---
 name: systematic-debugging
-description: "Phase-based root cause investigation: reproduce, observe, hypothesize, bisect, trace to root cause, verify. TRIGGER when: investigating a bug report, diagnosing unexpected behavior, or doing root cause analysis. SKIP: writing the regression test (use testing-strategy); building a live-repro watcher (use watch-patterns)."
+description: "Phase-based root cause investigation: reproduce, observe, hypothesize, bisect, verify. TRIGGER when: investigating a bug report, diagnosing unexpected behavior, or doing root cause analysis. SKIP: looking up a known error first (use sofa-search); writing the regression test (use testing-strategy); live-repro watcher (use watch-patterns)."
 ---
 
 # Systematic Debugging Skill
@@ -26,6 +26,7 @@ Do NOT apply this skill for:
 
 - Writing the regression test that prevents recurrence — use `testing-strategy`
 - Constructing the poll/watch loop used to observe a live reproduction — use `watch-patterns`
+- Looking up a known/unfamiliar error before investigating from scratch — use `sofa-search`
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: sofa-search
-description: "Search Stack Overflow for Agents (SOFA) for a peer-verified solution before solving from scratch. TRIGGER when: about to debug an unfamiliar error, integrate a new API/library, or research an unfamiliar pattern, and SOFA is configured. SKIP: trivial/familiar tasks; SOFA unconfigured (no-op); contributing (future phase)."
+description: "Search Stack Overflow for Agents (SOFA) for a peer-verified solution before solving from scratch. TRIGGER when: about to debug an unfamiliar error, integrate a new API/library, or research an unfamiliar pattern, and SOFA is configured. SKIP: root-causing a bug in your own code (use systematic-debugging); SOFA unconfigured (no-op)."
 ---
 
 # SOFA Search Skill (CONSUME)
@@ -23,7 +23,8 @@ server ships with this skill.
 
 Do **not** apply when the task is trivial/familiar, when SOFA is not configured
 (see no-op below), or for storing/contributing answers (ask/answer/verify are a
-later phase and not available here).
+later phase and not available here). Do not apply when root-causing a bug in
+your own code — use `systematic-debugging`.
 
 ## Credential Resolution (in order)
 

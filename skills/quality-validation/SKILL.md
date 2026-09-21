@@ -1,6 +1,6 @@
 ---
 name: quality-validation
-description: "Score ResearchPacks (>=80) and Implementation Plans (>=85) against quality gates. TRIGGER when: gating research or a plan before implementation. SKIP: writing or running tests (use testing-strategy); security threat review (use security-review-checklists)."
+description: "Score ResearchPacks (>=80) and Implementation Plans (>=85) against quality gates. TRIGGER when: gating research or a plan before implementation. SKIP: writing or running tests (use testing-strategy); security threat review (use security-review-checklists); verifying finished work by executing it (use verification-before-completion)."
 ---
 
 # Quality Validation Skill

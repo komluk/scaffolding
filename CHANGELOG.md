@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.12.1] - 2026-09-21
+
+Skill SKIP clause alignments and gitops agent refinements.
+
+### Changed
+- **`testing-strategy` skill** — SKIP clause now names `systematic-debugging` (root-causing a failing test) and `verification-before-completion` (proving a fix works); description tightened to 340-char cap.
+- **`watch-patterns` skill** — SKIP clause now names `systematic-debugging` (diagnosing the bug itself); description tightened to 340-char cap.
+- **`quality-validation` skill** — SKIP clause now names `verification-before-completion` (verifying finished work by executing it); description tightened to 340-char cap.
+- **`gitops` agent** — now preloads `verification-before-completion`; Remote Authentication Standard section gained two rules: (1) derive endpoints rather than retyping them (redacted placeholders produce `no such host`), and (2) export env the child process needs (a helper that defaults `VAULT_ADDR` internally does not export it onward).
+- **`sofa-search` / `systematic-debugging` skills** — mutual SKIP clauses added: `sofa-search` now defers root-causing a bug in your own code to `systematic-debugging`, and `systematic-debugging` defers looking up a known error first to `sofa-search`. Their overlapping "about to debug an unfamiliar error" TRIGGERs previously had no disambiguation.
+- **README version badge** — bumped 2.12.0 → 2.12.1.
+
 ## [2.12.0] - 2026-09-21
 
 Two new skills (systematic-debugging, verification-before-completion), enriched agent preloads, and corrected component counts.

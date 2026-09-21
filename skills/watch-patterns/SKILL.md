@@ -1,6 +1,6 @@
 ---
 name: watch-patterns
-description: "Correct construction of watchers for long-running operations. TRIGGER when: arming observation of a long-running operation (CI run, deploy, transfer, GC/prune, log stream), writing poll/until loops, or using the Monitor tool. SKIP: defining production alerts/metrics (use monitoring-observability); log formatting (use logging-standards)."
+description: "Correct watcher construction for long-running operations. TRIGGER when: watching a long-running operation (CI, deploy, log stream), writing poll/until loops, or using the Monitor tool. SKIP: production alerts/metrics (use monitoring-observability); log formatting (use logging-standards); diagnosing the bug (use systematic-debugging)."
 ---
 
 # Watch Patterns Skill

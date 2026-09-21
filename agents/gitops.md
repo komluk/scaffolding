@@ -9,6 +9,7 @@ skills:
   - agent-memory
   - semantic-memory-mcp
   - agent-comms
+  - verification-before-completion
 maxTurns: 25
 disallowedTools:
   - Write
@@ -92,6 +93,8 @@ Do NOT improvise remote authentication mechanisms. If `git clone`, `fetch`, or `
 
 1. **ONE failed auth attempt = STOP.** Do not retry with a different transport (HTTPS ↔ SSH). Two guesses in a row is the failure mode this rule prevents.
 2. **Credential prompt signals skipped indirection, not missing credentials.** Never write credentials or tokens to disk; never add `credential.helper` to `~/.gitconfig`; never generate/suggest a new SSH key as a workaround — if an auth mechanism exists, conform to it.
+3. **Derive endpoints; never retype them.** Read the remote URL from `git remote get-url origin`, and read service addresses out of the deployed script that already works rather than typing a host. Values in transcripts and docs are often redacted placeholders (`<INTERNAL_DOMAIN>`, `<PRIVATE_IP>`); pasting one as a literal produces `no such host`, which reads like an auth failure but is not one.
+4. **Export what the child process needs.** A helper that defaults `VAULT_ADDR` internally does not export it to the next command in the pipeline. If a CLI falls back to `127.0.0.1`, the address was never in its environment — pass it explicitly rather than concluding the credential is bad.
 
 If no standard found after discovery → report `status: blocked` with what was searched and ask the user. Do not improvise.
 
