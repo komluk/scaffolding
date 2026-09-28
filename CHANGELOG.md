@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.13.0] - 2026-09-28
+
+Workflow execution, flag-setting documentation, and CI validation.
+
+### Added
+- **`/specs:run` command** — executes the `workflows/workflow.yaml` step graph end-to-end via delegated agents (analyst → researcher → architect → developer/reviewer pairs → tech-writer → gitops). Implements the complexity gate (`small` → implement-direct, else full propose→research?→design→implement→review pipeline), IMPL-XXX/REVIEW-XXX issue graph emitted by the architect, retry loops (research→design max 1, review→implement max 2), and integration review. The command markdown IS the interpreter; the YAML stays declarative data (experimental).
+- **Flag-setting documentation** — README `Opt-in flags` section now explains HOW to set flags via persistent `settings.json` `env` block or per-session shell `export` with examples for all four flags.
+- **`## Enabling` section in `docs/agent-teams.md`** — placed AFTER mandatory constraints, explicitly warns that constraints are non-negotiable, explains why the flag is default-off (parallel writers stress two load-bearing invariants), shows how to enable via `settings.json` or shell export, and clarifies the entry point: `/specs:run` executes sequentially; parallel writers are reached only by delegating to `scaffolding:coordinator`.
+- **CI validation of `workflows/*.yaml`** — `.github/workflows/validate.yml` now runs `yaml.safe_load` on all workflow files to catch structural errors early.
+
+### Changed
+- **`workflow.yaml` documented as data** — header comment now names `/specs:run` as its sole consumer and notes that condition strings are looked up (not evaluated as expressions), requiring manual sync with `commands/specs/run.md` step 4.
+- **`workflow.yaml` research step** — gained `depends_on: [propose]` to enforce proposal readiness before research begins.
+- **`agents/coordinator.md` and `docs/agent-teams.md` corrected** — removed false claims in present indicative that `workflow.yaml` "emits" IMPL issues (it is data; the design step emits them when run via `/specs:run`).
+- **Command count 19 → 20** — reflected in README badges, prose, component tree, `plugin.json`, and `marketplace.json` descriptions.
+
+### Removed
+- **`workflows/coordinate.yaml`** — dead file with zero references. Its two steps (propose + design/implement) are already implemented richly in `agents/coordinator.md`. Not a breaking change: nothing referenced this file, no public surface removed, no workflows were removed from documentation (only one was ever shipped: `workflow.yaml`).
+
 ## [2.12.1] - 2026-09-21
 
 Skill SKIP clause alignments and gitops agent refinements.

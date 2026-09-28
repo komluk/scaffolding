@@ -1,3 +1,8 @@
+# Sole consumer: commands/specs/run.md, which reads this file as data and
+# interprets it (complexity gate, IMPL/REVIEW issue graph, retry loops,
+# integration review). Editing any `condition:` string below requires updating
+# the enumerated condition table in that command too — it is looked up, not
+# evaluated as a general expression.
 name: workflow
 version: 1
 description: "Standard development workflow with OpenSpec artifacts"
@@ -42,6 +47,7 @@ steps:
     max_turns: 15
     timeout: 600
     condition: "inputs.complexity != 'small' and steps.propose.needs_research == True"
+    depends_on: [propose]
     prompt_template: |
       Research external APIs, libraries, and best practices needed for the proposal.
       Original user request: {original_prompt}

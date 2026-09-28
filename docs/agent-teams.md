@@ -42,8 +42,9 @@ worktrees*; it never parallelizes committing.
 
 4. **Writers parallelize only when independent.** Writers may run concurrently
    ONLY when the architect's issue graph marks them as **non-file-overlapping**
-   (the `workflow.yaml` design step already emits independent IMPL issues with no
-   cross-deps). Overlapping work falls back to sequential.
+   (the design step emits independent IMPL issues with no cross-deps when run via
+   `/specs:run`, which interprets `workflows/workflow.yaml`). Overlapping work
+   falls back to sequential.
 
 5. **Coordinator guardrails unchanged.** `MAX_PARALLEL=4` stays. developer,
    reviewer, and gitops are NEVER parallel *peers of each other*; teams
@@ -77,6 +78,30 @@ architect (emits independent IMPL issues)
 gitops receives each worktreePath, validates it, then merges branches to main
 sequentially. The reviewer's integration step reviews merge conflicts or
 incompatible changes between the parallel branches.
+
+## Enabling
+
+**⚠️ IMPORTANT: The mandatory constraints above are non-negotiable and must be read and understood before enabling this feature. Violating any of them will corrupt the repository state.**
+
+The plugin deliberately does NOT set `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` by default. It is off because parallel writers stress two load-bearing invariants: gitops-only-commit and worktree isolation. The feature is behind an opt-in flag because shipping it as default-on would silently push an experimental parallel-writer mode into every install, which would be a stability hazard.
+
+To enable agent teams on your device or project:
+
+**Per-project (persistent, recommended):** Add to your project's `settings.json`:
+```json
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  }
+}
+```
+
+**Per-session (temporary):** Export from your shell before starting Claude Code:
+```bash
+export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+```
+
+**Entry point:** Parallel writers are NOT reached directly via `/specs:run`. The `/specs:run` command executes IMPL issues sequentially (see `commands/specs/run.md` step 7e, "Limitations" section) and does not spawn background teammates or inject the Comms Protocol machinery. Real parallel writer teams are reached only by delegating the run to `scaffolding:coordinator` (which owns the runId, Comms Protocol, and worktree isolation machinery). The coordinator will then parallelize independent developer worktrees when this flag is enabled — but only when the architect's issue graph marks them as independent (non-overlapping files, no cross-dependencies). Sequential runs remain the default even with the flag on.
 
 ## Safety summary
 

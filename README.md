@@ -1,9 +1,9 @@
 # claude-scaffolding
 
-[![Version](https://img.shields.io/badge/version-2.12.1-blue?style=flat-square)](https://github.com/komluk/scaffolding/releases) [![License: MIT](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Works with Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2?style=flat-square)](https://github.com/komluk/scaffolding) [![Agents](https://img.shields.io/badge/agents-13-orange?style=flat-square)](agents/) [![Skills](https://img.shields.io/badge/skills-38-orange?style=flat-square)](skills/) [![Commands](https://img.shields.io/badge/commands-19-orange?style=flat-square)](commands/) [![Listed on ClaudePluginHub](https://www.claudepluginhub.com/badge/komluk-scaffolding)](https://www.claudepluginhub.com/plugins/komluk-scaffolding?ref=badge)
+[![Version](https://img.shields.io/badge/version-2.13.0-blue?style=flat-square)](https://github.com/komluk/scaffolding/releases) [![License: MIT](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Works with Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2?style=flat-square)](https://github.com/komluk/scaffolding) [![Agents](https://img.shields.io/badge/agents-13-orange?style=flat-square)](agents/) [![Skills](https://img.shields.io/badge/skills-38-orange?style=flat-square)](skills/) [![Commands](https://img.shields.io/badge/commands-20-orange?style=flat-square)](commands/) [![Listed on ClaudePluginHub](https://www.claudepluginhub.com/badge/komluk-scaffolding)](https://www.claudepluginhub.com/plugins/komluk-scaffolding?ref=badge)
 
 Spec-driven multi-agent orchestration for Claude Code — pure markdown, zero backend,
-runs on the stock runtime. 13 agents, 38 skills, 19 commands, 17 hooks, per-phase model
+runs on the stock runtime. 13 agents, 38 skills, 20 commands, 17 hooks, per-phase model
 tiers, opt-in lifecycle hooks, optional cross-device semantic memory.
 
 ## Overview
@@ -32,6 +32,9 @@ Everything below is **opt-in or default-safe** — existing installs behave exac
 as before until you set a flag or invoke a new agent. See the [CHANGELOG](CHANGELOG.md)
 for full release history and current version.
 
+- **`/specs:run` command:** executes the `workflows/workflow.yaml` step graph
+  end-to-end via delegated agents, implementing the complexity gate, IMPL/REVIEW
+  issue graph, retry loops, and integration review (experimental).
 - **Two new agents (roster 11 → 13):** **`prompt-engineer`** (system prompts,
   guardrail rules, prompt evals, LLM-judge rubrics, injection defense) and
   **`mcp-builder`** (design/build/test MCP servers, tool schemas, transport, auth
@@ -61,6 +64,27 @@ for full release history and current version.
 ### Opt-in flags
 
 All flags are **off by default**; the plugin's behavior is unchanged unless you set them.
+
+To enable any flag, choose one of two methods:
+
+**Per-project (persistent, recommended):** Add an `env` block to your project's `settings.json`:
+```json
+{
+  "env": {
+    "SCAFFOLDING_AUTOFORMAT": "1",
+    "SCAFFOLDING_NOTIFY": "1"
+  }
+}
+```
+
+**Per-session (temporary):** Export from your shell before starting Claude Code:
+```bash
+export SCAFFOLDING_AUTOFORMAT=1
+export SCAFFOLDING_NOTIFY=1
+export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+```
+
+Available flags:
 
 | Flag | Default | Effect |
 |------|---------|--------|
@@ -143,10 +167,10 @@ claude-scaffolding/
 ├── skills/         38 skills (api-design, error-handling, pattern-recognition,
 │                    skill-authoring, spec-*, mui-styling, python-patterns,
 │                    sofa-search, testing-strategy, ...)
-├── commands/       19 slash commands: 9 top-level (context, create-skill,
+├── commands/       20 slash commands: 9 top-level (context, create-skill,
 │                    init-openspec, init-rules, init-scaffolding, learn, memory,
-│                    doctor, sofa) + 10 in `commands/specs/` (apply, archive,
-│                    bulk-archive, continue, explore, ff, new, onboard, sync,
+│                    doctor, sofa) + 11 in `commands/specs/` (apply, archive,
+│                    bulk-archive, continue, explore, ff, new, onboard, run, sync,
 │                    verify) — namespaced OpenSpec commands
 ├── hooks/          17 safety + lifecycle hooks (block-destructive-rm,
 │                    block-subagent, block-env-write, pre-commit-validation,
@@ -156,7 +180,7 @@ claude-scaffolding/
 │                    agents/skills overview, responsibility matrix)
 ├── validators/     Validation scripts (circuit-breaker, validate-agent-frontmatter, validate-agent-output, validate-skill)
 ├── output-styles/  output-frontmatter definition
-├── workflows/      YAML workflow and coordinate definitions
+├── workflows/      `workflow.yaml` — declarative step graph executed by `/specs:run`
 ├── CLAUDE.md       Main project prompt
 └── settings.json   Hooks + statusline + permissions
 ```

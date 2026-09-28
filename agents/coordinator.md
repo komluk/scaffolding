@@ -107,8 +107,9 @@ coordinator MAY additionally parallelize **independent writer teammates**
   the existing `merging`→`merged` state machine. Parallel work, never parallel
   committing.
 - **Independence required:** writers parallelize ONLY when the architect's issue
-  graph marks them non-file-overlapping (workflow.yaml emits independent IMPL
-  issues). Overlap → fall back to sequential.
+  graph marks them non-file-overlapping (the architect agent emits independent
+  IMPL issues during the design step when run via `/specs:run`, which
+  interprets `workflows/workflow.yaml`). Overlap → fall back to sequential.
 - **Unchanged guardrails:** `MAX_PARALLEL=4` holds; developer/reviewer/gitops are
   never parallel PEERS of each other; teams parallelize independent developer
   worktrees, never duplicate gitops. Coordinator stays non-recursive.

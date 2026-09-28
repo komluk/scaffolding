@@ -77,6 +77,29 @@ jobs:
               sys.exit(1)
           print(f'checked {len(targets)} files, all frontmatter OK')
           PY
+      - name: Validate workflows/*.yaml
+        run: |
+          python3 <<'PY'
+          import glob
+          import sys
+          import yaml
+
+          failed = []
+          targets = sorted(glob.glob('workflows/*.yaml'))
+          for path in targets:
+              with open(path, 'r', encoding='utf-8') as fh:
+                  try:
+                      yaml.safe_load(fh)
+                  except yaml.YAMLError as e:
+                      failed.append(f'{path}: {e}')
+
+          if failed:
+              print('workflow YAML errors:')
+              for line in failed:
+                  print('  ' + line)
+              sys.exit(1)
+          print(f'checked {len(targets)} workflow file(s), all valid YAML')
+          PY
 
   lint-bash:
     name: lint bash scripts
