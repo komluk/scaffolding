@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.14.0] - 2026-10-07
+
+Added opt-in bidirectional sync of `.scaffolding/` to NFS.
+
+### Added
+- **`nfs-sync.sh` hook** — opt-in two-way `rsync --update` of `.scaffolding/` to `<root>/projects/<slug>-<hash>/` on TrueNAS NFS or compatible share. Push on Stop, pull on SessionStart (startup/resume). Enable via `SCAFFOLDING_NFS_ROOT` env or per-repo `.scaffolding/.nfs-sync` sentinel. Timeouts (default 20s sync / 5s probe), flock-locked, skips gracefully when rsync missing or NFS unreachable, never deletes, always exits 0.
+
+### Changed
+- **Hook count 17 → 18** — reflected in `plugin.json`, `marketplace.json`, `README.md`, and `CONTRIBUTING.md`.
+
 ## [2.13.0] - 2026-09-28
 
 Workflow execution, flag-setting documentation, and CI validation.
