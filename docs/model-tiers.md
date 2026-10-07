@@ -84,10 +84,10 @@ side. The plugin does **not** write or apply this config.
 model_list:
   - model_name: opus
     litellm_params:
-      model: anthropic/claude-opus-4-1
+      model: anthropic/claude-opus-5-5
   - model_name: sonnet
     litellm_params:
-      model: anthropic/claude-sonnet-4-5
+      model: anthropic/claude-sonnet-5-5
 
 # If the opus tier is unavailable, degrade gracefully to sonnet so reviews/plans
 # still run instead of hard-failing.
