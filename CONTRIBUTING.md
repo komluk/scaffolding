@@ -10,7 +10,7 @@ The plugin organizes orchestration logic into four core directories:
 
 - **`commands/`** (20 commands) — 9 top-level slash commands (`/context`, `/learn`, `/memory`, etc.) + 11 OpenSpec subcommands (`/specs new`, `/specs apply`). Each `.md` file is runnable as a Claude Code command.
 
-- **`hooks/`** (17 hooks) — Bash scripts in `hooks/` registered in `.claude-plugin/plugin.json` (PreToolUse, PostToolUse, SessionStart, etc.). Examples: `block-subagent.sh` (hard-deny `general-purpose`), `pre-commit-validation.sh` (framework-agnostic test runner).
+- **`hooks/`** (18 hooks) — Bash scripts in `hooks/` registered in `.claude-plugin/plugin.json` (PreToolUse, PostToolUse, SessionStart, etc.). Examples: `block-subagent.sh` (hard-deny `general-purpose`), `pre-commit-validation.sh` (framework-agnostic test runner).
 
 ## Local Testing
 
@@ -55,7 +55,7 @@ Source of truth: `.claude-plugin/plugin.json` (`version` field).
    - Count agents in `agents/*.md` → should match `plugin.json` / `README.md` / `CLAUDE.md` ("13 agents")
    - Count skills in `skills/*/SKILL.md` → should match "38 skills"
    - Count commands: `commands/*.md` (9 top-level) + `commands/specs/*.md` (11) = 20 total
-   - Count hooks in `hooks/*.sh` → should match "17 hooks"
+   - Count hooks in `hooks/*.sh` → should match "18 hooks"
 
 2. **File updates:**
    - Update `.claude-plugin/plugin.json` → `version` field

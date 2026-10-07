@@ -90,6 +90,37 @@ This directory contains hooks that run automatically during Claude Code workflow
 | `.scaffolding/agent-memory/log.md` | append-only ingest log | git-tracked |
 | `.scaffolding/.noingest` | per-repo opt-out | manual `touch` |
 
+### 7. nfs-sync.sh
+**Type:** Stop / SessionStart hook
+**Triggers:** On session stop (push) and session start (pull — startup/resume)
+**Purpose:** Opt-in bidirectional sync of `.scaffolding/` to a TrueNAS NFS share for cross-device project recall
+
+**What it does:**
+- Syncs `.scaffolding/` ↔ `<root>/projects/<slug>-<hash>/` using `rsync --update`
+- On **Stop**: uploads (push) local `.scaffolding/` to the NFS share
+- On **SessionStart** (startup or resume): downloads (pull) from the NFS share to local `.scaffolding/`
+- Uses `--update` flag: never overwrites newer files, never deletes (local `.scaffolding/` is always authoritative)
+- Skips silently if NFS is unreachable, rsync not installed, or flock unavailable
+- **Always exits 0** — slow/unavailable share must never block a session
+
+**Enable switches (default is OFF):**
+- Set `SCAFFOLDING_NFS_ROOT` environment variable (e.g., `/mnt/scaffolding`), OR
+- Create a `.scaffolding/.nfs-sync` sentinel file:
+  - Empty file → uses default root `/mnt/scaffolding`
+  - File containing an absolute path on line 1 → uses that path as root
+
+**Environment variables:**
+- `SCAFFOLDING_NFS_TIMEOUT` (default `20s`) — timeout for rsync sync operations
+- `SCAFFOLDING_NFS_PROBE_TIMEOUT` (default `5s`) — timeout for NFS reachability check
+- `SCAFFOLDING_NFS_ROOT` — absolute path to NFS root (e.g., `/mnt/scaffolding`); overrides sentinel file
+
+**Safety guarantees:**
+- Locked with `flock` to skip (not queue) concurrent syncs
+- Timeouts kill hung rsync/mkdir with `-k 2` flag
+- Skips without error if rsync or flock commands are missing
+- Never removes local files (no `--delete` flag)
+- Always exits 0 — never blocks or fails a session
+
 ## PostToolUse(Edit|Write) ordering — CRITICAL
 
 The registered order in **both** `.claude-plugin/plugin.json` and `settings.json`
