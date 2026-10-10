@@ -1,0 +1,49 @@
+# Scheduled one-way mirror: GitHub (source of truth) -> this Gitea repo.
+#
+# Lives under .gitea/ so GitHub Actions ignores it; it runs only on Gitea.
+# Zero stored credentials: auth is the built-in per-run Actions token.
+# The push target is resolved at runtime (github.server_url / github.repository),
+# so no host is written in this public file.
+#
+# Scope: pushes ONLY refs/heads/main and refs/tags/*. No --mirror, no --prune,
+# no deletes, so any other ref on Gitea (e.g. archive/* branches) is untouched.
+name: mirror-from-github
+
+on:
+  schedule:
+    - cron: '7,27,47 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mirror-from-github
+  cancel-in-progress: false
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch from GitHub and push main + tags to Gitea
+        env:
+          SRC_URL: https://github.com/komluk/scaffolding.git
+          DST_URL: ${{ github.server_url }}/${{ github.repository }}.git
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          echo "::add-mask::$TOKEN"
+
+          git init -q mirror
+          cd mirror
+
+          # Fetch only main + tags from the public source.
+          git fetch --no-tags "$SRC_URL" '+refs/heads/main:refs/heads/main'
+          git fetch "$SRC_URL" '+refs/tags/*:refs/tags/*'
+
+          # Token sent as a header so it never lands in a URL, config, or log.
+          AUTH=$(printf 'x-access-token:%s' "$TOKEN" | base64 -w0)
+          echo "::add-mask::$AUTH"
+          git -c "http.extraheader=Authorization: Basic $AUTH" push "$DST_URL" \
+            'refs/heads/main:refs/heads/main' \
+            'refs/tags/*:refs/tags/*'
