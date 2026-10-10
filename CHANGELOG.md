@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.14.1] - 2026-10-11
+
+Explicit model pins for every agent.
+
+### Changed
+- **Explicit served model slugs** — every agent now pins a full model slug in `model:` instead of an alias or `inherit`:
+  - `claude-opus-5-5` — `analyst`, `architect`, `reviewer`, `debugger`
+  - `claude-sonnet-5-5` — `developer`, `researcher`, `devops`, `optimizer`, `coordinator`, `mcp-builder`, `prompt-engineer`
+  - `claude-haiku-5-5` — `gitops`, `tech-writer`
+- **Why** — a tier alias could resolve to a model id the gateway doesn't serve, which made haiku-tier agents fail. Explicit served slugs remove that failure mode. `reviewer` (opus) stays strictly above `developer` (sonnet) to preserve cross-model review.
+- **`docs/model-tiers.md`** — documents the explicit-pin policy.
+
 ## [2.14.0] - 2026-10-07
 
 Added opt-in bidirectional sync of `.scaffolding/` to NFS.
