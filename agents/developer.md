@@ -2,7 +2,7 @@
 name: developer
 description: Expert software engineer. Use proactively to implement features, fix bugs, write tests, style UI, and make code changes. MUST BE USED for all development tasks. Direct target for small, clearly-scoped changes — no analyst/architect needed first.
 tools: Read, Edit, Write, Bash, Glob, Grep, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall, mcp__memory__memory-semantic_store
-model: sonnet
+model: claude-sonnet-5-5
 effort: high
 skills:
   - testing-strategy

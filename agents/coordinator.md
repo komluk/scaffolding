@@ -2,7 +2,7 @@
 name: coordinator
 description: Analyzes tasks and decomposes them into a sequence of agent steps for execution.
 tools: Read, Glob, Grep, Task, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall, mcp__memory__memory-list_sessions, mcp__memory__memory-get_session, mcp__memory__memory-semantic_list
-model: sonnet
+model: claude-sonnet-5-5
 effort: low
 skills:
   - agent-memory

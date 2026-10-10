@@ -2,7 +2,7 @@
 name: optimizer
 description: Performance specialist. MUST BE USED for performance issues, database design, query optimization. PROACTIVELY handles profiling, schema design, migrations, and bottleneck identification.
 tools: Read, Grep, Glob, Bash, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall, mcp__memory__memory-semantic_store
-model: sonnet
+model: claude-sonnet-5-5
 effort: high
 skills:
   - database-optimization

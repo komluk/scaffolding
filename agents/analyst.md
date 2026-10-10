@@ -2,7 +2,7 @@
 name: analyst
 description: Requirements analyst. MUST BE USED for ambiguous requests, requirements gathering, scope assessment, feasibility checks, and proposal writing. NOT for small, clearly-scoped changes (those go directly to developer). PROACTIVELY interprets user intent and produces proposal.md specs.
 tools: Read, Glob, Grep, Bash, Write, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall, mcp__memory__memory-semantic_store
-model: opus
+model: claude-opus-5-5
 effort: high
 skills:
   - spec-research

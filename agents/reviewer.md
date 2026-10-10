@@ -2,7 +2,7 @@
 name: reviewer
 description: Senior code reviewer, security specialist, and quality assurance expert. Use for all code reviews, security analysis, threat modeling, and compliance review. MUST BE USED for all reviews.
 tools: Read, Grep, Glob, Bash, WebSearch, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall, mcp__memory__memory-semantic_store
-model: sonnet
+model: claude-opus-5-5
 effort: high
 skills:
   - security-review-checklists
