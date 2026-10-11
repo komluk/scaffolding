@@ -136,9 +136,9 @@ Read [config files]
 When diagnosing a running service, query the observability stack BEFORE
 guessing from code:
 
-- **Metrics**: `mcp__grafana__query_prometheus` — error rates, restarts,
+- **Metrics**: `mcp__grafana__grafana-query_prometheus` — error rates, restarts,
   saturation around the incident window
-- **Logs**: `mcp__grafana__query_loki_logs` — exact error lines and timestamps
+- **Logs**: `mcp__grafana__grafana-query_loki_logs` — exact error lines and timestamps
 
 One aggregated query beats re-deriving state with ad hoc shell loops. To
 observe a bug reproduction (waiting for a crash, watching a log stream), build

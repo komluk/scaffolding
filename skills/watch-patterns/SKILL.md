@@ -32,8 +32,8 @@ writing any script:
 | "Is it done *now*?" — answerable immediately | **One-shot check.** Single command, no loop, no monitor. |
 | ONE notification when a condition becomes true (deploy finished, download complete, GC done) | **`Bash(run_in_background)` + `until` loop** with a terminal condition and a bounded iteration count. NOT `Monitor`. |
 | REPEATING events, each occurrence matters (every error line, every restart) | **`Monitor` tool** with a filter covering ALL terminal states. |
-| CI run status (Gitea Actions) | **MCP polling**: `mcp__gitea__actions_run_read` polled until `status` is terminal. Structured status beats scraping logs. |
-| Metric/log condition (error rate, service down) | **MCP**: `mcp__grafana__query_prometheus` / `query_loki_logs`. One query returns aggregated truth; a bash loop re-derives it badly. |
+| CI run status (Gitea Actions) | **MCP polling**: `mcp__gitea__gitea-actions_run_read` polled until `status` is terminal. Structured status beats scraping logs. |
+| Metric/log condition (error rate, service down) | **MCP**: `mcp__grafana__grafana-query_prometheus` / `grafana-query_loki_logs`. One query returns aggregated truth; a bash loop re-derives it badly. |
 | You only need the outcome eventually, no urgency | **Do nothing now.** Check once when the result is actually needed. |
 
 ### Anti-pattern (observed failure)
