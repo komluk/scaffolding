@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.14.2] - 2026-10-11
+
+MCP tool grants for gitops, devops, and tech-writer.
+
+### Changed
+- **`gitops` agent** — granted Gitea MCP tools (repos, branches, PRs, issues, files, releases) plus read-only Grafana tools.
+- **`devops` agent** — granted read access to Gitea and Gitea Actions, plus Grafana observability tools (alerting, incidents, annotations).
+- **`tech-writer` agent** — granted memory-write tools (`store_note`, `semantic_store`, `trigger_ingest`) so it can persist docs and notes.
+- **Why** — these grants give the platform's workflow agents direct access to the self-hosted Gitea and Grafana instances via the MCP gateway.
+
 ## [2.14.1] - 2026-10-11
 
 Explicit model pins for every agent.

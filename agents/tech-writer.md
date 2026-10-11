@@ -1,7 +1,7 @@
 ---
 name: tech-writer
 description: Documentation owner. MUST BE USED for README, CHANGELOG, docs/ updates. PROACTIVELY manages all markdown files as sole authority for documentation.
-tools: Read, Write, Edit, Grep, Glob, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall
+tools: Read, Write, Edit, Grep, Glob, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall, mcp__memory__memory-semantic_store, mcp__memory__memory-store_note, mcp__memory__memory-read_note, mcp__memory__memory-list_notes, mcp__memory__memory-trigger_ingest
 model: claude-haiku-5-5
 effort: low
 skills:
