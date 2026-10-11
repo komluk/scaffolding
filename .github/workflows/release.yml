@@ -3,7 +3,13 @@ name: release
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'tag to release, e.g. v2.14.1'
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -14,16 +20,24 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      TAG: ${{ github.event.inputs.tag || github.ref_name }}
     outputs:
       tag: ${{ steps.check.outputs.tag }}
       version: ${{ steps.check.outputs.version }}
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: ${{ env.TAG }}
       - name: Check tag vs plugin.json
         id: check
+        env:
+          INPUT_TAG: ${{ github.event.inputs.tag }}
         run: |
           set -e
-          TAG="${GITHUB_REF#refs/tags/}"
+          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ] && [ -z "${INPUT_TAG}" ]; then
+            echo "ERROR: workflow_dispatch requires the 'tag' input (e.g. v2.14.1)"
+            exit 1
+          fi
           VERSION=$(jq -r .version .claude-plugin/plugin.json)
           echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
@@ -39,8 +53,11 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      TAG: ${{ github.event.inputs.tag || github.ref_name }}
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: ${{ env.TAG }}
       - name: jq check plugin.json
         run: jq . .claude-plugin/plugin.json > /dev/null
       - name: jq check marketplace.json
@@ -62,15 +79,40 @@ jobs:
       contents: write
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      TAG: ${{ github.event.inputs.tag || github.ref_name }}
     steps:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          ref: ${{ env.TAG }}
       - name: Create release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          TAG="${GITHUB_REF#refs/tags/}"
-          gh release create "${TAG}" \
-            --title "${TAG}" \
-            --generate-notes
+          if gh release view "${TAG}" > /dev/null 2>&1; then
+            echo "::notice::Release ${TAG} already exists; skipping."
+            exit 0
+          fi
+          VERSION="${TAG#v}"
+          NOTES_FILE="$(mktemp)"
+          if [ -f CHANGELOG.md ]; then
+            awk -v h="## [${VERSION}]" '
+              index($0, h) == 1 { f = 1; next }
+              f && /^## \[/ { exit }
+              f
+            ' CHANGELOG.md | awk '
+              NF { p = 1 }
+              p { buf[++n] = $0 }
+              END {
+                while (n > 0 && buf[n] !~ /[^[:space:]]/) n--
+                for (i = 1; i <= n; i++) print buf[i]
+              }
+            ' > "${NOTES_FILE}"
+          fi
+          if [ -s "${NOTES_FILE}" ]; then
+            echo "Using CHANGELOG.md section for ${VERSION}"
+            gh release create "${TAG}" --title "${TAG}" --verify-tag --notes-file "${NOTES_FILE}"
+          else
+            echo "No CHANGELOG.md section for ${VERSION}; falling back to --generate-notes"
+            gh release create "${TAG}" --title "${TAG}" --verify-tag --generate-notes
+          fi
