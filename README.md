@@ -1,9 +1,9 @@
 # claude-scaffolding
 
-[![Version](https://img.shields.io/badge/version-2.14.3-blue?style=flat-square)](https://github.com/komluk/scaffolding/releases) [![License: MIT](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Works with Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2?style=flat-square)](https://github.com/komluk/scaffolding) [![Agents](https://img.shields.io/badge/agents-13-orange?style=flat-square)](agents/) [![Skills](https://img.shields.io/badge/skills-38-orange?style=flat-square)](skills/) [![Commands](https://img.shields.io/badge/commands-20-orange?style=flat-square)](commands/) [![Listed on ClaudePluginHub](https://www.claudepluginhub.com/badge/komluk-scaffolding)](https://www.claudepluginhub.com/plugins/komluk-scaffolding?ref=badge)
+[![Version](https://img.shields.io/badge/version-2.14.4-blue?style=flat-square)](https://github.com/komluk/scaffolding/releases) [![License: MIT](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Works with Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2?style=flat-square)](https://github.com/komluk/scaffolding) [![Agents](https://img.shields.io/badge/agents-13-orange?style=flat-square)](agents/) [![Skills](https://img.shields.io/badge/skills-39-orange?style=flat-square)](skills/) [![Commands](https://img.shields.io/badge/commands-20-orange?style=flat-square)](commands/) [![Listed on ClaudePluginHub](https://www.claudepluginhub.com/badge/komluk-scaffolding)](https://www.claudepluginhub.com/plugins/komluk-scaffolding?ref=badge)
 
 Spec-driven multi-agent orchestration for Claude Code — pure markdown, zero backend,
-runs on the stock runtime. 13 agents, 38 skills, 20 commands, 18 hooks, per-phase model
+runs on the stock runtime. 13 agents, 39 skills, 20 commands, 18 hooks, per-phase model
 tiers, opt-in lifecycle hooks, optional cross-device semantic memory.
 
 ## Overview
@@ -164,7 +164,7 @@ claude-scaffolding/
 ├── agents/         13 agents (analyst, architect, coordinator, developer,
 │                    debugger, devops, gitops, mcp-builder, optimizer,
 │                    prompt-engineer, researcher, reviewer, tech-writer)
-├── skills/         38 skills (api-design, error-handling, pattern-recognition,
+├── skills/         39 skills (api-design, error-handling, pattern-recognition,
 │                    skill-authoring, spec-*, mui-styling, python-patterns,
 │                    sofa-search, testing-strategy, ...)
 ├── commands/       20 slash commands: 9 top-level (context, create-skill,

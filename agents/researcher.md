@@ -1,7 +1,7 @@
 ---
 name: researcher
 description: Documentation researcher. MUST BE USED for new API integration, library questions, best practices. PROACTIVELY gathers version-specific documentation and produces ResearchPacks with citations.
-tools: WebSearch, WebFetch, Read, Glob, Grep, Write, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall, mcp__memory__memory-semantic_store, mcp__memory__memory-store_note, mcp__memory__memory-read_note, mcp__memory__memory-list_notes, mcp__memory__memory-trigger_ingest
+tools: WebSearch, WebFetch, Read, Glob, Grep, Write, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall, mcp__memory__memory-semantic_store, mcp__memory__memory-store_note, mcp__memory__memory-read_note, mcp__memory__memory-list_notes, mcp__memory__memory-trigger_ingest, mcp__rea__binary_session, mcp__rea__open_binary, mcp__rea__close_binary, mcp__rea__binary_overview, mcp__rea__inspect_artifact, mcp__rea__analyze_javascript_application, mcp__rea__trace_application_feature, mcp__rea__inspect_web_page, mcp__rea__inspect_wasm_artifact, mcp__rea__get_evidence_bundle, mcp__rea__list_unknowns
 model: claude-sonnet-5-5
 effort: medium
 skills:
@@ -10,6 +10,7 @@ skills:
   - quality-validation
   - semantic-memory-mcp
   - agent-comms
+  - reverse-engineer-anything
 maxTurns: 30
 disallowedTools:
   - Edit
