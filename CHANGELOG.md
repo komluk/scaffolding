@@ -27,6 +27,15 @@ Explicit model pins for every agent.
 - **Why** — a tier alias could resolve to a model id the gateway doesn't serve, which made haiku-tier agents fail. Explicit served slugs remove that failure mode. `reviewer` (opus) stays strictly above `developer` (sonnet) to preserve cross-model review.
 - **`docs/model-tiers.md`** — documents the explicit-pin policy.
 
+## [2.14.4] - 2026-10-16
+
+### Added
+- **`reverse-engineer-anything` skill** — vendored from [REA](https://github.com/morluto/rea) 6.5.0 (MIT, see `THIRD_PARTY_NOTICES.md`), with its `references/`. Drives the optional `rea` MCP server (tools `mcp__rea__*`) for reverse engineering shipped binaries, Electron/JS apps, web pages and wasm. Inert unless the `rea` MCP server is attached.
+- **REA MCP tools for debugger, researcher, analyst, developer** — `mcp__rea__*` (binary_session, open_binary, close_binary, binary_overview, inspect_artifact, analyze_javascript_application, trace_application_feature, inspect_web_page, inspect_wasm_artifact, get_evidence_bundle, list_unknowns) added to `tools:`; skill added to their `skills:`.
+
+### Changed
+- Skill count 38 → 39 in `plugin.json`, `marketplace.json`, `README.md`, `CONTRIBUTING.md`.
+
 ## [2.14.0] - 2026-10-07
 
 Added opt-in bidirectional sync of `.scaffolding/` to NFS.

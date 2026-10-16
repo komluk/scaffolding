@@ -1,7 +1,7 @@
 ---
 name: developer
 description: Expert software engineer. Use proactively to implement features, fix bugs, write tests, style UI, and make code changes. MUST BE USED for all development tasks. Direct target for small, clearly-scoped changes — no analyst/architect needed first.
-tools: Read, Edit, Write, Bash, Glob, Grep, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall, mcp__memory__memory-semantic_store
+tools: Read, Edit, Write, Bash, Glob, Grep, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall, mcp__memory__memory-semantic_store, mcp__rea__binary_session, mcp__rea__open_binary, mcp__rea__close_binary, mcp__rea__binary_overview, mcp__rea__inspect_artifact, mcp__rea__analyze_javascript_application, mcp__rea__trace_application_feature, mcp__rea__inspect_web_page, mcp__rea__inspect_wasm_artifact, mcp__rea__get_evidence_bundle, mcp__rea__list_unknowns
 model: claude-sonnet-5-5
 effort: high
 skills:
@@ -16,6 +16,7 @@ skills:
   - semantic-memory-mcp
   - ui-ux-pro-max
   - agent-comms
+  - reverse-engineer-anything
 maxTurns: 50
 ---
 

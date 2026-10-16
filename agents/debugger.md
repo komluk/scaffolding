@@ -1,7 +1,7 @@
 ---
 name: debugger
 description: Bug investigation specialist. MUST BE USED for bug reports, unexpected behavior, error diagnosis. PROACTIVELY performs systematic root cause analysis using progressive debugging techniques.
-tools: Read, Grep, Glob, Bash, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall, mcp__memory__memory-semantic_store
+tools: Read, Grep, Glob, Bash, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall, mcp__memory__memory-semantic_store, mcp__rea__binary_session, mcp__rea__open_binary, mcp__rea__close_binary, mcp__rea__binary_overview, mcp__rea__inspect_artifact, mcp__rea__analyze_javascript_application, mcp__rea__trace_application_feature, mcp__rea__inspect_web_page, mcp__rea__inspect_wasm_artifact, mcp__rea__get_evidence_bundle, mcp__rea__list_unknowns
 model: claude-opus-5-5
 effort: high
 skills:
@@ -12,6 +12,7 @@ skills:
   - pattern-recognition
   - watch-patterns
   - systematic-debugging
+  - reverse-engineer-anything
 maxTurns: 30
 ---
 
