@@ -44,7 +44,7 @@ description: "MCP tool decision tree and MCP-first fallback strategy. TRIGGER wh
 
 | Tool | Purpose | Parameters |
 |------|---------|------------|
-| `search_context` | Search ingested context chunks (Qdrant hybrid retrieval) | `query` (required), `corpus`, `top_k` |
+| `search_context` | Search ingested context chunks (Qdrant hybrid retrieval). Returns `doc_id`, `source`, `kind`, `title`, `date`, `session_id`, `content`, `score` (relative rank, not a probability) | `query` (required), `corpus` (`homelab`/`platform`/`projects` or a Gitea repo name), `path` (exact doc path in corpus), `source_type` (`markdown`/`gitea`), `kind` (`note`/`spec`/`issue`/`pr`/`commit`), `session_id`, `top_k` |
 | `semantic_search` | Search memories by similarity | `query` (required), `project_id`, `agent_name`, `top_k`, `threshold` |
 | `semantic_recall` | Recall relevant memories as markdown | `context` (required), `agent_name`, `project_id`, `top_k` |
 | `semantic_store` | Store a new memory with embedding | `content` (required), `agent_name` (required), `project_id`, `conversation_id`, `task_id`, `tags`, `content_type` |
@@ -57,6 +57,8 @@ description: "MCP tool decision tree and MCP-first fallback strategy. TRIGGER wh
 | `semantic_list` | List stored memories (catalog) | `project_id` |
 | `semantic_delete` | Delete a memory | `memory_id` (granted to no agent) |
 | `archive_session` | Archive a session | `session_id` (granted to no agent) |
+
+Use `search_context` for documents and notes, specs, conversation transcripts and Gitea issues/PRs/commits; use `semantic_search` for short distilled memories.
 
 ### Access Control
 
