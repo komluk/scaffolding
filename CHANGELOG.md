@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.14.5] - 2026-10-18
+
+### Changed
+- **`mcp-tools` skill** — `search_context` row now lists the new params (`path`, `source_type`, `kind`, `session_id`), the result fields, and notes that `score` is a relative rank, not a probability. Added one line on when to use `search_context` vs `semantic_search`.
+
 ## [2.14.2] - 2026-10-11
 
 MCP tool grants for gitops, devops, and tech-writer.
