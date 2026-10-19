@@ -152,6 +152,54 @@ the last position.
 | `SCAFFOLDING_AUTOFORMAT` | off | `=1` enables `post-edit-format.sh` auto-formatting |
 | `SCAFFOLDING_NOTIFY` | off | `=1` enables `notify.sh` desktop/terminal notifications |
 | `SCAFFOLDING_MEMORY_INGEST` | advisory | unset → advisory (stderr nudge); `=block` → enforce (`decision:block`); `=off` → disabled. `memory-ingest{,-mark}.sh` |
+| `SCAFFOLDING_MEMORY_RECALL` | off | `=on` enables `memory-recall.sh` (see below) |
+
+## Opt-in: memory recall (UserPromptSubmit)
+
+`memory-recall.sh` is off by default. When `SCAFFOLDING_MEMORY_RECALL=on`, it:
+
+- Sends the first 500 characters of each non-trivial prompt to your memory MCP
+  `semantic_search` tool using one stateless JSON-RPC `tools/call` POST.
+- Injects up to 5 hits as `additionalContext`, wrapped in `<recalled-memories>` and
+  marked as untrusted reference data. Injected text is never treated as instructions.
+- Injects nothing when the server returns no hits (the server applies the distance cutoff).
+
+**Environment variables:**
+
+| Variable | Default | Meaning |
+|----------|---------|---------|
+| `SCAFFOLDING_MEMORY_RECALL` | off | `on` enables the hook |
+| `SCAFFOLDING_MEMORY_RECALL_URL` | — (required) | MCP endpoint URL |
+| `SCAFFOLDING_MEMORY_RECALL_TOKEN` | — | Bearer token (see fallback rule) |
+| `SCAFFOLDING_MEMORY_RECALL_TOOL` | `memory-semantic_search` | MCP tool name to call |
+| `SCAFFOLDING_MEMORY_RECALL_TIMEOUT` | `2` | Seconds; capped at `2.5` to stay under the 3 s hook limit |
+
+**Token fallback:** if `SCAFFOLDING_MEMORY_RECALL_TOKEN` is unset, `ANTHROPIC_API_KEY` is
+used only when the URL host equals the `ANTHROPIC_BASE_URL` host (your own gateway). A real
+API key is never sent to a third party.
+
+**Transport rules:**
+
+- `https` is accepted to any host.
+- Plain `http` is accepted only for loopback, private (RFC 1918) addresses, and `.local`,
+  `.internal`, `.home.arpa` names (use the IP or `https` for any other local suffix).
+- Redirects are refused and proxies are ignored, so the token only goes to the configured URL.
+
+**Skip heuristics:** prompts shorter than 20 characters, prompts starting with `/`, and
+bare acknowledgements (`ok`, `yes`, `thanks`, `dalej`, etc.) are not sent.
+
+**Fail-silent:** any error, timeout, skip or zero hits prints nothing and exits 0.
+
+**Requirements:** `python3` and `timeout`. On macOS, install coreutils (`brew install coreutils`)
+to get `timeout`; without it the hook silently does nothing.
+
+**Security notes:**
+
+- Prompt text, including anything pasted into the first 500 characters, is sent to your
+  memory service and may appear in gateway logs.
+- `http` is cleartext. Use it only on a network you trust.
+- Memory store content is injected into sessions. Treat everything that gets stored as a
+  trusted-input surface and avoid storing untrusted content.
 
 ## Hook Configuration
 

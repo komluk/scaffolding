@@ -277,6 +277,17 @@
           }
         ]
       }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/memory-recall.sh",
+            "timeout": 3
+          }
+        ]
+      }
     ]
   },
   "skipDangerousModePermissionPrompt": true,
