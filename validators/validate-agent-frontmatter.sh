@@ -19,7 +19,8 @@ if [ -z "$TARGET" ]; then
     exit 1
 fi
 
-VALID_MODELS="opus|sonnet|haiku|fable|inherit"
+# Tier aliases, or an explicit served slug such as claude-sonnet-5-5 (agents pin slugs since f03cda3).
+VALID_MODELS="opus|sonnet|haiku|fable|inherit|claude-(opus|sonnet|haiku|fable)-[0-9]+(-[0-9]+)*"
 VALID_EFFORTS="low|medium|high|xhigh|max"
 
 validate_file() {
