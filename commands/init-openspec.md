@@ -46,6 +46,8 @@ Sets up OpenSpec spec-driven development tooling in a project:
 4. **Create the conversations directory**
    ```bash
    mkdir -p .scaffolding/conversations/
+   # link it to the shared NFS share (no-op without a reachable share)
+   bash "${CLAUDE_PLUGIN_ROOT}/hooks/nfs-sync.sh" link "$PWD"
    ```
 
 5. **Verify installation**
@@ -78,4 +80,4 @@ After completion, confirm:
 - Requires Node.js >= 20.19.0
 - Does not modify existing `.claude/commands/` files
 - Specs in `.scaffolding/openspec/specs/` and schemas in `.scaffolding/openspec/schemas/` are tracked in git
-- Conversation specs live in `.scaffolding/conversations/{conversation_id}/specs/`
+- Conversation specs live in `.scaffolding/conversations/{conversation_id}/specs/` (`conversations/` is a symlink to `<share>/projects/<repo-name>/conversations`)

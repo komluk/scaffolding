@@ -13,16 +13,35 @@ Spec-driven development protocol for coordinating multi-agent workflows.
 
 ## Directory Structure
 
+Canonical layout (identical on every machine and in every project):
+
 ```
-.scaffolding/conversations/{conversation_id}/specs/
-  proposal.md   -- WHY + WHAT (analyst)
-  design.md     -- WHAT + HOW (architect)
-  tasks.md      -- checklist (architect)
+<repo>/.scaffolding/
+  conversations -> <share>/projects/<repo-name>/conversations   (symlink to the NFS share)
+  worktrees/                      LOCAL real dir, never on NFS
+  openspec/  workflows/           git-tracked
+  agent-memory/  project-id  ...  local
+
+<share>/projects/<repo-name>/conversations/{conversation_id}/
+  context.json                    status + history (merged schema below)
+  specs/
+    proposal.md   -- WHY + WHAT (analyst)
+    design.md     -- WHAT + HOW (architect)
+    tasks.md      -- checklist (architect)
+  agent-memory/context.md         conversation-tier memory
+  attachments/{attId}/{name}      + {attId}.json
+  tasks/{taskId}/                 meta.json, output.md, output.jsonl, summary.json, state.json
 ```
+
+Always read and write through `.scaffolding/conversations/...` (the symlink);
+never hardcode the share path. `<share>` differs per machine
+(`/mnt/scaffolding-data` or `/mnt/scaffolding`). `nfs-sync.sh` creates the link
+at SessionStart or via `nfs-sync.sh link <dir>`; `<share>/platform/conversations`
+holds notes only and is never a link target.
 
 ## Status Lifecycle
 
-Tracked in `.scaffolding/conversations/{conversation_id}/context.json`:
+Tracked in `status` of `.scaffolding/conversations/{conversation_id}/context.json`:
 
 | Status | Meaning | Transition |
 |--------|---------|------------|
@@ -71,26 +90,52 @@ Analyst writes proposal directly (no researcher) for:
 
 ## Orchestration Steps
 
-1. **Obtain conversation_id UUID**: From prompt context or generate via `uuidgen`. **MUST be a UUID, never a descriptive name.**
+1. **Obtain conversation_id UUID**: From prompt context or generate via `uuidgen`. **MUST be a UUID, never a descriptive name** (validate against the regex above before creating any directory).
 2. **Create specs directory**: `mkdir -p .scaffolding/conversations/{conversation_id}/specs/`
 3. **Set specs_path**: `.scaffolding/conversations/{conversation_id}/specs/`
 4. **Analyst writes proposal.md** (requirements, scope, impact, feasibility)
 5. **If research needed**: analyst flags in proposal.md, researcher is invoked (score >= 80)
 6. **Architect writes design.md + tasks.md** (incorporating proposal.md and ResearchPack if available)
 7. **Pass specs_path** in every agent delegation prompt
-8. **Update context.json** status after each phase transition
+8. **Update context.json** status after each phase transition (read-merge-write, see schema)
 9. **Gate enforcement**: Block next phase if quality gate fails
 
 ## Context JSON Schema
 
-```json
+One merged schema shared with the platform. **Every field is optional**; readers
+treat a missing key as empty.
+
+```jsonc
 {
-  "conversation_id": "abc-123",
-  "status": "implementing",
-  "created_at": "2026-01-15T10:00:00Z",
-  "description": "Feature description",
-  "agents_involved": ["architect", "developer"]
+  "conversation_id": "uuid",                  // always a UUID
+  // plugin (this workflow)
+  "status": "exploring|drafting|implementing|reviewing|complete|archived",
+  "description": "string",
+  "created_at": "ISO-8601 string",
+  "agents_involved": ["architect", "developer"],
+  // platform
+  "original_intent": "string",
+  "task_history": [ { "task_id": "..." } ],
+  "cumulative_files_changed": ["path"],
+  "cumulative_decisions": ["string"],
+  "last_updated": 1760000000,                 // epoch seconds (number)
+  "openspec": { "status": "archived" }        // or null
 }
+```
+
+**Read-merge-write, always.** Read the existing file, change only the keys you
+own, write the whole object back. Never recreate the file from scratch and never
+drop keys you do not know (e.g. keep `original_intent` and `task_history` when
+setting `status`). Keep existing types: `created_at` is an ISO string,
+`last_updated` a number. There is no version field. When the file does not
+exist yet, create it with `conversation_id` plus the keys you own.
+
+Minimal merge (jq):
+
+```bash
+f=".scaffolding/conversations/$CONV_ID/context.json"
+[ -f "$f" ] || echo "{\"conversation_id\": \"$CONV_ID\"}" > "$f"
+jq '.status = "implementing"' "$f" > "$f.tmp" && mv "$f.tmp" "$f"
 ```
 
 ## Schema Reference

@@ -75,7 +75,7 @@ The `/learn` command runs distillation against a **single conversation** rather
 than mining all of `.scaffolding/conversations/`. This mode is backend-free and
 self-contained — no session-log mining, no database.
 
-Inputs for one `conversation_id` (a UUID `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`):
+Inputs for one `conversation_id` (a UUID `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`). `.scaffolding/conversations/` is a symlink to `<share>/projects/<repo-name>/conversations`; paths are unchanged:
 
 | Input | Path | Role |
 |-------|------|------|

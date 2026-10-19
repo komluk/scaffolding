@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.15.0] - 2026-10-19
+
+One conversation layout everywhere: `.scaffolding/conversations` is a symlink to the NFS share on every machine and in every project.
+
+### Changed
+- **`nfs-sync.sh` rewritten as a linker** — links `<repo>/.scaffolding/conversations` to `<share>/projects/<repo-name>/conversations` instead of rsyncing `.scaffolding/`. An existing link is a no-op; an absent or empty dir is replaced by the link; a populated dir is copied without overwriting (`cp -n`), verified, kept as `conversations.pre-nfs-<ts>` and then linked. Conflicts keep the share copy, preserve the local one in the backup and are listed on stderr. Foreign symlinks, an unreachable share and any error leave the dir untouched; the hook always exits 0. `<share>` is per machine: `SCAFFOLDING_NFS_ROOT`, else auto-detected `/mnt/scaffolding-data` or `/mnt/scaffolding`. Linking applies to `CLAUDE_PROJECT_DIR` and each immediate child git repo with `.scaffolding/` (SessionStart `pull`).
+- **Worktree hooks** — `worktree-create.sh` / `worktree-remove.sh` now use `.scaffolding/worktrees/<name>` instead of `.claude/worktrees/<name>`. The new worktree gets a `.scaffolding/conversations` link to the main checkout's resolved target; the remove hook only removes registered worktrees under `.scaffolding/worktrees/` and deletes only the link, never the target.
+- **Skills and commands** — `spec-workflow`, `worktree-management`, `agent-memory`, `distill`, `spec-{research,design,develop,review}`, `agent-comms`, `/learn`, `/init-scaffolding`, `/init-openspec` and the `/specs:*` archive commands describe the canonical layout (`context.json`, `specs/`, `agent-memory/`, `attachments/`, `tasks/<id>/`). `/learn` prefers the session's conversation_id over the newest mtime.
+- **`context.json` schema** — one merged schema shared with the platform; all fields optional. Writers read-merge-write and preserve keys they do not own; `conversation_id` must be a UUID.
+- **Permissions** — the `output.jsonl` deny globs also match the resolved `projects/*/conversations` share path.
+
+### Added
+- **`nfs-sync.sh link [--dry-run] [dir...]`** — explicit entry point for setup and migration; `/init-scaffolding` and `/init-openspec` call it so new repos get the symlink.
+- **`hooks/count-conversations.sh`** — prints `<project> <n_conv> <n_files>` (sorted) to compare conversation counts before and after a migration.
+- **`tests/`** — bash tests for `nfs-sync.sh` (already linked, fresh, merge with conflict, rollback, dry-run), the worktree hooks and `memory-ingest-mark.sh`. Run `bash tests/run-all.sh`.
+
+### Fixed
+- **`memory-ingest-mark.sh`** — `find` now uses `conversations/` (trailing slash) so it descends through the symlink; previously new `context.md` files behind the link were never noticed.
+
+### Removed
+- **Stop `nfs-sync.sh push`** — unwired from `plugin.json` and `settings.json`; the rsync push, `project-id` slug-hash naming and `project.json` code are deleted. `push` remains accepted as a no-op.
+
 ## [2.14.5] - 2026-10-18
 
 ### Changed

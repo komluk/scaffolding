@@ -56,9 +56,26 @@ create_worktree() --> agent executes (no commit) --> gitops: commit
 
 | Resource | Path |
 |----------|------|
-| Worktrees directory | `.scaffolding/worktrees/` |
+| Worktrees directory | `.scaffolding/worktrees/` (local real dir, **never on NFS**) |
+| Task worktree | `.scaffolding/worktrees/{task_id[:12]}/` — branch `scaffolding/{task_id[:12]}` |
 | Worktree metadata | `.scaffolding/worktrees/{task_id[:12]}/worktree.json` |
-| Branch naming | `scaffolding/{task_id[:12]}` |
+| Thread worktree | `.scaffolding/worktrees/threads/{id8}/` |
+| Named worktree | `.scaffolding/worktrees/<name>/` — plugin `WorktreeCreate` hook, branch `worktree-<name>` (`/` in the name becomes `+`) |
+
+`.claude/worktrees/` is no longer used.
+
+### Conversations inside a worktree
+
+Inside a worktree, `.scaffolding/conversations` is a symlink to the same share
+target as the main checkout (`readlink -f` of the main link). A spec written from
+a worktree therefore lands on the share and survives worktree removal. The
+`WorktreeCreate` hook creates this link; the `WorktreeRemove` hook deletes only
+the link, never the target. Do not copy conversation files into a worktree, and
+do not `rm -rf` through the link.
+
+The `WorktreeRemove` hook only removes registered worktrees under the main
+checkout's `.scaffolding/worktrees/`. Dirs without `worktree.json` are not
+platform-made; the platform sweep must leave them alone.
 
 ## Diagnostics
 

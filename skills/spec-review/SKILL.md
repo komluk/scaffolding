@@ -17,6 +17,8 @@ Guide for verifying that implementation matches spec artifacts.
 
 **Path Enforcement**: The `specs_path` MUST be `.scaffolding/conversations/{UUID}/specs/` where `{UUID}` is a valid UUID (format: `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`). NEVER use descriptive folder names.
 
+`.scaffolding/conversations/` is a symlink to `<share>/projects/<repo-name>/conversations` (paths below are unchanged; always go through the symlink).
+
 ## Three Verification Dimensions
 
 ### 1. Completeness

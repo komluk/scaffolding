@@ -274,4 +274,4 @@ omitted.
 - Never push unreviewed work — exhausted retry loops halt before `document` and `push`
 - Never commit or push directly — `push` always delegates to `scaffolding:gitops`
 - Always show skipped steps in the trace table, never omit them
-- Always merge into `context.json`, never overwrite the existing `openspec` key
+- Always read-merge-write `context.json`: never overwrite the existing `openspec` key and preserve every key you do not own (`original_intent`, `task_history`, ...)

@@ -305,7 +305,7 @@ When a change is complete, we archive it by updating the conversation's context.
 ```
 
 **DO:**
-Update the conversation's `context.json` to set `openspec.status` to `"archived"`.
+Update the conversation's `context.json` to set `openspec.status` to `"archived"` (read the file, merge, write it back; keep all other keys).
 
 **SHOW:**
 ```

@@ -35,11 +35,11 @@ if [ -z "$REPO_ROOT" ]; then
   exit 0
 fi
 
-# Mirror the native worktree naming scheme so hook-based worktrees behave
-# identically to the built-in mechanism: .claude/worktrees/<name, / -> +>,
-# branch worktree-<same>.
+# Worktrees live under .scaffolding/worktrees/<name, / -> +> (local, never on
+# NFS) — the same root the platform uses for task/thread worktrees. The branch
+# stays worktree-<same> for compatibility with the native mechanism.
 SAFE_NAME="${NAME//\//+}"
-WORKTREE_DIR="$REPO_ROOT/.claude/worktrees/$SAFE_NAME"
+WORKTREE_DIR="$REPO_ROOT/.scaffolding/worktrees/$SAFE_NAME"
 BRANCH="worktree-$SAFE_NAME"
 
 if [ -d "$WORKTREE_DIR" ]; then
@@ -51,5 +51,19 @@ fi
 
 mkdir -p "$(dirname "$WORKTREE_DIR")"
 git -C "$REPO_ROOT" worktree add --no-track -B "$BRANCH" "$WORKTREE_DIR" HEAD >&2
+
+# Specs written from inside the worktree must land on the shared conversations
+# dir, not be lost when the worktree is removed: point the worktree's
+# .scaffolding/conversations at the main checkout's resolved target.
+MAIN_CONV="$REPO_ROOT/.scaffolding/conversations"
+if [ -L "$MAIN_CONV" ]; then
+  CONV_TARGET="$(readlink -f "$MAIN_CONV" 2>/dev/null || true)"
+  if [ -n "$CONV_TARGET" ]; then
+    mkdir -p "$WORKTREE_DIR/.scaffolding" >&2 || true
+    if [ ! -e "$WORKTREE_DIR/.scaffolding/conversations" ] && [ ! -L "$WORKTREE_DIR/.scaffolding/conversations" ]; then
+      ln -s "$CONV_TARGET" "$WORKTREE_DIR/.scaffolding/conversations" >&2 || true
+    fi
+  fi
+fi
 
 echo "$WORKTREE_DIR"

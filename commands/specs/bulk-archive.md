@@ -79,7 +79,7 @@ This skill allows you to batch-archive conversations, handling conflicts intelli
 
    For each conversation:
 
-   a. **Update context.json** to set `openspec.status` to `"archived"`
+   a. **Update context.json** to set `openspec.status` to `"archived"` (read-merge-write: preserve every other key)
 
    b. **Track outcome**:
       - Success: archived successfully

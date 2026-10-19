@@ -48,9 +48,9 @@ Archive a completed change by updating its status in context.json.
 4. **Perform the archive**
 
    Update the conversation's `context.json` to set `openspec.status` to `"archived"`:
-   - Read `.scaffolding/conversations/{conversation_id}/context.json`
-   - Add or update the `openspec` field: `{ "status": "archived" }`
-   - Write back the updated context.json
+   - Read `.scaffolding/conversations/{conversation_id}/context.json` (all fields are optional; create it with just `conversation_id` if missing)
+   - Add or update the `openspec` field: `{ "status": "archived" }` (merge into an existing `openspec` object)
+   - Write back the whole object (read-merge-write): preserve every other key, e.g. `original_intent`, `task_history`, `status`
 
    The specs files remain in place as a decision record.
 
