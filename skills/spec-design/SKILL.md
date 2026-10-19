@@ -13,6 +13,8 @@ Read `{specs_path}/proposal.md` first. Reference its capabilities and impact sec
 
 **Path Enforcement**: The `specs_path` MUST be `.scaffolding/conversations/{UUID}/specs/` where `{UUID}` is a valid UUID (format: `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`). NEVER use descriptive folder names.
 
+`.scaffolding/conversations/` is a symlink to `<share>/projects/<repo-name>/conversations` (paths below are unchanged; always go through the symlink).
+
 ## design.md
 
 ### Output Path

@@ -91,35 +91,40 @@ This directory contains hooks that run automatically during Claude Code workflow
 | `.scaffolding/.noingest` | per-repo opt-out | manual `touch` |
 
 ### 7. nfs-sync.sh
-**Type:** Stop / SessionStart hook
-**Triggers:** On session stop (push) and session start (pull — startup/resume)
-**Purpose:** Opt-in bidirectional sync of `.scaffolding/` to a TrueNAS NFS share for cross-device project recall
+**Type:** SessionStart hook (startup/resume) + CLI
+**Purpose:** Make `<repo>/.scaffolding/conversations` a symlink to the shared NFS share, so every machine sees one copy of every conversation. No sync, no mirror.
 
-**What it does:**
-- Syncs `.scaffolding/` ↔ `<root>/projects/<slug>-<hash>/` using `rsync --update`
-- On **Stop**: uploads (push) local `.scaffolding/` to the NFS share
-- On **SessionStart** (startup or resume): downloads (pull) from the NFS share to local `.scaffolding/`
-- Uses `--update` flag: never overwrites newer files, never deletes (local `.scaffolding/` is always authoritative)
-- Skips silently if NFS is unreachable, rsync not installed, or flock unavailable
-- **Always exits 0** — slow/unavailable share must never block a session
+**Layout:** `<repo>/.scaffolding/conversations -> <share>/projects/<repo-name>/conversations` (`<repo-name>` = basename of the project dir; `~/repos` maps to `projects/repos`).
 
-**Enable switches (default is OFF):**
-- Set `SCAFFOLDING_NFS_ROOT` environment variable (e.g., `/mnt/scaffolding`), OR
-- Create a `.scaffolding/.nfs-sync` sentinel file:
-  - Empty file → uses default root `/mnt/scaffolding`
-  - File containing an absolute path on line 1 → uses that path as root
+**Per local `.scaffolding/conversations`:**
+
+| State | Action |
+|-------|--------|
+| symlink to the share target | no-op |
+| absent or empty dir | `mkdir -p` target, `ln -s` |
+| populated real dir | `cp -n` (no clobber) into the target, verify every file, `mv` local to `conversations.pre-nfs-<ts>`, `ln -s` |
+| foreign symlink / share unreachable / any error | left untouched, warning on stderr |
+
+Same path on both sides with different content: the share copy is kept, the local copy stays in `.pre-nfs-<ts>/`, and the conflict is listed on stderr. If the copy cannot be verified, or `ln` fails, nothing is changed (the original dir is restored).
+
+**Usage:**
+- `nfs-sync.sh pull` — SessionStart: links `CLAUDE_PROJECT_DIR` and each immediate child git repo that already has `.scaffolding/`. Opt-in (below).
+- `nfs-sync.sh link [--dry-run] [dir...]` — explicit setup/migration (no opt-in needed; default dir is the project dir). `--dry-run` prints the plan and changes nothing. Called by `/init-scaffolding` and `/init-openspec`.
+- `nfs-sync.sh push` — no-op (the Stop hook is unwired).
+
+**`<share>` (per machine):** `SCAFFOLDING_NFS_ROOT`, else the first of `/mnt/scaffolding-data`, `/mnt/scaffolding` that has a `projects/` dir.
+
+**Enable `pull` (default is OFF):** set `SCAFFOLDING_NFS_ROOT`, or create `.scaffolding/.nfs-sync` (empty = auto-detect; an absolute path on line 1 names the share).
 
 **Environment variables:**
-- `SCAFFOLDING_NFS_TIMEOUT` (default `20s`) — timeout for rsync sync operations
-- `SCAFFOLDING_NFS_PROBE_TIMEOUT` (default `5s`) — timeout for NFS reachability check
-- `SCAFFOLDING_NFS_ROOT` — absolute path to NFS root (e.g., `/mnt/scaffolding`); overrides sentinel file
+- `SCAFFOLDING_NFS_ROOT` — share root; overrides the sentinel and auto-detect
+- `SCAFFOLDING_NFS_TIMEOUT` (default `20`) — per NFS operation, seconds
+- `SCAFFOLDING_NFS_COPY_TIMEOUT` (default `120`) — copy + verify, seconds
+- `SCAFFOLDING_NFS_PROBE_TIMEOUT` (default `5`) — reachability probe, seconds
 
-**Safety guarantees:**
-- Locked with `flock` to skip (not queue) concurrent syncs
-- Timeouts kill hung rsync/mkdir with `-k 2` flag
-- Skips without error if rsync or flock commands are missing
-- Never removes local files (no `--delete` flag)
-- Always exits 0 — never blocks or fails a session
+**Safety guarantees:** every NFS operation runs under `timeout -k 2`; never overwrites or deletes share data; the local dir is only replaced after a verified copy and is kept as a backup; always exits 0.
+
+**Related:** `count-conversations.sh <root>...` prints `<project> <n_conv> <n_files>` (sorted) for before/after migration counts. Tests: `bash tests/run-all.sh`.
 
 ## PostToolUse(Edit|Write) ordering — CRITICAL
 

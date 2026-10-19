@@ -10,8 +10,11 @@ a completed agent chain and the persistent memory system.
 /learn [conversation_id]
 ```
 
-`conversation_id` is optional — when omitted, the active conversation is used. It
-MUST be a UUID (`xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`).
+`conversation_id` is optional — when omitted, the session's own conversation_id
+(from the task/session context) is used; only if none is known does it fall back to
+the most recently modified directory (conversations are shared across machines, so
+the newest mtime may belong to another machine's session). It MUST be a UUID
+(`xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`).
 
 ## What It Does
 
@@ -35,8 +38,13 @@ Follow these steps exactly.
 ```bash
 CONV_ID="$1"
 
+# Prefer the session's conversation_id (from the task/session context) when the
+# caller passed none. SESSION_CONV_ID stands for that value; leave it empty if unknown.
+[ -z "$CONV_ID" ] && CONV_ID="${SESSION_CONV_ID:-}"
+
 if [ -z "$CONV_ID" ]; then
-  # Default: most recently modified conversation directory.
+  # Fallback only: most recently modified conversation directory. The trailing
+  # slash makes the glob follow the conversations symlink.
   CONV_ID=$(ls -1dt .scaffolding/conversations/*/ 2>/dev/null | head -1 | xargs -r basename)
 fi
 

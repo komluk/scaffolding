@@ -1,6 +1,6 @@
 {
   "name": "scaffolding",
-  "version": "2.14.5",
+  "version": "2.15.0",
   "description": "13 agents, 39 skills, 20 commands, 18 hooks — spec-driven, multi-agent orchestration for Claude Code with per-phase model tiers, opt-in lifecycle hooks, and optional cross-device semantic memory.",
   "author": {
     "name": "komluk",
@@ -126,10 +126,6 @@
           {
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/memory-ingest.sh"
-          },
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/nfs-sync.sh push"
           }
         ]
       }

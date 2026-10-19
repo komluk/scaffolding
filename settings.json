@@ -43,10 +43,12 @@
       "Read(**/.ruff_cache/**)",
       "Read(**/.git/objects/**)",
       "Read(**/.scaffolding/conversations/**/tasks/*/output.jsonl)",
+      "Read(**/projects/*/conversations/**/tasks/*/output.jsonl)",
       "Glob(**/venv/**)",
       "Glob(**/.venv/**)",
       "Glob(**/node_modules/**)",
-      "Grep(**/.scaffolding/conversations/**/tasks/*/output.jsonl)"
+      "Grep(**/.scaffolding/conversations/**/tasks/*/output.jsonl)",
+      "Grep(**/projects/*/conversations/**/tasks/*/output.jsonl)"
     ],
     "defaultMode": "default"
   },
@@ -123,10 +125,6 @@
           {
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/memory-ingest.sh"
-          },
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/nfs-sync.sh push"
           }
         ]
       }

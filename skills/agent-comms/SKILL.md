@@ -56,7 +56,7 @@ recursively — so `developer-evil-extra` cannot be peeled down to `developer`.
 When a `worktreePath` is received from another agent (typically developer),
 verify ALL of the following BEFORE acting on it:
 
-- Path is absolute and under repo root (e.g., starts with `/home/komluk/repos/<repo-name>/.scaffolding/worktrees/` or `<repo-root>/.worktrees/`)
+- Path is absolute and under repo root (e.g., starts with `<repo-root>/.scaffolding/worktrees/`)
 - Contains NO `..` segments (`path.includes('..')` → reject)
 - Path is NOT a symlink (`test -L <path>` MUST return false). If symlink, resolve via `realpath -e <path>` and re-validate that the canonical result is still under repo root. Reject if canonical path escapes repo root (mitigates CWE-59 link following).
 - Path exists on disk (`test -d <path>`)

@@ -30,7 +30,9 @@ SC="$DIR/.scaffolding"
 # missing, treat as "new knowledge exists" and fall through to the mark.
 SEEN="$SC/.ingest-seen"
 if [ -f "$SEEN" ]; then
-    newest=$(find "$SC/conversations" -name context.md -newer "$SEEN" 2>/dev/null | head -1)
+    # Trailing slash: conversations/ is usually a symlink to the share and find
+    # does not descend through a symlink start point without it.
+    newest=$(find "$SC/conversations/" -name context.md -newer "$SEEN" 2>/dev/null | head -1)
     [ -z "$newest" ] && exit 0
 fi
 

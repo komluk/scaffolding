@@ -93,7 +93,13 @@ mkdir -p .scaffolding/openspec/specs
 mkdir -p .scaffolding/openspec/schemas
 mkdir -p .scaffolding/reports
 echo "CREATED: .scaffolding/ directory structure"
+
+# Link conversations to the shared NFS share (no-op without a reachable share;
+# <share> = $SCAFFOLDING_NFS_ROOT, else /mnt/scaffolding-data or /mnt/scaffolding)
+bash "$PLUGIN_ROOT/hooks/nfs-sync.sh" link "$PWD"
 ```
+
+`conversations/` becomes a symlink to `<share>/projects/<repo-name>/conversations`; an empty local dir is replaced, a populated one is copied (no overwrite) and kept as `conversations.pre-nfs-<ts>`.
 
 ### 3. Add .scaffolding/ to .gitignore
 

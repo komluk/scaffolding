@@ -15,6 +15,8 @@ description: "3-tier markdown memory protocol (shared/agent/conversation) for cr
 | **Agent** | `.scaffolding/agent-memory/agents/{agent-name}/MEMORY.md` | Per agent | Owning agent | Own agent + architect |
 | **Conversation** | `.scaffolding/conversations/{conversation_id}/agent-memory/context.md` | Per conversation | Any agent in conversation | Agents in same conversation |
 
+The Conversation tier lives under `.scaffolding/conversations/`, which is a symlink to `<share>/projects/<repo-name>/conversations` (shared across machines). Paths are unchanged; always go through the symlink.
+
 ## Automatic Injection
 
 Memory is auto-injected into agent context via `recall_for_agent()` in the task execution pipeline. When a task starts, the system reads:
