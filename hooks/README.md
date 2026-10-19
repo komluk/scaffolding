@@ -181,8 +181,8 @@ API key is never sent to a third party.
 **Transport rules:**
 
 - `https` is accepted to any host.
-- Plain `http` is accepted only for loopback, private (RFC 1918) addresses, and `.local`,
-  `.internal`, `.home.arpa` names (use the IP or `https` for any other local suffix).
+- Plain `http` is accepted only when the host resolves exclusively to loopback or private
+  (RFC 1918) addresses, e.g. a LAN-only DNS name or a private IP.
 - Redirects are refused and proxies are ignored, so the token only goes to the configured URL.
 
 **Skip heuristics:** prompts shorter than 20 characters, prompts starting with `/`, and
