@@ -7,11 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.16.0] - 2026-10-19
+
 ### Added
 - **`tests/eval/` routing golden set** — 41 generic prompts in EN and PL, covering all 13 agents.
 - **`denylist.sh`** — public-repo guard.
 - **`run-routing.sh`** — offline `--dry-run` mode (wired into `tests/run-all.sh`) and a live mode. Baseline 38/41; the 3 misses are cases with no delegation within the timeout.
 - **Opt-in memory recall hook (`memory-recall.sh`, UserPromptSubmit)** — off by default (`SCAFFOLDING_MEMORY_RECALL=on`); configured via `SCAFFOLDING_MEMORY_RECALL_URL`, `_TOKEN`, `_TOOL`, `_TIMEOUT`. Hardening: no redirects, scoped `ANTHROPIC_API_KEY` fallback (only to the `ANTHROPIC_BASE_URL` host), http only to loopback/private networks.
+
+### Fixed
+- **`validate-agent-frontmatter.sh`** accepts explicit served model slugs (`claude-<tier>-N-N`) that agents pin since 2.14; previously it blocked every commit.
+- **memory-recall hook**: plain `http` is accepted when the host resolves only to loopback/private addresses (LAN DNS names).
 
 ## [2.15.0] - 2026-10-19
 
