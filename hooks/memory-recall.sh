@@ -8,8 +8,8 @@
 #
 # Config (env only, nothing hard-coded):
 #   SCAFFOLDING_MEMORY_RECALL         on|off (default off)
-#   SCAFFOLDING_MEMORY_RECALL_URL     MCP endpoint. https anywhere; plain http only to a
-#                                     loopback or private (RFC 1918) address.
+#   SCAFFOLDING_MEMORY_RECALL_URL     MCP endpoint. https anywhere; plain http only when the host
+#                                     resolves exclusively to loopback/private (RFC 1918) addresses.
 #   SCAFFOLDING_MEMORY_RECALL_TOKEN   Bearer token. If unset, ANTHROPIC_API_KEY is used ONLY when
 #                                     the URL host equals the ANTHROPIC_BASE_URL host (i.e. your
 #                                     own gateway), so a real API key never goes to a third party.
@@ -30,7 +30,7 @@ export RECALL_PID="$pid"
 
 # The token reaches python via the environment only — never on a command line (ps-visible).
 timeout 2.8 python3 -I -c '
-import ipaddress, json, os, re, sys, urllib.parse, urllib.request
+import ipaddress, json, os, re, socket, sys, urllib.parse, urllib.request
 
 try:
     event = json.load(sys.stdin)
@@ -46,13 +46,14 @@ u = urllib.parse.urlsplit(url)
 if u.scheme not in ("http", "https") or not u.hostname:
     sys.exit(0)
 if u.scheme == "http":
+    # Plain http only when every address the host resolves to is loopback/private.
     try:
-        ip = ipaddress.ip_address(u.hostname)
-        if not (ip.is_loopback or ip.is_private):
+        addrs = {a[4][0] for a in socket.getaddrinfo(u.hostname, u.port or 80, proto=socket.IPPROTO_TCP)}
+        if not addrs or not all(ipaddress.ip_address(a.split("%")[0]).is_loopback
+                                or ipaddress.ip_address(a.split("%")[0]).is_private for a in addrs):
             sys.exit(0)
-    except ValueError:
-        if u.hostname != "localhost" and not u.hostname.endswith((".local", ".internal", ".home.arpa")):
-            sys.exit(0)
+    except (OSError, ValueError):
+        sys.exit(0)
 
 token = os.environ.get("SCAFFOLDING_MEMORY_RECALL_TOKEN", "")
 if not token:

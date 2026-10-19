@@ -76,6 +76,8 @@ check "no fallback without ANTHROPIC_BASE_URL" test -z "$(run "SCAFFOLDING_MEMOR
 
 echo "# transport hardening"
 check "plain http to a public address refused" test -z "$(run "SCAFFOLDING_MEMORY_RECALL=on SCAFFOLDING_MEMORY_RECALL_URL=http://203.0.113.7/mcp SCAFFOLDING_MEMORY_RECALL_TOKEN=tok")"
+check "http to a name resolving publicly refused" test -z "$(run "SCAFFOLDING_MEMORY_RECALL=on SCAFFOLDING_MEMORY_RECALL_URL=http://example.com/mcp SCAFFOLDING_MEMORY_RECALL_TOKEN=tok")"
+check "http to localhost name accepted" contains "$(echo '{"results":[{"memory":"via name","score":0.1}]}' >"$T/hits.json"; run "SCAFFOLDING_MEMORY_RECALL=on SCAFFOLDING_MEMORY_RECALL_URL=http://localhost:$PORT/mcp SCAFFOLDING_MEMORY_RECALL_TOKEN=tok")" "via name"
 check "non-http scheme refused" test -z "$(run "SCAFFOLDING_MEMORY_RECALL=on SCAFFOLDING_MEMORY_RECALL_URL=file:///etc/passwd SCAFFOLDING_MEMORY_RECALL_TOKEN=tok")"
 # Redirector: 302 to a catcher on another port; the catcher must never see a request.
 cat >"$T/redir.py" <<'PYEOF'
