@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **`tests/eval/` routing golden set** — 41 generic prompts in EN and PL, covering all 13 agents.
+- **`denylist.sh`** — public-repo guard.
+- **`run-routing.sh`** — offline `--dry-run` mode (wired into `tests/run-all.sh`) and a live mode. Baseline 38/41; the 3 misses are cases with no delegation within the timeout.
+
 ## [2.15.0] - 2026-10-19
 
 One conversation layout everywhere: `.scaffolding/conversations` is a symlink to the NFS share on every machine and in every project.

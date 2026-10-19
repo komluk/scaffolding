@@ -1,0 +1,41 @@
+{"prompt": "Users keep asking for 'better notifications' in our app. I'm not sure what that means yet. Can you help me figure out what we should actually build?", "expected_agent": "scaffolding:analyst", "expected_difficulty": null}
+{"prompt": "Chcemy dodać jakiś moduł raportowania, ale nie wiem jeszcze czego dokładnie potrzebują klienci. Pomóż określić wymagania i zakres.", "expected_agent": "scaffolding:analyst", "expected_difficulty": null}
+{"prompt": "Is it feasible to support offline mode in our mobile client? Assess scope and risks and write a proposal before anyone starts coding.", "expected_agent": "scaffolding:analyst", "expected_difficulty": null}
+{"prompt": "Design the architecture for a multi-tenant billing service: service boundaries, API contracts and data flow between components.", "expected_agent": "scaffolding:architect", "expected_difficulty": null}
+{"prompt": "Zaprojektuj plan refaktoryzacji obejmującej wiele plików: wydzielenie warstwy dostępu do danych z całego monolitu do osobnych modułów.", "expected_agent": "scaffolding:architect", "expected_difficulty": null}
+{"prompt": "Should we split our API into separate services or keep a modular monolith? I need an implementation plan with the trade-offs.", "expected_agent": "scaffolding:architect", "expected_difficulty": null}
+{"prompt": "How do I integrate the Stripe payments API in a Node app? Check the current official docs and the latest SDK version first.", "expected_agent": "scaffolding:researcher", "expected_difficulty": null}
+{"prompt": "Jaka jest najlepsza praktyka obsługi retry i backoff w bibliotece httpx? Sprawdź aktualną dokumentację.", "expected_agent": "scaffolding:researcher", "expected_difficulty": null}
+{"prompt": "We want to adopt a new OAuth library we have never used. What do the official docs say about PKCE support and migration from v3?", "expected_agent": "scaffolding:researcher", "expected_difficulty": null}
+{"prompt": "Add a --verbose flag to the CLI in src/cli.py that prints each processed filename.", "expected_agent": "scaffolding:developer", "expected_difficulty": null}
+{"prompt": "Napisz testy jednostkowe dla funkcji parse_date w utils/dates.py, pokryj przypadki brzegowe.", "expected_agent": "scaffolding:developer", "expected_difficulty": null}
+{"prompt": "Change the primary button color in the settings page stylesheet from blue to green.", "expected_agent": "scaffolding:developer", "expected_difficulty": null}
+{"prompt": "Zmień nazwę zmiennej tmp na buffer w pliku reader.py, jest tylko jedno miejsce użycia.", "expected_agent": "scaffolding:developer", "expected_difficulty": null}
+{"prompt": "Implement a new endpoint GET /health that returns the app version and uptime as JSON.", "expected_agent": "scaffolding:developer", "expected_difficulty": null}
+{"prompt": "The app crashes with a NullPointerException when I click Save on an empty form. Find the root cause.", "expected_agent": "scaffolding:debugger", "expected_difficulty": null}
+{"prompt": "Test jest niestabilny: raz przechodzi, raz nie, tylko na CI. Zbadaj dlaczego tak się dzieje.", "expected_agent": "scaffolding:debugger", "expected_difficulty": null}
+{"prompt": "After upgrading the dependency, users see a 500 error on login but only for accounts created before March. Why?", "expected_agent": "scaffolding:debugger", "expected_difficulty": null}
+{"prompt": "Review my latest changes in the auth module before I merge them.", "expected_agent": "scaffolding:reviewer", "expected_difficulty": null}
+{"prompt": "Do a security review of this file upload handler: check for path traversal, unrestricted file types and missing size limits.", "expected_agent": "scaffolding:reviewer", "expected_difficulty": null}
+{"prompt": "Zrób threat modeling dla naszego endpointu resetowania hasła i wskaż luki bezpieczeństwa.", "expected_agent": "scaffolding:reviewer", "expected_difficulty": null}
+{"prompt": "This SQL query takes 12 seconds on a table with 50 million rows. Optimize it and suggest the right indexes.", "expected_agent": "scaffolding:optimizer", "expected_difficulty": null}
+{"prompt": "Zaprojektuj schemat bazy danych dla systemu zamówień i napisz migrację dodającą tabelę order_items.", "expected_agent": "scaffolding:optimizer", "expected_difficulty": null}
+{"prompt": "Our API response time doubled after the last release and memory usage keeps growing. Profile it and find the performance bottleneck.", "expected_agent": "scaffolding:optimizer", "expected_difficulty": null}
+{"prompt": "Write a system prompt for a customer-support chatbot that never reveals internal policies and refuses off-topic requests.", "expected_agent": "scaffolding:prompt-engineer", "expected_difficulty": null}
+{"prompt": "Napisz regułę guardrail, która blokuje próby prompt injection w wiadomościach od użytkowników.", "expected_agent": "scaffolding:prompt-engineer", "expected_difficulty": null}
+{"prompt": "Create an LLM-judge rubric that scores summaries for faithfulness and coverage, plus a small eval set to test it.", "expected_agent": "scaffolding:prompt-engineer", "expected_difficulty": null}
+{"prompt": "Build an MCP server that exposes our issue tracker as tools: list_issues, get_issue and create_comment.", "expected_agent": "scaffolding:mcp-builder", "expected_difficulty": null}
+{"prompt": "Zaprojektuj schemat narzędzi (tool schema) dla serwera MCP i dodaj obsługę transportu stdio oraz http.", "expected_agent": "scaffolding:mcp-builder", "expected_difficulty": null}
+{"prompt": "Our MCP server needs to read an API token at startup without storing it in plaintext config. Set up the launcher for it.", "expected_agent": "scaffolding:mcp-builder", "expected_difficulty": null}
+{"prompt": "Update the README with the new installation steps and add a CHANGELOG entry for this release.", "expected_agent": "scaffolding:tech-writer", "expected_difficulty": null}
+{"prompt": "Napisz dokumentację użytkownika dla nowej komendy export, z przykładami użycia.", "expected_agent": "scaffolding:tech-writer", "expected_difficulty": null}
+{"prompt": "Document the public API of the payments module: write a clear reference page with parameters and return values.", "expected_agent": "scaffolding:tech-writer", "expected_difficulty": null}
+{"prompt": "Set up a GitHub Actions pipeline that runs tests on every pull request and deploys to staging on merge.", "expected_agent": "scaffolding:devops", "expected_difficulty": null}
+{"prompt": "Skonfiguruj Dockerfile i pipeline CI/CD, który buduje obraz i wdraża go na serwer produkcyjny.", "expected_agent": "scaffolding:devops", "expected_difficulty": null}
+{"prompt": "Our deployment fails because the Kubernetes rollout times out. Fix the infrastructure config and the release process.", "expected_agent": "scaffolding:devops", "expected_difficulty": null}
+{"prompt": "I have merge conflicts after rebasing my branch onto main. Resolve them and push.", "expected_agent": "scaffolding:gitops", "expected_difficulty": null}
+{"prompt": "Zacommituj zmiany, zmerguj gałąź feature do main i wypchnij na zdalne repozytorium.", "expected_agent": "scaffolding:gitops", "expected_difficulty": null}
+{"prompt": "I accidentally deleted a worktree with uncommitted work. Help me recover it from git history.", "expected_agent": "scaffolding:gitops", "expected_difficulty": null}
+{"prompt": "Break this large task into a sequence of agent steps: research the library, design the module, implement it, review it and document it.", "expected_agent": "scaffolding:coordinator", "expected_difficulty": null}
+{"prompt": "Zaplanuj kolejność pracy kilku agentów nad migracją: kto co robi, jakie są zależności i co może iść równolegle.", "expected_agent": "scaffolding:coordinator", "expected_difficulty": null}
+{"prompt": "Orchestrate a multi-agent run: three independent features need building in parallel, then one reviewer pass over all of them.", "expected_agent": "scaffolding:coordinator", "expected_difficulty": null}
