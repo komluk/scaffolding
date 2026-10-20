@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.20.0] - 2026-10-20
+
+### Added
+- **`lspServers` in `plugin.json`**: LSP code intelligence for five languages that have no official Claude Code plugin: Bash (`bash-language-server start`; `.sh`, `.bash`), YAML (`yaml-language-server --stdio`; `.yaml`, `.yml`), Terraform/HCL (`terraform-ls serve`; `.tf`, `.tfvars`), Dockerfile (`docker-langserver --stdio`; `*.dockerfile`) and JSON (`vscode-json-language-server --stdio`; `.json`). Servers are referenced by bare binary name, so each must be on `PATH`. TypeScript, Python and Go are intentionally not declared here: the official `typescript-lsp`, `pyright-lsp` and `gopls-lsp` plugins already cover them. Claude Code maps files by extension only, so a bare `Dockerfile` (no extension) is not matched; only `*.dockerfile` (case-insensitive) is.
+
 ## [2.19.0] - 2026-10-20
 
 ### Added

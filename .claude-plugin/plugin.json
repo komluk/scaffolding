@@ -1,6 +1,6 @@
 {
   "name": "scaffolding",
-  "version": "2.19.0",
+  "version": "2.20.0",
   "description": "13 agents, 39 skills, 20 commands, 19 hooks — spec-driven, multi-agent orchestration for Claude Code with per-phase model tiers, opt-in lifecycle hooks, and optional cross-device semantic memory.",
   "author": {
     "name": "komluk",
@@ -17,6 +17,46 @@
     "spec-driven",
     "orchestration"
   ],
+  "lspServers": {
+    "bash": {
+      "command": "bash-language-server",
+      "args": ["start"],
+      "extensionToLanguage": {
+        ".sh": "shellscript",
+        ".bash": "shellscript"
+      }
+    },
+    "yaml": {
+      "command": "yaml-language-server",
+      "args": ["--stdio"],
+      "extensionToLanguage": {
+        ".yaml": "yaml",
+        ".yml": "yaml"
+      }
+    },
+    "terraform": {
+      "command": "terraform-ls",
+      "args": ["serve"],
+      "extensionToLanguage": {
+        ".tf": "terraform",
+        ".tfvars": "terraform-vars"
+      }
+    },
+    "dockerfile": {
+      "command": "docker-langserver",
+      "args": ["--stdio"],
+      "extensionToLanguage": {
+        ".dockerfile": "dockerfile"
+      }
+    },
+    "json": {
+      "command": "vscode-json-language-server",
+      "args": ["--stdio"],
+      "extensionToLanguage": {
+        ".json": "json"
+      }
+    }
+  },
   "hooks": {
     "PreToolUse": [
       {
