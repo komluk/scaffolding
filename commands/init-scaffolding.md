@@ -17,7 +17,7 @@ into the project so Claude respects the agent delegation rules on every session.
 1. Locates the installed plugin directory (searches known marketplace cache paths)
 2. Creates `.scaffolding/` directory structure for agent memory, conversations, and specs
 3. Adds `.scaffolding/` to `.gitignore`
-4. Copies `CLAUDE.md` to `$CWD/CLAUDE.md` — always overwrites with latest from plugin
+4. Installs the routing protocol in `$CWD/CLAUDE.md` — never overwrites an existing file: left alone if it already has the protocol or an `@...CLAUDE.md` import, otherwise the protocol is appended (a new file is created if absent)
 5. Copies `settings.json` to `$CWD/.claude/settings.json` — always overwrites with latest from plugin
 6. Copies `hooks/*.sh` to `$CWD/.claude/hooks/` — always overwrites with latest from plugin
 7. Reports what was copied
@@ -113,11 +113,18 @@ fi
 echo "UPDATED: .gitignore — .scaffolding/ is excluded from git"
 ```
 
-### 4. Copy CLAUDE.md (always overwrite)
+### 4. Install CLAUDE.md routing protocol (never overwrite)
 
 ```bash
-cp "$PLUGIN_ROOT/CLAUDE.md" "$CWD/CLAUDE.md"
-echo "COPIED: CLAUDE.md -> $CWD/CLAUDE.md (overwritten with latest)"
+if [ ! -f "$CWD/CLAUDE.md" ]; then
+  cp "$PLUGIN_ROOT/CLAUDE.md" "$CWD/CLAUDE.md"
+  echo "CREATED: CLAUDE.md -> $CWD/CLAUDE.md"
+elif grep -qE 'subagent_type="scaffolding:|^@.*CLAUDE\.md' "$CWD/CLAUDE.md"; then
+  echo "SKIPPED: CLAUDE.md already has the routing protocol or an @...CLAUDE.md import (left unchanged)"
+else
+  { printf '\n'; cat "$PLUGIN_ROOT/CLAUDE.md"; } >> "$CWD/CLAUDE.md"
+  echo "APPENDED: routing protocol -> $CWD/CLAUDE.md (existing content preserved)"
+fi
 ```
 
 ### 5. Copy settings.json (always overwrite)
@@ -144,13 +151,13 @@ Print a summary listing each action: CREATED/UPDATED/COPIED or SKIPPED, and its 
 After initializing, inform the user:
 - `.scaffolding/` directory structure is ready for agent memory, conversations, and specs
 - `.gitignore` has been updated to exclude `.scaffolding/` from version control
-- CLAUDE.md is now in the project root — Claude will load the routing protocol on every session
+- CLAUDE.md in the project root carries the routing protocol (created, appended, or already present/imported and left untouched)
 - settings.json is now in `.claude/` — hooks and agent permissions are active
 - If either file was skipped (already existed), they can manually merge from the plugin root
 
 ## Notes
 
 - This command is idempotent — safe to run multiple times
-- CLAUDE.md and settings.json are always overwritten with the latest version from the plugin
+- CLAUDE.md is never overwritten (skipped if it already has the protocol or an `@...CLAUDE.md` import, else appended); settings.json and hooks are overwritten with the latest version from the plugin
 - To customize project name, test commands, or other values, edit `CLAUDE.md` in
   the project root after running this command

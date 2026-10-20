@@ -2,7 +2,8 @@
 # auto-init-check.sh — SessionStart soft auto-init (startup/resume).
 #
 # Detects whether the current project is initialized for scaffolding:
-#   1. a project-root CLAUDE.md that contains the routing protocol, AND
+#   1. a project-root CLAUDE.md that contains the routing protocol OR imports
+#      the central one via an `@...CLAUDE.md` line (e.g. @~/.claude/CLAUDE.md), AND
 #   2. .claude/settings.json
 # If either is MISSING, injects additionalContext advising the user/Claude to
 # run /init-scaffolding.
@@ -15,11 +16,13 @@
 # Always exits 0; SessionStart JSON additionalContext like session-start-protocol.sh.
 set +e
 
+[ -n "${SCAFFOLDING_TASK_ID:-}" ] && exit 0   # platform run: project CLAUDE.md isn't loaded, this advisory is meaningless
+
 dir="${CLAUDE_PROJECT_DIR:-$PWD}"
 
 # --- Detection (read-only) ---
 has_routing=0
-if [ -f "$dir/CLAUDE.md" ] && grep -q 'subagent_type="scaffolding:' "$dir/CLAUDE.md" 2>/dev/null; then
+if [ -f "$dir/CLAUDE.md" ] && grep -qE 'subagent_type="scaffolding:|^@.*CLAUDE\.md' "$dir/CLAUDE.md" 2>/dev/null; then
     has_routing=1
 fi
 
