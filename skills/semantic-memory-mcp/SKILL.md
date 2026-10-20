@@ -1,33 +1,34 @@
 ---
 name: semantic-memory-mcp
-description: "Proactive use of semantic-memory MCP tools (semantic_search, semantic_recall). TRIGGER when: an agent should search vector memory for prior insights mid-task. SKIP: file-based 3-tier memory (use agent-memory); storing a new memory (use semantic-memory-store)."
+description: "Search, recall and store using the memory MCP tools (search_context, semantic_search, semantic_recall, semantic_store, notes). TRIGGER when: searching prior insights mid-task, or deciding whether and how to store an insight or note. SKIP: repo file tiers under .scaffolding/ (use agent-memory); scoring /learn candidates (use distill)."
 ---
 
 # Semantic Memory MCP Usage
 
-You have access to a subset of the 13 memory MCP tools, depending on your agent's tier. Use the search/recall tools PROACTIVELY -- do not wait to be asked. Only call a tool your agent's `tools:` frontmatter actually grants — see the tier table below and the `mcp-tools` skill for the full 13-tool inventory.
+You have access to a subset of the 13 memory MCP tools. Use the search/recall tools PROACTIVELY -- do not wait to be asked. Only call a tool your agent's `tools:` frontmatter actually grants; that frontmatter is authoritative. See the `mcp-tools` skill for the full 13-tool inventory and access table.
 
 ## Tools Available
 
-| Tool | Purpose | All agents | Write agents only | Notes agents only |
-|------|---------|------------|--------------------|--------------------|
-| `search_context` | Search ingested context chunks | Yes | -- | -- |
-| `semantic_search` | Find memories by similarity query | Yes | -- | -- |
-| `semantic_recall` | Get formatted memories for current context | Yes | -- | -- |
-| `semantic_store` | Store a new memory with embedding | -- | Yes | -- |
-| `store_note` / `read_note` / `list_notes` | Persist/read/list note documents | -- | -- | Yes |
-| `trigger_ingest` | Queue one just-written document (`corpus` + `relative_path`) for immediate indexing (~3s to become searchable) instead of waiting up to 15 minutes | -- | -- | Yes |
+| Tool | Purpose |
+|------|---------|
+| `search_context` | Search ingested context chunks |
+| `semantic_search` | Find memories by similarity query |
+| `semantic_recall` | Get formatted memories for current context |
+| `semantic_store` | Store a new memory with embedding |
+| `store_note` / `read_note` / `list_notes` | Persist/read/list note documents |
+| `trigger_ingest` | Queue one just-written document (`corpus` + `relative_path`) for immediate indexing (~3s to become searchable) instead of waiting up to 15 minutes |
 
-Write agents (search/recall/store): developer, architect, debugger, analyst, researcher, reviewer, optimizer.
-Read-only agents: tech-writer, devops, gitops, mcp-builder, prompt-engineer.
-Notes + trigger_ingest agents: architect, researcher only — `trigger_ingest` is deliberately withheld from the rest of the write tier because it's only useful paired with `store_note` (otherwise you're re-indexing a document you didn't write), and each call costs an LLM context-gen call.
+`trigger_ingest` is only useful paired with `store_note` (otherwise you are re-indexing a document you didn't write), and each call costs an LLM context-gen call. It is path-scoped to a single document -- it cannot trigger a full backfill -- and it is fire-and-forget: it returns once the document is queued, not once indexing completes. Don't expect a synchronous "done" result; the document becomes searchable a few seconds later.
 
-`trigger_ingest` is path-scoped to a single document — it cannot trigger a full
-backfill — and it is fire-and-forget: it returns once the document is queued,
-not once indexing completes. Don't expect a synchronous "done" result; the
-document becomes searchable a few seconds later.
+> **Note**: If this skill is active in a repository without the `memory` MCP server, skip these instructions. An agent without `mcp__memory__*` tools should simply work without semantic memory -- the file-based fallback in `.scaffolding/agent-memory/` (see the `agent-memory` skill) keeps working. Never block on missing infrastructure.
 
-> **Uwaga**: Jesli ten skill jest aktywny w repozytorium bez MCP server `memory`, pomin te instrukcje. Agent bez dostepu do `mcp__memory__*` toolow powinien po prostu pracowac bez pamieci semantycznej -- file-based fallback w `.scaffolding/agent-memory/` wciaz dziala.
+## Automatic Baseline
+
+Baseline recall and store already happen without you:
+- **Recall**: injected at prompt/task start by the `memory-recall.sh` hook (interactive, `<recalled-memories>`) or the platform `MEMORY_AUTO_RECALL` (`## Relevant project memory`).
+- **Store**: the memory-ingest Stop hook runs `distill` and auto-stores high-confidence candidates; the platform `MEMORY_AUTO_STORE` stores the 1-3 bullets of your final `## Remember` section. Apply the same Quality Gate below to those bullets.
+
+Manual calls are for *targeted* mid-task queries and explicit stores.
 
 ## WHEN to Search Memory
 
@@ -89,6 +90,31 @@ semantic_search(query="Redis task queue timeout handling", project_id="scaffold:
 - Use descriptive `tags` for filtering (3-5 tags)
 - Set `content_type` correctly: `learning`, `error`, `pattern`, or `decision`
 - Keep content under 500 chars when possible (max 2000)
+- Pass `agent_name`, `project_id` and optionally `task_id` / `conversation_id`
+
+### Content types
+
+| Type | Use When |
+|------|----------|
+| `learning` | General knowledge, best practices, how-to (default) |
+| `error` | Root cause analysis, error resolution steps |
+| `pattern` | Confirmed code or architecture pattern |
+| `decision` | Architecture or design decision with rationale |
+
+### Search first, then store
+Hash dedup only catches byte-identical content, and backends that distil input into atomic memories (e.g. mem0) split one store call into several entries -- a reworded fact silently bloats the store. Before `semantic_store`, run `semantic_search`; if a near-duplicate exists, update or skip rather than adding a paraphrase.
+
+### Pointer only -- no secrets, no paths
+The vector store holds short, self-contained insights or a short *pointer* to a file memory -- never the duplicated body. Never store secrets, tokens, or file-system paths. Secrets and memory/MCP recovery procedures stay in local file memory only (see `agent-memory`).
+
+### File memory vs vector memory
+
+| System | Mechanism | Best for |
+|--------|-----------|----------|
+| File (`agent-memory` skill) | Markdown in `.scaffolding/` | Curated, structured, source-of-truth reference; always readable even if the store is down |
+| Vector (this skill) | Embedding search via MCP | Fuzzy, natural-language-discoverable insights |
+
+Use both: file for well-organized reference, vector for fuzzy-match discovery.
 
 ### Examples:
 ```

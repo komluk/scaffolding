@@ -1,9 +1,9 @@
 # claude-scaffolding
 
-[![Version](https://img.shields.io/badge/version-2.16.1-blue?style=flat-square)](https://github.com/komluk/scaffolding/releases) [![License: MIT](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Works with Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2?style=flat-square)](https://github.com/komluk/scaffolding) [![Agents](https://img.shields.io/badge/agents-13-orange?style=flat-square)](agents/) [![Skills](https://img.shields.io/badge/skills-39-orange?style=flat-square)](skills/) [![Commands](https://img.shields.io/badge/commands-20-orange?style=flat-square)](commands/) [![Listed on ClaudePluginHub](https://www.claudepluginhub.com/badge/komluk-scaffolding)](https://www.claudepluginhub.com/plugins/komluk-scaffolding?ref=badge)
+[![Version](https://img.shields.io/badge/version-2.17.0-blue?style=flat-square)](https://github.com/komluk/scaffolding/releases) [![License: MIT](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Works with Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2?style=flat-square)](https://github.com/komluk/scaffolding) [![Agents](https://img.shields.io/badge/agents-13-orange?style=flat-square)](agents/) [![Skills](https://img.shields.io/badge/skills-37-orange?style=flat-square)](skills/) [![Commands](https://img.shields.io/badge/commands-20-orange?style=flat-square)](commands/) [![Listed on ClaudePluginHub](https://www.claudepluginhub.com/badge/komluk-scaffolding)](https://www.claudepluginhub.com/plugins/komluk-scaffolding?ref=badge)
 
 Spec-driven multi-agent orchestration for Claude Code — pure markdown, zero backend,
-runs on the stock runtime. 13 agents, 39 skills, 20 commands, 19 hooks, per-phase model
+runs on the stock runtime. 13 agents, 37 skills, 20 commands, 19 hooks, per-phase model
 tiers, opt-in lifecycle hooks, optional cross-device semantic memory.
 
 ## Overview
@@ -137,10 +137,10 @@ latest plugin version, hook scripts are always copied.
 ## Agent memory
 
 Agents share a file-based, 3-tier memory protocol — all plain markdown under
-`.scaffolding/` of the project. Memory is auto-injected into an agent's context
-when a task starts: shared tier always, agent tier when the agent name is known,
-conversation tier when a `conversation_id` is provided. Each file is capped at
-200 lines. Read-only agents (architect, reviewer) cannot write memory — they
+`.scaffolding/` of the project. Agents read the files on demand at task start (shared tier, their
+own agent tier, and the conversation tier when a `conversation_id` is provided);
+nothing injects them automatically. Each file is capped at
+200 lines. Read-only agents (reviewer, gitops) cannot write memory — they
 report findings in their output instead. This protocol is the always-on
 default; an optional **cross-device semantic memory** backend adds vector recall
 on top — enable it per device with `/memory enable` (see
@@ -164,7 +164,7 @@ claude-scaffolding/
 ├── agents/         13 agents (analyst, architect, coordinator, developer,
 │                    debugger, devops, gitops, mcp-builder, optimizer,
 │                    prompt-engineer, researcher, reviewer, tech-writer)
-├── skills/         39 skills (api-design, error-handling, pattern-recognition,
+├── skills/         37 skills (api-design, error-handling, pattern-recognition,
 │                    skill-authoring, spec-*, mui-styling, python-patterns,
 │                    sofa-search, testing-strategy, ...)
 ├── commands/       20 slash commands: 9 top-level (context, create-skill,
@@ -188,7 +188,7 @@ claude-scaffolding/
 ## Optional backend-dependent features
 
 A few skills have optional features that can use an external backend if one is
-available — for example, `semantic-memory-store` can persist embeddings to a
+available — for example, `semantic-memory-mcp` can persist embeddings to a
 vector store, and `ui-ux-pro-max` can draw on a local dataset. When no such
 backend is present, these skills degrade gracefully: the agent skips the
 relevant section rather than crashing, and all core functionality continues to
@@ -196,7 +196,7 @@ work as pure markdown.
 
 ### Cross-device semantic memory (`/memory`)
 
-The `semantic-memory-mcp` / `semantic-memory-store` skills can be backed by a
+The `semantic-memory-mcp` skill can be backed by a
 self-hosted [mem0](https://github.com/mem0ai/mem0) service (PostgreSQL + pgvector,
 with a local LLM and embeddings via [Ollama](https://ollama.com)). When enabled,
 agents persist and recall insights across sessions **and devices** through

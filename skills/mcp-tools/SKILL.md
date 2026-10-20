@@ -64,16 +64,16 @@ Use `search_context` for documents and notes, specs, conversation transcripts an
 
 | Tier | Tools | Agents |
 |------|-------|--------|
-| Write (search/recall/store) | `search_context`, `semantic_search`, `semantic_recall`, `semantic_store` | developer, architect, debugger, analyst, researcher, reviewer, optimizer |
-| Read-only | `search_context`, `semantic_search`, `semantic_recall` | tech-writer, devops, gitops, mcp-builder, prompt-engineer |
-| Notes | `store_note`, `read_note`, `list_notes` | architect, researcher |
-| Ingest trigger | `trigger_ingest` | architect, researcher — narrow grant, restricted to the two agents that also hold `store_note`; broader access would invite wasted LLM context-gen calls re-indexing files the caller didn't write |
+| Write (search/recall/store) | `search_context`, `semantic_search`, `semantic_recall`, `semantic_store` | developer, architect, debugger, analyst, researcher, reviewer, optimizer, tech-writer |
+| Read-only | `search_context`, `semantic_search`, `semantic_recall` | devops, gitops, mcp-builder, prompt-engineer |
+| Notes | `store_note`, `read_note`, `list_notes` | architect, researcher, tech-writer |
+| Ingest trigger | `trigger_ingest` | architect, researcher, tech-writer — narrow grant, restricted to the agents that also hold `store_note`; broader access would invite wasted LLM context-gen calls re-indexing files the caller didn't write |
 | Session catalog | `list_sessions`, `get_session`, `semantic_list` | coordinator |
 | Delete/archive | `semantic_delete`, `archive_session` | nobody |
 
 `corpus` (top-level NFS share directory: `homelab`, `platform`, `projects`) and `project_id` (`scaffold:<hash>`, one per repo) are different axes — `corpus` scopes the notes/ingest tools above, `project_id` scopes the `semantic_*` (mem0) tools. Don't pass one where the other is expected.
 
-For detailed usage guidance (when to search, when to store, quality gates), see the `semantic-memory-mcp` skill.
+The `tools:` frontmatter of each agent is authoritative for grants. For detailed usage guidance (when to search, when to store, quality gates), see the `semantic-memory-mcp` skill.
 
 ## Fallback Strategy
 
