@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.16.1] - 2026-10-20
+
+### Fixed
+- **`nfs-sync.sh` re-link folds `conversations.pre-nfs-*` backups.** When the link is (re)created (absent or empty `conversations`) and backups from an earlier migration exist, their files are copied into the share target with `cp -n` and verified; backups are never removed, divergent share files are never overwritten. `--dry-run` reports the fold. A failed fold warns, keeps the backup and still links. Previously a lost link left the backup orphaned and the conversations invisible.
+- Documented that the share bucket is always `projects/<basename>`; the `<slug>-<project-id-hash>` buckets are legacy output of the pre-2.15.0 rsync push.
+
 ## [2.16.0] - 2026-10-19
 
 ### Added

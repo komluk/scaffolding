@@ -117,6 +117,73 @@ run_link "$r"
 check "still points elsewhere" is_link_to "$r/.scaffolding/conversations" "$T/elsewhere"
 check "warned" contains "$(cat "$T/stderr")" "left untouched"
 
+echo "# bucket = basename, even when a legacy <name>-<id-hash> bucket holds project.json"
+r="$(newrepo repos)"; echo "scaffold:831a4a3fd343b902" >"$r/.scaffolding/project-id"
+L="$SHARE/projects/repos-831a4a3fd343b902"
+mkdir -p "$L/agent-memory"; echo '{"project_id":"scaffold:831a4a3fd343b902"}' >"$L/project.json"
+echo "scaffold:831a4a3fd343b902" >"$L/project-id"
+run_link "$r"
+check "linked to plain basename bucket" is_link_to "$r/.scaffolding/conversations" "$SHARE/projects/repos/conversations"
+check "legacy id-suffixed bucket gets no conversations" test ! -e "$L/conversations"
+check "legacy project.json untouched" file_is "$L/project.json" '{"project_id":"scaffold:831a4a3fd343b902"}'
+check "no <name>-<hash> bucket invented" test "$(ls -d "$SHARE"/projects/repos* | wc -l)" = 2
+
+echo "# platform plain-name project with project-id: plain bucket, share data kept"
+r="$(newrepo homelab)"; echo "scaffold:2f308c14da4ac0f9" >"$r/.scaffolding/project-id"
+mkdir -p "$SHARE/projects/homelab/conversations/$U"; echo keep >"$SHARE/projects/homelab/conversations/$U/context.json"
+run_link "$r"
+check "linked to plain bucket" is_link_to "$r/.scaffolding/conversations" "$SHARE/projects/homelab/conversations"
+check "existing share data intact" file_is "$SHARE/projects/homelab/conversations/$U/context.json" keep
+check "no id-suffixed bucket created" test -z "$(ls -d "$SHARE"/projects/homelab-* 2>/dev/null)"
+
+echo "# re-link with existing pre-nfs backup and no live link: backup folded in (cp -n), backup kept"
+r="$(newrepo relink)"
+B="$r/.scaffolding/conversations.pre-nfs-20261019-161243"
+U2=44444444-4444-4444-4444-444444444444
+mkdir -p "$B/$U/specs" "$B/$U2" "$B/denon-mieszkanie" "$SHARE/projects/relink/conversations/$U/specs"
+echo bdesign >"$B/$U/specs/design.md"; echo b2 >"$B/$U2/context.json"; echo n >"$B/denon-mieszkanie/a.md"
+echo SHARE >"$SHARE/projects/relink/conversations/$U/specs/design.md"
+out="$(bash "$SYNC" link --dry-run "$r" 2>&1)"
+check "dry-run reports fold" contains "$out" "would fold 1 conversations.pre-nfs-"
+check "dry-run: still no link" test ! -e "$r/.scaffolding/conversations"
+check "dry-run: nothing copied" test ! -e "$SHARE/projects/relink/conversations/$U2"
+run_link "$r"
+S="$SHARE/projects/relink/conversations"
+check "linked to plain bucket" is_link_to "$r/.scaffolding/conversations" "$S"
+check "backup-only conversation folded in" file_is "$S/$U2/context.json" b2
+check "backup-only non-UUID dir folded in" file_is "$S/denon-mieszkanie/a.md" n
+check "divergent share file never overwritten" file_is "$S/$U/specs/design.md" SHARE
+check "backup still has divergent local copy" file_is "$B/$U/specs/design.md" bdesign
+check "backup dir kept" test "$(ls -d "$r"/.scaffolding/conversations.pre-nfs-* | wc -l)" = 1
+check "conflict listed on stderr" contains "$(cat "$T/stderr")" "design.md"
+snap="$(find "$S" "$B" | sort | xargs stat -c '%n %i %Y' 2>/dev/null | md5sum)"
+run_link "$r"
+check "second run is a no-op" test "$snap" = "$(find "$S" "$B" | sort | xargs stat -c '%n %i %Y' 2>/dev/null | md5sum)"
+
+echo "# re-link with empty local conversations dir + backup: folded too"
+r="$(newrepo relink2)"; mkdir "$r/.scaffolding/conversations"
+mkdir -p "$r/.scaffolding/conversations.pre-nfs-1/$U2"; echo b2 >"$r/.scaffolding/conversations.pre-nfs-1/$U2/context.json"
+run_link "$r"
+check "linked" is_link_to "$r/.scaffolding/conversations" "$SHARE/projects/relink2/conversations"
+check "folded" file_is "$SHARE/projects/relink2/conversations/$U2/context.json" b2
+
+echo "# re-link: fold failure keeps backup, still links, warns"
+r="$(newrepo relink3)"
+mkdir -p "$r/.scaffolding/conversations.pre-nfs-1/$U2"; echo b2 >"$r/.scaffolding/conversations.pre-nfs-1/$U2/context.json"
+printf '#!/bin/sh\nexit 0\n' >"$FAKE/cp"; chmod +x "$FAKE/cp"
+PATH="$FAKE:$PATH" run_link "$r"; rm -f "$FAKE/cp"
+check "exit 0" test "$(cat "$T/rc")" = 0
+check "still linked" is_link_to "$r/.scaffolding/conversations" "$SHARE/projects/relink3/conversations"
+check "backup intact" file_is "$r/.scaffolding/conversations.pre-nfs-1/$U2/context.json" b2
+check "warned" contains "$(cat "$T/stderr")" "could not fully fold"
+
+echo "# correct link + backup present: nothing folded (no-op)"
+r="$(newrepo linkedbak)"; mkdir -p "$SHARE/projects/linkedbak/conversations"
+ln -s "$SHARE/projects/linkedbak/conversations" "$r/.scaffolding/conversations"
+mkdir -p "$r/.scaffolding/conversations.pre-nfs-1/$U2"; echo b2 >"$r/.scaffolding/conversations.pre-nfs-1/$U2/context.json"
+run_link "$r"
+check "backup not folded when link already correct" test ! -e "$SHARE/projects/linkedbak/conversations/$U2"
+
 echo "# share missing: exit 0, no changes"
 r="$(newrepo noshare)"; mkdir -p "$r/.scaffolding/conversations/$U"; echo x >"$r/.scaffolding/conversations/$U/context.json"
 SCAFFOLDING_NFS_ROOT="$T/does-not-exist" run_link "$r"
