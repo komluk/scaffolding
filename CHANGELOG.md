@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.19.0] - 2026-10-20
+
+### Added
+- **`necessity-first` skill** (38 -> 39 skills). A pre-implementation necessity / YAGNI gate, written from scratch (inspired by the `ponytail` project, MIT; no text copied). After understanding the problem (read the touched code, trace the real flow), climb a ladder and stop at the first rung that works: (1) does it need to exist at all, (2) is it already in the codebase, (3) does the stdlib / platform / an existing dependency do it, (4) can it be one line, (5) only then the minimum that works plus a small test for branching/parsing/money/security logic. Non-negotiable carve-out: trust-boundary validation, data-loss handling, security, accessibility. Every implementation closes with a short "skipped / deferred / risks" note. Lazy about the solution, never negligent about correctness. Delineated by SKIP lines from `planning-methodology`, `quality-validation`, `verification-before-completion`, `spec-design` and `pattern-recognition`.
+
+### Changed
+- **`developer` and `architect` agents**: `necessity-first` added to `skills:`.
+- **`planning-methodology`, `pattern-recognition`**: descriptions gain a SKIP pointing "should this exist / smallest change" to `necessity-first`. (`quality-validation` and `verification-before-completion` are already near the 340-char limit; their boundary is stated from the `necessity-first` side.)
+
 ## [2.18.0] - 2026-10-20
 
 ### Added

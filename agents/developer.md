@@ -17,6 +17,7 @@ skills:
   - ui-ux-pro-max
   - agent-comms
   - reverse-engineer-anything
+  - necessity-first
 maxTurns: 50
 ---
 
