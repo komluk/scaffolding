@@ -53,6 +53,30 @@ Guide for verifying that implementation matches spec artifacts.
 | No undocumented changes | Diff scope vs design scope | WARNING if extra |
 | No design deviations | Cross-reference architecture | WARNING if different |
 
+## Two-Stage Review
+
+Review in two ordered stages. Do not start stage 2 until stage 1 passes.
+
+| Stage | Question | Basis | Blocks on |
+|-------|----------|-------|-----------|
+| 1. Spec compliance | Does it build exactly what was asked - nothing missing, nothing extra? | design.md requirements/scenarios, tasks.md | Missing or divergent requirement, undocumented scope |
+| 2. Code quality | Is it well built - readable, tested, secure, maintainable? | Project conventions, tests, patterns | Bugs, missing tests, unsafe code; style nits are SUGGESTION |
+
+Why this order: polishing code that implements the wrong thing is wasted work,
+and quality findings on code that will change after a spec fix are noise. Stage 1
+maps to the Completeness + Correctness + Coherence dimensions above; stage 2 is
+the code-quality pass layered on top. Report stage results separately.
+
+## Receiving Code Review (implementer side)
+
+When acting on review feedback:
+1. **Read all items first**, then address them in order: CRITICAL, WARNING, SUGGESTION.
+2. **Verify before changing** - confirm each finding against the code; do not apply a suggestion blindly.
+3. **Disagree with evidence** - if a finding is wrong or conflicts with the spec, reply with the reason (file/line, spec reference) instead of silently ignoring or complying.
+4. **One fix, one check** - after each change re-run the relevant tests; do not batch unrelated fixes.
+5. **Ask when unclear** - an ambiguous item gets a question, not a guess.
+6. **Report back** per item: fixed / disputed (why) / deferred (why). No performative agreement; state what changed.
+
 ## Verification Process
 
 1. **Load artifacts** - Read design.md, tasks.md, proposal.md

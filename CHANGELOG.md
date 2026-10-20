@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.18.0] - 2026-10-20
+
+### Added
+- **`frontend-design` skill** (37 -> 38 skills). Original guidance for a distinctive, non-generic look on new landing pages and public-facing UI: anchor in the subject, decide per axis instead of defaulting, a checklist of generic "AI look" tells, spend boldness once, plan-review-build loop, quality floor. Clearly delineated from `ui-ux-pro-max` (rules/palette/font database): `ui-ux-pro-max` answers "what fits this product type", `frontend-design` answers "how do I make it unlike every other page". Written from scratch; Anthropic's first-party skill of the same name was deliberately not copied (its license is "All rights reserved", no open grant).
+
+### Changed
+- **`ui-ux-pro-max`**: description gains a SKIP pointing "distinctive look for new landing pages" to `frontend-design` (description tightened to stay under the 340-char limit).
+- **`testing-strategy`**: new "TDD Enforcement" section (red -> green -> refactor, failing test first, bug fix = reproduce first, explicit exceptions).
+- **`spec-review`**: new "Two-Stage Review" (stage 1 spec compliance, stage 2 code quality, in that order) and a "Receiving Code Review" section (how an implementer acts on feedback).
+
+### Evaluated, no change
+- **Claude-Mem-style episodic session log.** Reviewed `memory-ingest-mark.sh`, `memory-ingest.sh` and `distill`. The existing pipeline already records the episode at the right granularity: SubagentStop breadcrumbs (timestamp + agent) in `.ingest-queue`, a dated `ingest | <topic>` line per turn in `agent-memory/log.md`, per-conversation `context.md` (decisions/findings) and `tasks.md` (what was done, with file paths), and `git` for the exact files touched. `distill` deliberately extracts insights, not an activity feed. A separate automatic "files touched" recorder (Claude-Mem's Bun/Chroma worker) would duplicate tasks.md + git history, add a runtime, and risk capturing secrets, so none was added. Optional future idea, not built: have the ingest directive append the changed-file list (`git diff --stat`) to the `log.md` line.
+
 ## [2.17.1] - 2026-10-20
 
 ### Fixed
