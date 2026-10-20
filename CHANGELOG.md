@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.17.0] - 2026-10-20
+
+Memory-skill consolidation (5 -> 3). No capability change: agent `tools:`, `hooks/memory-*.sh` and platform `MEMORY_AUTO_*` are untouched.
+
+### Removed
+- **`memory` skill.** Orphaned (referenced by no agent, command or hook; its name also collided with the `/memory` command) and it hard-coded another repository's `project_id`, so following it wrote into the wrong namespace. Its useful rule (vector store gets only a short pointer, never secrets or paths) now lives in `semantic-memory-mcp`.
+- **`semantic-memory-store` skill.** Merged into `semantic-memory-mcp`.
+
+### Changed
+- **`semantic-memory-mcp`** now covers storing as well as searching: `content_type` table, search-before-store, pointer-only rule, file-vs-vector table, an "Automatic Baseline" section, English graceful-degradation note. Hard-coded agent tier lists replaced by "`tools:` frontmatter is authoritative".
+- **`agent-memory`** scoped to repo-local `.scaffolding/` file memory; removed the stale `recall_for_agent()` auto-injection claim (files are read on demand); fixed the read-only agent list (reviewer, gitops; architect has `Write`).
+- **`distill`** documented as invoked only by `/learn` and the memory-ingest Stop hook (removed the nonexistent `/distill` trigger); tier table replaced by a pointer to `agent-memory`.
+- **`mcp-tools`** access table re-synced to the agents' `tools:` (tech-writer holds store, notes and `trigger_ingest`).
+- `/memory` command and README references re-pointed to `semantic-memory-mcp`; skill count 39 -> 37.
+
 ## [2.16.1] - 2026-10-20
 
 ### Fixed

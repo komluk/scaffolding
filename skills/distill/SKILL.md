@@ -1,6 +1,6 @@
 ---
 name: distill
-description: "Knowledge distillation methodology: candidate extraction, confidence scoring, tier routing, conversation-scoped mode. TRIGGER when: running /learn or /distill, deciding if an insight is memory-worthy, or scoring a knowledge candidate. SKIP: ad-hoc memory reads/writes (use agent-memory); vector storage (use semantic-memory-store)."
+description: "Knowledge distillation: candidate extraction, confidence scoring, tier routing. Invoked by /learn and the memory-ingest Stop hook, not loaded proactively by agents. TRIGGER when: /learn or the Stop hook asks to distill, or scoring a candidate. SKIP: file memory writes (use agent-memory); vector store (use semantic-memory-mcp)."
 ---
 
 # Distill Methodology
@@ -36,11 +36,9 @@ hook. This is the single source of truth for that threshold.
 
 ## Tier Routing
 
-| Target | When | Path |
-|--------|------|------|
-| `shared` | Cross-cutting insight useful to all agents | `.scaffolding/agent-memory/shared/KNOWLEDGE.md` |
-| `agent:{name}` | Domain-specific to one agent | `.scaffolding/agent-memory/agents/{name}/MEMORY.md` |
-| Overflow | KNOWLEDGE.md would exceed 200 lines | Route to most relevant agent file |
+Tier paths and what belongs in each are defined in the `agent-memory` skill (§ Memory Tiers) -- do not restate them here. Route `shared` candidates to `KNOWLEDGE.md` and `agent:{name}` candidates to that agent's `MEMORY.md`.
+
+**Overflow:** if `KNOWLEDGE.md` would exceed 200 lines, route the candidate to the most relevant agent file.
 
 ## Output Format
 
@@ -57,7 +55,7 @@ Candidates are structured as:
 
 ## 200-Line Limit Enforcement
 
-KNOWLEDGE.md has a hard limit of 200 lines (auto-injected into every agent context). When merging would exceed this limit:
+KNOWLEDGE.md has a hard limit of 200 lines (read in full by agents). When merging would exceed this limit:
 
 1. High-confidence candidates (>= 0.7) get priority
 2. Lower-confidence candidates overflow to agent-specific files

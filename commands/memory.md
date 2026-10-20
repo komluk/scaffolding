@@ -21,7 +21,7 @@ performs the matching section below.
 
 Connects this device so scaffolding agents gain persistent memory via the
 `semantic_search` / `semantic_recall` / `semantic_store` tools (see the
-`semantic-memory-mcp` and `semantic-memory-store` skills). The token is personal —
+`semantic-memory-mcp` skill). The token is personal —
 memory is yours only; anyone without it gets 401.
 
 1. **Check the token** is in the environment:

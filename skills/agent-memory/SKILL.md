@@ -1,11 +1,11 @@
 ---
 name: agent-memory
-description: "3-tier markdown memory protocol (shared/agent/conversation) for cross-session knowledge. TRIGGER when: reading or writing agent memory files, choosing which memory tier an insight belongs in, or starting a task needing prior context. SKIP: vector recall (use semantic-memory-mcp); distilling conversations into candidates (use distill)."
+description: "Repo-local file memory under .scaffolding/ (shared/agent/conversation tiers). TRIGGER when: reading or writing .scaffolding/ memory files, or choosing which file tier an insight belongs in. SKIP: vector memory / MCP search and store (use semantic-memory-mcp); distilling conversations (use distill)."
 ---
 
 # Agent Memory Protocol
 
-3-tier persistent memory system for cross-session knowledge accumulation.
+3-tier persistent **file-based** memory under the repo-local `.scaffolding/` directory, for cross-session knowledge accumulation. Vector memory (MCP tools) is covered by the `semantic-memory-mcp` skill.
 
 ## Memory Tiers
 
@@ -17,18 +17,13 @@ description: "3-tier markdown memory protocol (shared/agent/conversation) for cr
 
 The Conversation tier lives under `.scaffolding/conversations/`, which is a symlink to `<share>/projects/<repo-name>/conversations` (shared across machines). Paths are unchanged; always go through the symlink.
 
-## Automatic Injection
+## How Memory Is Read
 
-Memory is auto-injected into agent context via `recall_for_agent()` in the task execution pipeline. When a task starts, the system reads:
-1. `.scaffolding/agent-memory/shared/KNOWLEDGE.md` (always)
-2. `.scaffolding/agent-memory/agents/{agent-name}/MEMORY.md` (when agent_name is known)
-3. `.scaffolding/conversations/{id}/agent-memory/context.md` (when conversation_id is provided)
-
-This means agents receive memory context automatically. Manual reading on first turn is optional but recommended for verifying latest data.
+No hook or pipeline injects these files into agent context -- they are read on demand (see On First Turn). The conversation tier is the inter-agent handoff: a downstream agent in the same chain reads what an upstream agent recorded there.
 
 ## On First Turn
 
-Before starting work, optionally read available memory for latest content (skip if files don't exist):
+Before starting work, read available memory (skip if files don't exist):
 
 1. Read `.scaffolding/agent-memory/shared/KNOWLEDGE.md`
 2. Read `.scaffolding/agent-memory/agents/{your-agent-name}/MEMORY.md`
@@ -75,11 +70,11 @@ Do NOT save:
 
 ### Read-Only Agents
 
-Agents with `disallowedTools: Write, Edit` (architect, reviewer) cannot write to `.scaffolding/agent-memory/` directly. These agents should report findings in their output, and writable agents in the same conversation chain can persist them.
+Agents with `Write` in `disallowedTools` (reviewer, gitops) cannot write to `.scaffolding/agent-memory/` directly. These agents should report findings in their output, and writable agents in the same conversation chain can persist them. Architect has `Write` and may write memory files (only `Edit` is disallowed).
 
 ## Format Guidelines
 
-- Max 200 lines per file (auto-injected memory has 200-line limit)
+- Max 200 lines per file (keeps the file cheap to read in full)
 - Use markdown headers to organize by topic
 - Include dates `[YYYY-MM-DD]` for time-sensitive entries
 - Tag durable facts with `confidence` (high/medium/low) and `last_verified [YYYY-MM-DD]`; re-verify against live code/config before asserting a stale point-in-time fact, and down-grade or remove ones that no longer hold
@@ -88,7 +83,7 @@ Agents with `disallowedTools: Write, Edit` (architect, reviewer) cannot write to
 
 ## Hot/Cold Split
 
-File-based memory (this skill) is the **hot** layer — auto-injected into every agent context under a 200-line budget, so keep it lean: stable, high-level facts and pointers only. Push detailed prose and rarely-needed, fuzzy-discoverable knowledge to the **cold** layer (vector store) via the `semantic-memory-store` skill — it only surfaces on similarity match and carries no per-turn token cost. Durable source-of-truth facts still get a file here; the cold copy is for natural-language recall.
+File-based memory (this skill) is the **hot** layer — read in full on first turn under a 200-line budget, so keep it lean: stable, high-level facts and pointers only. Push detailed prose and rarely-needed, fuzzy-discoverable knowledge to the **cold** layer (vector store) via the `semantic-memory-mcp` skill — it only surfaces on similarity match and carries no per-turn token cost. Durable source-of-truth facts still get a file here; the cold copy is for natural-language recall.
 
 **Local-only carve-out:** secrets and memory/MCP recovery procedures NEVER go to the cold vector store. Recovery info must stay readable when the store itself is down (a 401 means you cannot query the store to learn how to fix it), and secrets must not be embedded in a remote/shared backend. Keep these as file memory only.
 
@@ -113,7 +108,7 @@ If memory files don't exist, create them with the appropriate header:
 
 ## Conversation Recall
 
-Conversation memory is always available via file-based recall. When a task runs with a `conversation_id`, the system reads `context.md` and injects it into the agent's context. No database setup is required for conversation-tier memory.
+Conversation memory is plain files: when a task has a `conversation_id`, read `context.md` yourself (see On First Turn). No database setup is required for conversation-tier memory.
 
 ## Learning Loop
 
@@ -133,7 +128,7 @@ candidate back into this memory system.
 Ingestion is **propose-then-confirm**: `/learn` prints the proposed memory diff
 and applies it only on explicit confirmation. Writes respect the 200-line
 `KNOWLEDGE.md` limit — overflow routes to the most relevant agent file per the
-`distill` overflow rule. Applied entries become auto-injected context on the next
+`distill` overflow rule. Applied entries are picked up by agents that read the files on the next
 task.
 
 ### Escalation to /create-skill
