@@ -12,6 +12,7 @@ skills:
   - spec-design
   - semantic-memory-mcp
   - agent-comms
+  - necessity-first
 maxTurns: 25
 disallowedTools:
   - Edit

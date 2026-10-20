@@ -1,6 +1,6 @@
 ---
 name: planning-methodology
-description: "Build minimal, reversible implementation plans. TRIGGER when: turning research into a plan, or sequencing work before writing code. SKIP: gathering documentation (use research-methodology); writing OpenSpec design.md/tasks.md (use spec-design)."
+description: "Build minimal, reversible implementation plans. TRIGGER when: turning research into a plan, or sequencing work before writing code. SKIP: gathering documentation (use research-methodology); writing OpenSpec design.md/tasks.md (use spec-design); should this exist at all (use necessity-first)."
 ---
 
 # Planning Methodology Skill
