@@ -94,14 +94,14 @@ This directory contains hooks that run automatically during Claude Code workflow
 **Type:** SessionStart hook (startup/resume) + CLI
 **Purpose:** Make `<repo>/.scaffolding/conversations` a symlink to the shared NFS share, so every machine sees one copy of every conversation. No sync, no mirror.
 
-**Layout:** `<repo>/.scaffolding/conversations -> <share>/projects/<repo-name>/conversations` (`<repo-name>` = basename of the project dir; `~/repos` maps to `projects/repos`).
+**Layout:** `<repo>/.scaffolding/conversations -> <share>/projects/<repo-name>/conversations` (`<repo-name>` = basename of the project dir; `~/repos` maps to `projects/repos`). The `<slug>-<project-id-hash>` buckets on a share (with `project.json`) are legacy output of the pre-2.15.0 rsync push; they are not read or written.
 
 **Per local `.scaffolding/conversations`:**
 
 | State | Action |
 |-------|--------|
 | symlink to the share target | no-op |
-| absent or empty dir | `mkdir -p` target, `ln -s` |
+| absent or empty dir | `mkdir -p` target, fold any `conversations.pre-nfs-*` backups into it (`cp -n`, verified, backups kept), `ln -s` |
 | populated real dir | `cp -n` (no clobber) into the target, verify every file, `mv` local to `conversations.pre-nfs-<ts>`, `ln -s` |
 | foreign symlink / share unreachable / any error | left untouched, warning on stderr |
 

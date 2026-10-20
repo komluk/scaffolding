@@ -27,6 +27,15 @@
 # Files that exist on both sides with different content are never overwritten:
 # the share copy wins, the local copy stays in the .pre-nfs-<ts> backup.
 #
+# Bucket name = basename of the project dir, always. The `<slug>-<project-id-hash>`
+# buckets on the share were written by the rsync push of <= 2.14.x (deleted in
+# 2.15.0) and are legacy; nothing here reads or writes them.
+#
+# Re-link after a lost link: when the link is (re)created and the dir already has
+# conversations.pre-nfs-* backups from an earlier migration, their files are folded
+# into the target with cp -n (verified; backups are never removed or modified), so
+# conversations that only live in a backup reappear through the link.
+#
 # Tunables: SCAFFOLDING_NFS_TIMEOUT (per NFS op, default 20s),
 #           SCAFFOLDING_NFS_COPY_TIMEOUT (copy + verify, default 120s),
 #           SCAFFOLDING_NFS_PROBE_TIMEOUT (reachability probe, default 5s).
@@ -86,10 +95,33 @@ compare_trees() {
     CMP_CONFLICTS="$(printf '%s\n' "$res" | awk 'NF && index($0,"Only in ")!=1')"
 }
 
+# fold_backups <sc> <target>: cp -n every local conversations.pre-nfs-* dir into
+# <target> and verify. Backups are left in place. Returns 0 on full success.
+fold_backups() {
+    local sc="$1" target="$2" b rc=0
+    for b in "$sc"/conversations.pre-nfs-*; do
+        [ -d "$b" ] && [ ! -L "$b" ] || continue
+        [ -n "$(ls -A "$b" 2>/dev/null)" ] || continue
+        timeout -k 2 "$COPY_TIMEOUT" cp -r -n -P --preserve=timestamps "$b/." "$target/" 2>/dev/null
+        compare_trees "$b" "$target"
+        if [ "$CMP_RC" -ge 2 ] || [ "$CMP_MISSING" -gt 0 ]; then
+            warn "could not fully fold $b into $target (diff rc=$CMP_RC, missing=$CMP_MISSING) — backup kept"
+            rc=1
+        else
+            out "[scaffolding] nfs-sync: folded $b into $target"
+            if [ -n "$CMP_CONFLICTS" ]; then
+                warn "conflicts (share copy kept, local copy preserved in $b):"
+                printf '%s\n' "$CMP_CONFLICTS" >&2
+            fi
+        fi
+    done
+    return $rc
+}
+
 # _link <dir> <dry 0|1>
 _link() {
     local dir="$1" dry="$2"
-    local sc="$dir/.scaffolding" lc name target raw ts bak n
+    local sc="$dir/.scaffolding" lc name target raw ts bak n nb
 
     [ -d "$sc" ] || return 0
     case "$dir" in
@@ -123,11 +155,14 @@ _link() {
 
     # Absent or empty dir -> plain link.
     if [ ! -e "$lc" ] || [ -z "$(ls -A "$lc" 2>/dev/null)" ]; then
+        nb="$(find "$sc" -maxdepth 1 -type d -name 'conversations.pre-nfs-*' 2>/dev/null | wc -l | tr -d ' ')"
         if [ "$dry" = 1 ]; then
             out "[dry-run] $dir: would link $lc -> $target"
+            [ "$nb" -gt 0 ] && out "[dry-run] $dir: would fold $nb conversations.pre-nfs-* backup(s) into $target (cp -n, backups kept)"
             return 0
         fi
         nfs mkdir -p "$target" || { warn "cannot create $target — $lc left untouched"; return 0; }
+        [ "$nb" -gt 0 ] && fold_backups "$sc" "$target"
         [ -d "$lc" ] && { rmdir "$lc" 2>/dev/null || { warn "cannot replace empty $lc"; return 0; }; }
         if ! ln -s "$target" "$lc"; then
             warn "ln -s failed for $lc — restoring empty dir"
