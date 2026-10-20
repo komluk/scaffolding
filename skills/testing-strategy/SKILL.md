@@ -16,6 +16,29 @@ Comprehensive testing guidelines including test pyramid, coverage targets, and t
 
 ---
 
+## TDD Enforcement (Red -> Green -> Refactor)
+
+For new behavior and bug fixes, the failing test comes **first**. No production
+code without a test that demanded it.
+
+| Step | Do | Gate |
+|------|----|------|
+| 1. Red | Write one small test for the next behavior; run it | It **fails for the expected reason** (not a typo/import error) |
+| 2. Green | Write the least code that passes | All tests pass; no extra behavior |
+| 3. Refactor | Clean names, duplication, structure | Tests stay green; no new behavior |
+
+Rules:
+- Never skip the red run - a test that never failed proves nothing.
+- One behavior per cycle; commit-sized steps, not feature-sized.
+- Bug fix = reproduce with a failing test first, then fix (see `systematic-debugging` for root-causing).
+- Code written before its test: delete it and restart from red, or add the test and confirm it fails when the code is reverted.
+- Legitimate exceptions (UI layout, throwaway spikes, generated code): say so explicitly rather than silently skipping.
+
+Evidence of compliance in a report: the failing test output, then the passing
+output. Proving the final result is `verification-before-completion`'s job.
+
+---
+
 ## Test Pyramid
 
 ```
