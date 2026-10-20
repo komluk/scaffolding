@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.17.1] - 2026-10-20
+
+### Fixed
+- **`auto-init-check.sh` false positive.** The SessionStart hook reported "missing CLAUDE.md routing protocol" for projects whose `CLAUDE.md` imports the central protocol via `@~/.claude/CLAUDE.md`; an agent acting on it appended a duplicate ~84-line protocol to a project CLAUDE.md (#242). The check now also accepts an `@...CLAUDE.md` import line as initialized.
+- **Hook is silent on platform runs.** It exits immediately when `SCAFFOLDING_TASK_ID` is set (project CLAUDE.md is not loaded there, so the advisory was meaningless).
+- **`/init-scaffolding` no longer clobbers `CLAUDE.md`.** An existing file that already has the routing protocol or an `@...CLAUDE.md` import is left alone; otherwise the protocol is appended. It is never blindly overwritten.
+
 ## [2.17.0] - 2026-10-20
 
 Memory-skill consolidation (5 -> 3). No capability change: agent `tools:`, `hooks/memory-*.sh` and platform `MEMORY_AUTO_*` are untouched.

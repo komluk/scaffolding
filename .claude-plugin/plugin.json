@@ -1,6 +1,6 @@
 {
   "name": "scaffolding",
-  "version": "2.17.0",
+  "version": "2.17.1",
   "description": "13 agents, 37 skills, 20 commands, 19 hooks — spec-driven, multi-agent orchestration for Claude Code with per-phase model tiers, opt-in lifecycle hooks, and optional cross-device semantic memory.",
   "author": {
     "name": "komluk",
