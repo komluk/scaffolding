@@ -153,6 +153,13 @@ the last position.
 | `SCAFFOLDING_NOTIFY` | off | `=1` enables `notify.sh` desktop/terminal notifications |
 | `SCAFFOLDING_MEMORY_INGEST` | advisory | unset → advisory (stderr nudge); `=block` → enforce (`decision:block`); `=off` → disabled. `memory-ingest{,-mark}.sh` |
 | `SCAFFOLDING_MEMORY_RECALL` | off | `=on` enables `memory-recall.sh` (see below) |
+| `ACTION_LOG_ENABLED` | off | Local `action-log.sh` (Stop/SessionEnd) opt-in. Truthy (`1`/`true`/`yes`/`on`, case-insensitive) enables it. Separate from the backend flag of the same name |
+| `.scaffolding/.actionlog` | absent | Per-repo sentinel file. Its presence enables `action-log.sh` (alternative to `ACTION_LOG_ENABLED`) |
+| `SCAFFOLDING_ACTION_LOG` | unset | `=off` skips `action-log.sh` (override; wins over opt-in) |
+| `.scaffolding/.noactionlog` | absent | Per-repo sentinel. Its presence skips `action-log.sh` (override; wins over opt-in) |
+| `SCAFFOLDING_TASK_ID` | unset | When set (platform run), `action-log.sh` always skips (wins over opt-in) |
+
+The local action log is **off by default**. Enable it with `ACTION_LOG_ENABLED=1` or by creating `.scaffolding/.actionlog`. The skip mechanisms (`SCAFFOLDING_ACTION_LOG=off`, `.noactionlog`, `SCAFFOLDING_TASK_ID`) override any opt-in.
 
 ## Opt-in: memory recall (UserPromptSubmit)
 

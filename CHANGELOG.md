@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.21.0] - 2026-10-21
+
+### Added
+- **Episodic action log (metadata only, dormant by default).** Each tool call is recorded as one redacted JSON line in `conversations/<conv>/actions/<run>.jsonl`, rolled up into `timeline.md`, and ingested for search. A new local Stop/SessionEnd hook, `hooks/action-log.sh`, drives the extraction, and a backend extraction step handles platform runs. Only metadata is captured, never tool output or file contents.
+- **Redaction and leak test.** Every string field is redacted before any byte is written, and redaction runs a second time on the rendered `timeline.md`. The leak test passes 0/10.
+
+### Security
+- Both switches default OFF. The backend flag `ACTION_LOG_ENABLED` (default `false`) and the local hook (off unless `ACTION_LOG_ENABLED` is truthy or `.scaffolding/.actionlog` exists) are independent; neither enables the other. Skips always win: `SCAFFOLDING_TASK_ID`, `SCAFFOLDING_ACTION_LOG=off`, and `.scaffolding/.noactionlog`.
+- **Pre-flip requirement:** CI must run the leak gate with `ACTION_LOG_PLUGIN_DIR` set before the feature is enabled.
+
 ## [2.20.0] - 2026-10-20
 
 ### Added

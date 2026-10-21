@@ -54,14 +54,19 @@ else
 fi
 
 REASON="INGEST PAMIĘCI (wykonaj INLINE, bez Task/subagentów; potem możesz zakończyć):
-1. Uruchom 'distill' (Conversation-Scoped) na aktywnej konwersacji.
+1. Uruchom 'distill' (Conversation-Scoped) na aktywnej konwersacji (wejścia: context.md,
+   design.md oraz $SC/conversations/<id>/timeline.md, jeśli istnieje).
 $STORE_STEP
 3. Kandydatów <0.8 dopisz do $SC/.ingest-queue (do /learn), NIE edytuj MEMORY.md.
    BEZPIECZEŃSTWO: NIE auto-store kandydatów zawierających sekrety/tokeny/klucze/
    hasła (cold vector store jest współdzielony i BEZ presidio) — takie ZAWSZE tnij
    do $SC/.ingest-queue do ręcznego /learn (propose-then-confirm).
-4. Dopisz sekcję do $SC/agent-memory/log.md: \"## [$(date +%F)] ingest | <temat>\".
-5. Zapisz md5 zassanych do $SC/.ingest-seen; usuń $SC/.ingest-dirty."
+4. Dopisz sekcję do $SC/agent-memory/log.md: \"## [$(date +%F)] ingest | <temat>\"
+   (jeśli jest timeline.md, dodaj: \"| timeline: conversations/<id>/timeline.md (N calls, E errors)\").
+5. Zapisz md5 zassanych do $SC/.ingest-seen; usuń $SC/.ingest-dirty.
+6. Jeśli timeline.md istnieje i masz narzędzie trigger_ingest: wywołaj
+   trigger_ingest(corpus=\"projects\", relative_path=\"<repo>/conversations/<id>/timeline.md\")
+   (tylko .md; actions/*.jsonl NIGDY nie jest indeksowany)."
 
 case "${SCAFFOLDING_MEMORY_INGEST:-}" in
     block)
