@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.23.0] - 2026-10-21
+
+### Added
+- **TypeScript and Python language servers in `lspServers`** (5 -> 7 servers). TypeScript/JavaScript (`typescript-language-server --stdio`; `.ts`, `.tsx`, `.js`, `.jsx`, `.mts`, `.cts`, `.mjs`, `.cjs`) and Python (`pyright-langserver --stdio`; `.py`, `.pyi`). Servers are referenced by bare binary name, so each must be on `PATH` (`npm i -g typescript-language-server typescript pyright`). This supersedes the 2.20.0 note that these languages are left to the official `typescript-lsp`/`pyright-lsp` plugins; if you have those installed too, disable one set to avoid duplicate servers for the same extensions. Go remains undeclared.
+
 ## [2.22.0] - 2026-10-21
 
 ### Added
