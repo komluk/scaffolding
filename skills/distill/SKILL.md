@@ -79,11 +79,19 @@ Inputs for one `conversation_id` (a UUID `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`)
 |-------|------|------|
 | Conversation memory | `.scaffolding/conversations/{id}/agent-memory/context.md` | Decisions and findings recorded during the chain |
 | Design decisions | `.scaffolding/conversations/{id}/specs/design.md` (`## Decisions` section, if present) | Architectural choices + rationale |
+| Action timeline | `.scaffolding/conversations/{id}/timeline.md` (if present) | Deterministic, metadata-only per-run record (files edited, commands, errors, repeated failures). Never contains raw tool output |
 
 Apply the Knowledge Candidate Criteria and Confidence Scoring above against these
-two files only. With a single conversation, the "Cross-conversation pattern"
+files only. With a single conversation, the "Cross-conversation pattern"
 criterion does not apply; rely on the Decision-section and pattern-keyword
 criteria. If `context.md` is absent, there is nothing to distill — exit cleanly.
+
+**Repeated failures (from `timeline.md`).** A line under `repeated failures` (the same
+tool + normalized target failed >= 2 times in a run) becomes a *gotcha* candidate with
+a **fixed confidence of 0.5**. At 0.5 it is below the 0.8 auto-store threshold, so it
+goes to `.scaffolding/.ingest-queue` / `/learn` for propose-then-confirm and is NEVER
+auto-stored. Describe the failing command or tool and the count only; the timeline
+holds no output, so do not invent a cause.
 
 ## Skill Promotion Criterion
 

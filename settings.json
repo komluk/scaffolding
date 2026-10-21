@@ -124,6 +124,10 @@
           },
           {
             "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/action-log.sh"
+          },
+          {
+            "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/memory-ingest.sh"
           }
         ]
@@ -285,6 +289,16 @@
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/memory-recall.sh",
             "timeout": 3
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/action-log.sh"
           }
         ]
       }
