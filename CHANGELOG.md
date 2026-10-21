@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.25.0] - 2026-10-21
+
+### Fixed
+- TypeScript LSP: `findReferences` returned only same-file results right after a session started. typescript-language-server's default syntax server answers `references` while the project is still loading, and it only sees open files. `lspServers.typescript.initializationOptions.tsserver.useSyntaxServer` is now `"never"`, so the first query waits for the full project.
+
 ## [2.24.0] - 2026-10-21
 
 ### Fixed
