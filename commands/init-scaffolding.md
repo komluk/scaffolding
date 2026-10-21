@@ -16,7 +16,7 @@ into the project so Claude respects the agent delegation rules on every session.
 
 1. Locates the installed plugin directory (searches known marketplace cache paths)
 2. Creates `.scaffolding/` directory structure for agent memory, conversations, and specs
-3. Adds `.scaffolding/` to `.gitignore`
+3. Adds `.scaffolding/` and `.claude/worktrees/` to `.gitignore`
 4. Installs the routing protocol in `$CWD/CLAUDE.md` — never overwrites an existing file: left alone if it already has the protocol or an `@...CLAUDE.md` import, otherwise the protocol is appended (a new file is created if absent)
 5. Copies `settings.json` to `$CWD/.claude/settings.json` — always overwrites with latest from plugin
 6. Copies `hooks/*.sh` to `$CWD/.claude/hooks/` — always overwrites with latest from plugin
@@ -101,16 +101,15 @@ bash "$PLUGIN_ROOT/hooks/nfs-sync.sh" link "$PWD"
 
 `conversations/` becomes a symlink to `<share>/projects/<repo-name>/conversations`; an empty local dir is replaced, a populated one is copied (no overwrite) and kept as `conversations.pre-nfs-<ts>`.
 
-### 3. Add .scaffolding/ to .gitignore
+### 3. Add .scaffolding/ and .claude/worktrees/ to .gitignore
+
+`.claude/worktrees/` holds legacy native Claude Code worktrees (current ones live under `.scaffolding/worktrees/`); ignore it so git does not track them.
 
 ```bash
-# Check if .gitignore exists and if .scaffolding/ is already in it
-if [ -f ".gitignore" ]; then
-  grep -q "^\.scaffolding/" .gitignore || echo -e "\n# Claude Scaffolding\n.scaffolding/" >> .gitignore
-else
-  echo -e "# Claude Scaffolding\n.scaffolding/" > .gitignore
-fi
-echo "UPDATED: .gitignore — .scaffolding/ is excluded from git"
+touch .gitignore
+grep -q "^\.scaffolding/" .gitignore || printf '\n# Claude Scaffolding\n.scaffolding/\n' >> .gitignore
+grep -q "^\.claude/worktrees/" .gitignore || printf '\n# Claude Code legacy native worktrees\n.claude/worktrees/\n' >> .gitignore
+echo "UPDATED: .gitignore — .scaffolding/ and .claude/worktrees/ are excluded from git"
 ```
 
 ### 4. Install CLAUDE.md routing protocol (never overwrite)
@@ -150,7 +149,7 @@ Print a summary listing each action: CREATED/UPDATED/COPIED or SKIPPED, and its 
 
 After initializing, inform the user:
 - `.scaffolding/` directory structure is ready for agent memory, conversations, and specs
-- `.gitignore` has been updated to exclude `.scaffolding/` from version control
+- `.gitignore` has been updated to exclude `.scaffolding/` and `.claude/worktrees/` from version control
 - CLAUDE.md in the project root carries the routing protocol (created, appended, or already present/imported and left untouched)
 - settings.json is now in `.claude/` — hooks and agent permissions are active
 - If either file was skipped (already existed), they can manually merge from the plugin root

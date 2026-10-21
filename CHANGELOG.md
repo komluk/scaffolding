@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.24.0] - 2026-10-21
+
+### Fixed
+- **`WorktreeCreate`/`WorktreeRemove` hooks now actually load.** They were registered only in the plugin's `settings.json`, which Claude Code reads for plugins only for the `agent` and `subagentStatusLine` keys, so the hooks never ran and Claude Code fell back to native worktrees in `.claude/worktrees/agent-<id>` inside the project checkout (never cleaned, picked up by grep/graphify). They are now registered in `.claude-plugin/plugin.json` via `${CLAUDE_PLUGIN_ROOT}`, like every other plugin hook, and removed from `settings.json` so they are not registered twice.
+- `/init-scaffolding` now also adds `.claude/worktrees/` to the project `.gitignore`, so legacy native worktrees are ignored by git.
+
+### Added
+- `tests/hooks/test-hooks-registration.sh` guards that both worktree hooks are registered exactly once, in `plugin.json` only, pointing at existing scripts.
+
 ## [2.23.0] - 2026-10-21
 
 ### Added
