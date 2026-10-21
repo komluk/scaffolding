@@ -17,6 +17,7 @@ description: "MCP tool decision tree and MCP-first fallback strategy. TRIGGER wh
 |--------|-----------|-----------|--------|
 | context7 | stdio | `mcp__context7__resolve-library-id`, `mcp__context7__get-library-docs` | researcher, developer |
 | playwright | stdio | `mcp__playwright__browser_navigate`, `mcp__playwright__browser_screenshot` | developer, debugger |
+| chrome-devtools | stdio | `mcp__chrome-devtools__*` | developer, debugger |
 | eslint | stdio | `mcp__eslint__*` | developer, reviewer |
 | sonarqube | docker | `mcp__sonarqube__*` | developer, reviewer |
 | sequential-thinking | stdio | `mcp__sequential-thinking__*` | architect, debugger |

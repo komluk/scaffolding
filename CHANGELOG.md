@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.22.0] - 2026-10-21
+
+### Added
+- **`LSP` tool** in the `tools:` allowlists of `developer`, `debugger`, `reviewer` and `architect`, plus a one-line prompt hint (developer/debugger/reviewer) to use it for definitions, references and diagnostics when a language server exists for the file type.
+- **Browser MCP tools** for `developer` and `debugger`: `mcp__playwright__*` and `mcp__chrome-devtools__*` (server-level wildcards, supported in agent `tools:`).
+- **SonarQube MCP tools** in `reviewer` `tools:` (`search_sonar_issues_in_projects`, `get_project_quality_gate_status`, `search_security_hotspots`, `get_component_measures`, `search_duplicated_files`, `analyze_code_snippet`), matching the mandatory review steps in its prompt.
+
+### Fixed
+- `reviewer` prompt no longer claims it runs on `model: sonnet`; it runs on `claude-opus-5-5`. The escalation section now requests an independent second review instead of an "opus re-run", and `cross_model` defaults to `true` (opus reviewer over sonnet developer). Model and effort are unchanged.
+
 ## [2.21.0] - 2026-10-21
 
 ### Added
