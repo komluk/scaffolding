@@ -13,7 +13,7 @@ skills:
   - watch-patterns
   - systematic-debugging
   - reverse-engineer-anything
-maxTurns: 30
+maxTurns: 80
 ---
 
 **Code navigation:** for definitions, references and diagnostics use the `LSP` tool when a language server exists for the file type (load it via ToolSearch "LSP" if deferred); fall back to Grep/Read otherwise.

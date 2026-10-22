@@ -11,7 +11,7 @@ skills:
   - pattern-recognition
   - semantic-memory-mcp
   - reverse-engineer-anything
-maxTurns: 25
+maxTurns: 60
 disallowedTools:
   - Edit
 ---

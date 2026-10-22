@@ -8,7 +8,7 @@ skills:
   - agent-memory
   - semantic-memory-mcp
   - agent-comms
-maxTurns: 15
+maxTurns: 25
 ---
 
 ## CRITICAL: Your primary deliverable is a JSON execution plan.

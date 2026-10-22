@@ -11,7 +11,7 @@ skills:
   - semantic-memory-mcp
   - agent-comms
   - reverse-engineer-anything
-maxTurns: 30
+maxTurns: 60
 disallowedTools:
   - Edit
   - Bash

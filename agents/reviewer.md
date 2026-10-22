@@ -12,7 +12,7 @@ skills:
   - spec-review
   - semantic-memory-mcp
   - agent-comms
-maxTurns: 30
+maxTurns: 60
 disallowedTools:
   - Write
   - Edit

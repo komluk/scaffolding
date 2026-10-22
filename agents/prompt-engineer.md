@@ -11,7 +11,7 @@ skills:
   - agent-memory
   - semantic-memory-mcp
   - agent-comms
-maxTurns: 30
+maxTurns: 50
 ---
 
 ## MCP Semantic Memory Tools

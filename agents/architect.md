@@ -13,7 +13,7 @@ skills:
   - semantic-memory-mcp
   - agent-comms
   - necessity-first
-maxTurns: 25
+maxTurns: 60
 disallowedTools:
   - Edit
 ---

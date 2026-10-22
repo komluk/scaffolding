@@ -11,7 +11,7 @@ skills:
   - semantic-memory-mcp
   - agent-comms
   - verification-before-completion
-maxTurns: 25
+maxTurns: 40
 disallowedTools:
   - Write
   - Edit
