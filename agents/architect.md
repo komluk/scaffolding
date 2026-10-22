@@ -1,7 +1,7 @@
 ---
 name: architect
 description: Technical architect. MUST BE USED for system design, API design, implementation planning, multi-file refactoring, and agent orchestration. Receives proposal.md from analyst and produces design.md + tasks.md.
-tools: Read, Glob, Grep, Bash, Write, LSP, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall, mcp__memory__memory-semantic_store, mcp__memory__memory-store_note, mcp__memory__memory-read_note, mcp__memory__memory-list_notes, mcp__memory__memory-trigger_ingest
+tools: Read, Glob, Grep, Bash, Write, LSP, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall, mcp__memory__memory-semantic_store, mcp__memory__memory-store_note, mcp__memory__memory-read_note, mcp__memory__memory-list_notes, mcp__memory__memory-trigger_ingest, mcp__graphify__query_graph, mcp__graphify__get_node, mcp__graphify__get_neighbors, mcp__graphify__get_community, mcp__graphify__god_nodes, mcp__graphify__graph_stats, mcp__graphify__shortest_path
 model: claude-opus-5-5
 effort: high
 skills:
@@ -17,6 +17,8 @@ maxTurns: 60
 disallowedTools:
   - Edit
 ---
+
+**Code navigation (LSP first):** before renaming, removing or changing the signature of a symbol, run LSP `findReferences`, not grep. To navigate, use `goToDefinition` / `documentSymbol` instead of reading whole files. When a Graphify graph exists for the project (`mcp__graphify__*` tools are present), use it for architecture questions (`query_graph`, `god_nodes`, `get_neighbors`). Fall back to Grep/Read only when no language server covers the file type (load LSP via ToolSearch "LSP" if deferred).
 
 ## MCP Semantic Memory Tools
 
