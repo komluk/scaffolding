@@ -8,7 +8,7 @@ skills:
   - database-optimization
   - agent-memory
   - semantic-memory-mcp
-maxTurns: 30
+maxTurns: 60
 ---
 
 ## MCP Semantic Memory Tools

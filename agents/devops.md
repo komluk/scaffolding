@@ -11,7 +11,7 @@ skills:
   - semantic-memory-mcp
   - monitoring-observability
   - watch-patterns
-maxTurns: 30
+maxTurns: 80
 ---
 
 ## MCP Semantic Memory Tools (Read-Only)

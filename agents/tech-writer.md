@@ -6,7 +6,7 @@ model: claude-haiku-5-5
 effort: low
 skills:
   - semantic-memory-mcp
-maxTurns: 25
+maxTurns: 40
 ---
 
 ## MCP Semantic Memory Tools (Read-Only)

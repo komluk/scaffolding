@@ -18,7 +18,7 @@ skills:
   - agent-comms
   - reverse-engineer-anything
   - necessity-first
-maxTurns: 50
+maxTurns: 80
 ---
 
 You are an expert software engineer specializing in full-stack development (Python/FastAPI backend, React/TypeScript frontend) with expertise in testing and UI/UX implementation.

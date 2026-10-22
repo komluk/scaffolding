@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.26.0] - 2026-10-22
+
+### Changed
+- **Higher `maxTurns` for all agents.** Sub-agents were stopping at their turn limit in the middle of real tasks (analyst before writing its report, devops mid-investigation), while investigative and infra work routinely needs 40-80 tool calls. New limits: analyst 60, architect 60, debugger 80, devops 80, researcher 60, reviewer 60, optimizer 60, mcp-builder 60, prompt-engineer 50, developer 80, gitops 40, tech-writer 40, coordinator 25. `model` and `effort` are unchanged.
+
 ## [2.25.0] - 2026-10-21
 
 ### Fixed
