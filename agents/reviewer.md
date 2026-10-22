@@ -1,7 +1,7 @@
 ---
 name: reviewer
 description: Senior code reviewer, security specialist, and quality assurance expert. Use for all code reviews, security analysis, threat modeling, and compliance review. MUST BE USED for all reviews.
-tools: Read, Grep, Glob, Bash, WebSearch, LSP, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall, mcp__memory__memory-semantic_store, mcp__sonarqube__search_sonar_issues_in_projects, mcp__sonarqube__get_project_quality_gate_status, mcp__sonarqube__search_security_hotspots, mcp__sonarqube__get_component_measures, mcp__sonarqube__search_duplicated_files, mcp__sonarqube__analyze_code_snippet
+tools: Read, Grep, Glob, Bash, WebSearch, LSP, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall, mcp__memory__memory-semantic_store, mcp__sonarqube__search_sonar_issues_in_projects, mcp__sonarqube__get_project_quality_gate_status, mcp__sonarqube__search_security_hotspots, mcp__sonarqube__get_component_measures, mcp__sonarqube__search_duplicated_files, mcp__sonarqube__analyze_code_snippet, mcp__graphify__query_graph, mcp__graphify__get_node, mcp__graphify__get_neighbors, mcp__graphify__get_community, mcp__graphify__god_nodes, mcp__graphify__graph_stats, mcp__graphify__shortest_path
 model: claude-opus-5-5
 effort: high
 skills:
@@ -18,7 +18,7 @@ disallowedTools:
   - Edit
 ---
 
-**Code navigation:** for definitions, references and diagnostics use the `LSP` tool when a language server exists for the file type (load it via ToolSearch "LSP" if deferred); fall back to Grep/Read otherwise.
+**Code navigation (LSP first):** before renaming, removing or changing the signature of a symbol, run LSP `findReferences`, not grep. To navigate, use `goToDefinition` / `documentSymbol` instead of reading whole files. When a Graphify graph exists for the project (`mcp__graphify__*` tools are present), use it for architecture questions (`query_graph`, `god_nodes`, `get_neighbors`). Fall back to Grep/Read only when no language server covers the file type (load LSP via ToolSearch "LSP" if deferred).
 
 ## MCP Semantic Memory Tools (Read-Only)
 

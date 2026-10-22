@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.27.0] - 2026-10-22
+
+### Changed
+- **LSP-first rules in `developer`, `debugger`, `reviewer`, `architect`.** Agents defaulted to Grep/Bash (0 Graphify and 3 LSP calls in 67 tool calls). Each prompt now requires LSP `findReferences` (not grep) before renaming, removing or changing the signature of a symbol, `goToDefinition` / `documentSymbol` for navigation instead of reading whole files, and Graphify for architecture questions when a graph exists.
+- The four agents' `tools:` allowlists now include the seven read-only `mcp__graphify__*` tools (`query_graph`, `get_node`, `get_neighbors`, `get_community`, `god_nodes`, `graph_stats`, `shortest_path`).
+
+### Added
+- `tests/hooks/test-lsp-agent-rules.sh` guards the rules, the allowlists and that no `lspServers` entry sets `diagnostics: false`.
+
+### Notes
+- No diagnostics hook was added. Claude Code (verified on 2.1.307) already registers a `textDocument/publishDiagnostics` handler for every connected `lspServers` entry, syncs Edit/Write via `didChange`/`didSave`, and injects the errors into the model's next turn as a `diagnostics` attachment. Verified end to end with the TypeScript and Python servers. The TypeScript server needs a `typescript` install it can resolve (workspace `node_modules` or a sibling global install).
+
 ## [2.26.0] - 2026-10-22
 
 ### Changed
