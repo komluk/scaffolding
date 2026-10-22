@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.29.0] - 2026-10-22
+
+### Added
+- **`refactor-guard` hook (WARN mode).** New PreToolUse hook (`hooks/refactor-guard.sh`, logic in `hooks/lib/refactor_guard.py`, python3 stdlib only, ~25 ms) on `Edit|Write|MultiEdit` and on Bash `sed -i` / `perl -pi`. When a change renames or removes an exported symbol (TS/JS, Python, Go, Rust, C#/Java/Kotlin) and the session transcript has no earlier LSP `findReferences` on that file or `mcp__graphify__*` query naming the symbol, it injects a non-blocking `additionalContext` warning that names the tools to run (`LSP` operation `findReferences`; `mcp__graphify__get_neighbors`, `mcp__graphify__query_graph`). When no LSP server covers the language it suggests graphify or `grep -rnw`. Never blocks in this version; test files and non-code files are ignored. Opt out with `SCAFFOLDING_REFACTOR_GUARD=off`.
+- `tests/hooks/test-refactor-guard.sh` (30 checks: warn/silent cases, Bash `sed -i`/`perl -pi`, no-LSP fallback, robustness, 200 ms budget, registration).
+
+### Changed
+- **`reviewer` impact contract.** Before any verdict on a code change the reviewer must collect changed files/symbols, query graphify for dependents and blast radius, run LSP `findReferences` on key symbols, and emit an `impact-analysis` fenced block (`changed`, `dependents: N (top: a, b, c)`, `risk: low|medium|high`, `notes`). If graphify or LSP is unavailable it must say so explicitly instead of inventing numbers.
+- **`developer` and `debugger`:** the "LSP first" paragraph is now a short mandatory checklist (`findReferences` before editing a shared symbol; graphify dependents query before a multi-file change; read and fix injected diagnostics after edits).
+- **`optimizer` and `analyst`** gain `LSP` and the seven read-only `mcp__graphify__*` tools in `tools:` plus a one-line rule each.
+- Hook count 19 -> 20 in `plugin.json`, `marketplace.json`, README and CONTRIBUTING.
+
+### Notes
+- Enforcement (deny mode) is planned for 2.30.0 once false-positive rates are measured.
+
 ## [2.28.0] - 2026-10-22
 
 ### Added

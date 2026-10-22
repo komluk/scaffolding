@@ -281,3 +281,8 @@ Ideas for additional hooks:
 - Pre-push hook: Run full test suite before pushing
 - Post-commit hook: Generate changelog entry
 - Pre-PR hook: Verify PR requirements met
+
+### refactor-guard.sh
+**Type:** PreToolUse hook (`Edit|Write|MultiEdit`, `Bash`)
+**Purpose:** WARN (never block) when a change renames/removes an exported symbol without prior LSP `findReferences` (same file) or `mcp__graphify__*` query on it in the session transcript.
+**Notes:** logic in `lib/refactor_guard.py` (python3 stdlib, <200 ms); also covers Bash `sed -i` / `perl -pi`; suggests graphify/grep when no LSP server covers the language; opt out with `SCAFFOLDING_REFACTOR_GUARD=off`.

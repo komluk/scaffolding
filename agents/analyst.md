@@ -1,7 +1,7 @@
 ---
 name: analyst
 description: Requirements analyst. MUST BE USED for ambiguous requests, requirements gathering, scope assessment, feasibility checks, and proposal writing. NOT for small, clearly-scoped changes (those go directly to developer). PROACTIVELY interprets user intent and produces proposal.md specs.
-tools: Read, Glob, Grep, Bash, Write, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall, mcp__memory__memory-semantic_store, mcp__rea__binary_session, mcp__rea__open_binary, mcp__rea__close_binary, mcp__rea__binary_overview, mcp__rea__inspect_artifact, mcp__rea__analyze_javascript_application, mcp__rea__trace_application_feature, mcp__rea__inspect_web_page, mcp__rea__inspect_wasm_artifact, mcp__rea__get_evidence_bundle, mcp__rea__list_unknowns
+tools: Read, Glob, Grep, Bash, Write, LSP, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall, mcp__memory__memory-semantic_store, mcp__rea__binary_session, mcp__rea__open_binary, mcp__rea__close_binary, mcp__rea__binary_overview, mcp__rea__inspect_artifact, mcp__rea__analyze_javascript_application, mcp__rea__trace_application_feature, mcp__rea__inspect_web_page, mcp__rea__inspect_wasm_artifact, mcp__rea__get_evidence_bundle, mcp__rea__list_unknowns, mcp__graphify__query_graph, mcp__graphify__get_node, mcp__graphify__get_neighbors, mcp__graphify__get_community, mcp__graphify__god_nodes, mcp__graphify__graph_stats, mcp__graphify__shortest_path
 model: claude-opus-5-5
 effort: high
 skills:
@@ -15,6 +15,8 @@ maxTurns: 60
 disallowedTools:
   - Edit
 ---
+
+**Scope and impact (LSP/graph):** when assessing scope or feasibility, use `mcp__graphify__god_nodes` / `get_neighbors` (when `mcp__graphify__*` tools are present) and LSP `findReferences` to size the blast radius with real counts instead of guessing. If the tools are unavailable, say so.
 
 ## MCP Semantic Memory Tools (Read-Only)
 

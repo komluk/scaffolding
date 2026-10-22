@@ -13,13 +13,30 @@ for s in typescript python; do
     check "lspServers.$s is defined" jq -e ".lspServers.$s.command" "$ROOT/.claude-plugin/plugin.json" >/dev/null
 done
 
-for a in developer debugger reviewer architect; do
+for a in developer debugger reviewer architect optimizer analyst; do
     f="$ROOT/agents/$a.md"
     echo "agent: $a"
     check "$a tools include LSP" grep -qE '^tools:.*(^|, )LSP(,|$)' "$f"
     check "$a tools include mcp__graphify__query_graph" grep -qE '^tools:.*mcp__graphify__query_graph' "$f"
     check "$a rule: findReferences before rename/remove/signature change" grep -q 'findReferences' "$f"
-    check "$a rule: goToDefinition / documentSymbol for navigation" grep -q 'goToDefinition.*documentSymbol' "$f"
-    check "$a rule: graphify for architecture questions" grep -q 'Graphify graph exists' "$f"
+    check "$a rule: graphify tools referenced" grep -q 'mcp__graphify__' "${f}"
 done
+for a in developer debugger reviewer architect; do
+    check "$a rule: goToDefinition / documentSymbol for navigation" grep -q 'goToDefinition.*documentSymbol' "$ROOT/agents/$a.md"
+done
+for a in developer debugger; do
+    f="$ROOT/agents/$a.md"
+    echo "checklist: $a"
+    check "$a has the mandatory checklist" grep -q 'Mandatory LSP/graph checklist' "$f"
+    check "$a checklist: graphify dependents before multi-file change" grep -q 'multi-file change: run `mcp__graphify__get_neighbors`' "$f"
+    check "$a checklist: read diagnostics after edits" grep -q 'After edits: read the diagnostics' "$f"
+done
+f="$ROOT/agents/reviewer.md"
+echo "reviewer: impact-analysis contract"
+check "reviewer requires the impact-analysis step before verdict" grep -q 'Impact Analysis (MANDATORY' "$f"
+for k in '```impact-analysis' '^changed: \[' '^dependents: N \(top: a, b, c\)' '^risk: low|medium|high' '^notes: '; do
+    check "reviewer block has: $k" grep -qE -- "$k" "$f"
+done
+check "reviewer: no hallucinated numbers when tools missing" grep -q 'never invent counts' "$f"
+check "reviewer: findReferences + get_neighbors named" grep -q 'mcp__graphify__get_neighbors' "$f"
 finish
