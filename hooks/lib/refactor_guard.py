@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""refactor-guard core (WARN mode). Stdin: PreToolUse JSON. Stdout: optional additionalContext JSON.
+"""refactor-guard core. Stdin: PreToolUse JSON. Stdout: optional PreToolUse JSON (deny or additionalContext).
 
-Detects an Edit/MultiEdit/Write (or Bash `sed -i` / `perl -pi`) that renames or removes an
-exported symbol, then checks the session transcript for an earlier LSP findReferences (same
-file) or graphify query (symbol named in its input). If none: non-blocking warning. Never denies.
-Stdlib only; run with `python3 -I`.
+Detects an Edit/MultiEdit/Write (or Bash `sed -i` / `perl -pi`, including file lists coming from
+`xargs` / `$(...)`) that renames or removes an exported symbol, then checks the session transcript for an
+earlier LSP findReferences (on a file defining the symbol) or graphify query (symbol named in its input).
+If none: DENY (default) when an LSP server covers the language, else a non-blocking warning.
+SCAFFOLDING_REFACTOR_GUARD=warn -> always warn only; =off -> disabled. Stdlib only; run with `python3 -I`.
 """
-import json, os, re, shlex, shutil, sys
+import glob, json, os, re, shlex, shutil, subprocess, sys, time
 
 TAIL = 2 * 1024 * 1024
 LSP_OPS = {"findReferences", "incomingCalls"}
@@ -46,8 +47,8 @@ def lsp_covers(ext):
                for s in servers.values())
 
 
-def evidence(transcript, path, sym):
-    """True if an earlier LSP findReferences on `path` or graphify call naming `sym` exists."""
+def evidence(transcript, paths, sym):
+    """True if an earlier LSP findReferences on one of `paths` (files defining sym) or graphify call naming `sym` exists."""
     try:
         with open(transcript, "rb") as f:
             f.seek(0, 2)
@@ -55,7 +56,7 @@ def evidence(transcript, path, sym):
             data = f.read().decode("utf-8", "ignore")
     except Exception:
         return False
-    want = os.path.realpath(path)
+    want = {os.path.realpath(p) for p in paths}
     word = re.compile(r"(?<![\w$])" + re.escape(sym) + r"(?![\w$])")
     for line in data.splitlines():
         if "findReferences" not in line and "incomingCalls" not in line and "mcp__graphify__" not in line:
@@ -70,7 +71,7 @@ def evidence(transcript, path, sym):
             name, inp = b.get("name", ""), b.get("input") or {}
             if name == "LSP" and inp.get("operation") in LSP_OPS:
                 fp = str(inp.get("filePath", ""))
-                if fp and os.path.realpath(fp) == want:
+                if fp and os.path.realpath(fp) in want:
                     return True
             elif name.startswith("mcp__graphify__") and name[15:] in GRAPH_OK:
                 if word.search(json.dumps(inp)):
@@ -78,26 +79,68 @@ def evidence(transcript, path, sym):
     return False
 
 
-def bash_targets(cmd):
-    """(file, symbol) pairs a `sed -i`/`perl -pi` command would rename or delete."""
+# `s<d>[anchors]OLD[anchors]<d>NEW<d>`; anchors: \\b \\< \\> ^ $ \\( \\)
+SED_S = re.compile(r"(?<![\w\\])s([^\w\s\\])(?:\\[b<]|\^|\\\()*([A-Za-z_$][\w$]*)(?:\\[b>]|\$|\\\))*\1((?:(?!\1).)*)\1")
+FILE_TOK = re.compile(r"^[\w./*?\[\]~@+-]+\.\w{1,6}$")
+EXCL = ("node_modules", ".git", "dist", "build")
+WS_BUDGET = 0.3
+
+
+def ws_defs(ident, cwd, deadline):
+    """Code files under cwd that export/define `ident`; None when the time budget is exceeded."""
+    s = re.escape(ident)
+    pat = (r"export[^;=(]*\b{s}\b|(def|class) +{s}\b|pub(\([^)]*\))? +(async +|unsafe +)?"
+           r"(fn|struct|enum|trait|type|const|static|mod) +{s}\b|func +(\([^)]*\) *)?{s}\b|public .*\b{s}\b").format(s=s)
+    cmd = ["grep", "-rlEI"] + ["--exclude-dir=" + e for e in EXCL] + \
+          ["--include=*" + e for e in sorted(CODE_EXT)] + ["-e", pat, "."]
+    left = deadline - time.monotonic()
+    if left <= 0:
+        return None
+    try:
+        r = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, timeout=left)
+    except Exception:
+        return None
+    out = []
+    for rel in r.stdout.splitlines()[:40]:
+        f = os.path.abspath(os.path.join(cwd, rel))
+        if TEST_RE.search(f):
+            continue
+        try:
+            if ident in symbols(open(f, errors="ignore").read(), os.path.splitext(f)[1]):
+                out.append(f)
+        except Exception:
+            continue
+    return out
+
+
+def bash_targets(cmd, cwd):
+    """((files...), symbol) pairs a `sed -i`/`perl -pi` command would rename or delete."""
     try:
         toks = shlex.split(cmd)
     except ValueError:
-        return []
+        toks = cmd.split()
     if not any(t in ("sed", "perl") for t in toks):
         return []
-    inplace = any(re.fullmatch(r"-i\S*|--in-place\S*|-[a-zA-Z]*pi\S*", t) for t in toks)
-    if not inplace:
+    if not any(re.fullmatch(r"-i\S*|--in-place\S*|-[a-zA-Z]*pi\S*", t) for t in toks):
         return []
-    files = [t for t in toks if os.path.splitext(t)[1] in CODE_EXT and os.path.isfile(t)]
     idents = set()
     for t in toks:
-        m = re.search(r"s(.)(\w+)\1(\w*)\1", t)
-        if m and m.group(2) != m.group(3):
-            idents.add(m.group(2))
+        for m in SED_S.finditer(t):
+            if m.group(2) != m.group(3):
+                idents.add(m.group(2))
         m = re.fullmatch(r"/\^?\s*\\?s*\\?b?(\w+)\\?b?.*/d", t)
         if m:
             idents.add(m.group(1))
+    if not idents:
+        return []
+    operands = [t for t in toks if not t.startswith("-") and FILE_TOK.match(t)]
+    files, noncode = [], False
+    for t in operands:
+        if os.path.splitext(t)[1] in CODE_EXT:
+            files += [g for g in glob.glob(os.path.join(cwd, t)) if os.path.isfile(g)]
+        else:
+            noncode = True
+    dyn = "xargs" in toks or "$(" in cmd or "`" in cmd
     pairs = []
     for f in files:
         try:
@@ -105,12 +148,20 @@ def bash_targets(cmd):
         except Exception:
             continue
         for s in symbols(text, os.path.splitext(f)[1]) & idents:
-            pairs.append((f, s))
+            pairs.append(((f,), s))
+    if dyn or (not files and not noncode):
+        deadline = time.monotonic() + WS_BUDGET
+        for ident in sorted(idents):
+            defs = ws_defs(ident, cwd, deadline)
+            if defs is None:
+                break
+            if defs:
+                pairs.append((tuple(defs), ident))
     return pairs
 
 
-def changed_symbols(tool, ti):
-    """Return list of (file, symbol) that are renamed/removed by this call."""
+def changed_symbols(tool, ti, cwd):
+    """Return list of ((files...), symbol) that are renamed/removed by this call."""
     if tool in ("Edit", "MultiEdit", "Write"):
         f = ti.get("file_path") or ""
         ext = os.path.splitext(f)[1]
@@ -127,27 +178,63 @@ def changed_symbols(tool, ti):
             except Exception:
                 return []
             new = ti.get("content", "")
-        return [(f, s) for s in sorted(symbols(old, ext) - symbols(new, ext))]
+        return [((f,), s) for s in sorted(symbols(old, ext) - symbols(new, ext))]
     if tool == "Bash":
-        return bash_targets(ti.get("command", ""))
+        return bash_targets(ti.get("command", ""), cwd)
     return []
 
 
+def locate(files, sym):
+    """(file, line, character), 1-based, of sym's declaration."""
+    for f in files:
+        try:
+            lines = open(f, errors="ignore").read().splitlines()
+        except Exception:
+            continue
+        for i, line in enumerate(lines):
+            for pat in PATTERNS[LANG[os.path.splitext(f)[1]]]:
+                m = re.match(pat, line)
+                if m and m.group(1) == sym:
+                    return f, i + 1, m.start(1) + 1
+    return files[0], 1, 1
+
+
+def clean(p):
+    return re.sub(r"[^\w./@+-]", "?", p)
+
+
 def main():
-    if os.environ.get("SCAFFOLDING_REFACTOR_GUARD") == "off":
+    mode = os.environ.get("SCAFFOLDING_REFACTOR_GUARD", "deny")
+    if mode == "off":
         return
     try:
         d = json.load(sys.stdin)
     except Exception:
         return
     tool, ti = d.get("tool_name", ""), d.get("tool_input") or {}
-    pairs = [(f, s) for f, s in changed_symbols(tool, ti) if not TEST_RE.search(f)]
-    missing = [(f, s) for f, s in pairs if not evidence(d.get("transcript_path") or "", f, s)]
+    cwd = d.get("cwd") or os.getcwd()
+    pairs = [(fs, s) for fs, s in changed_symbols(tool, ti, cwd) if not all(TEST_RE.search(f) for f in fs)]
+    missing = [(fs, s) for fs, s in pairs if not evidence(d.get("transcript_path") or "", fs, s)]
     if not missing:
         return
-    f0 = re.sub(r"[^\w./@+-]", "?", missing[0][0])
+    block = [(fs, s) for fs, s in missing if lsp_covers(os.path.splitext(fs[0])[1])] if mode != "warn" else []
+    if block:
+        fs, sym = block[0]
+        f, line, ch = locate(fs, sym)
+        syms = ", ".join("`%s`" % s for _, s in block[:5])
+        what = "this Bash sed/perl in-place command" if tool == "Bash" else "this %s" % tool
+        reason = ("refactor-guard BLOCKED: %s renames or removes exported %s (defined in %s) and no LSP findReferences "
+                  "on a file defining it, nor graphify query naming it, exists in this session. Do this now: "
+                  "(1) call tool `LSP` with operation=findReferences, filePath=\"%s\", line=%d, character=%d "
+                  "(or `mcp__graphify__query_graph` / `mcp__graphify__get_neighbors` with the symbol name); "
+                  "(2) then update every reference found using Edit, or retry the same sed after findReferences. "
+                  "Override: SCAFFOLDING_REFACTOR_GUARD=warn (warn only) or =off." % (what, syms, clean(f), clean(f), line, ch))
+        print(json.dumps({"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "deny",
+                                                 "permissionDecisionReason": reason}}))
+        return
+    f0 = clean(missing[0][0][0])
     syms = ", ".join("`%s`" % s for _, s in missing[:5])
-    ext = os.path.splitext(missing[0][0])[1]
+    ext = os.path.splitext(missing[0][0][0])[1]
     if lsp_covers(ext):
         how = ("run LSP `findReferences` (tool `LSP`, operation=findReferences, filePath, line, character on the "
                "declaration) or `mcp__graphify__get_neighbors` / `mcp__graphify__query_graph` with the symbol name")

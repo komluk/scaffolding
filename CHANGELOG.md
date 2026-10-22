@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.30.0] - 2026-10-22
+
+### Changed
+- **`refactor-guard` now denies instead of warning (default).** Prose in the developer checklist did not work: in prod (2.29.0) a developer renamed an exported function with `grep -rlw … | xargs sed -i 's/\bOLD\b/NEW/g'` with zero LSP/graphify calls and the guard stayed silent. Renaming/removing an exported symbol via Edit/MultiEdit/Write or Bash `sed -i`/`perl -pi` with no earlier LSP `findReferences` (on a file defining the symbol) or `mcp__graphify__*` call naming it now returns a PreToolUse `permissionDecision: "deny"` whose reason gives the exact `LSP` args (`filePath`, `line`, `character`) / graphify tools, then Edit or retry the sed. A sed after `findReferences` is allowed. Languages with no LSP server fall back to the old warning. `SCAFFOLDING_REFACTOR_GUARD=warn` restores warn-only; `=off` disables.
+- Developer/debugger checklist now states renames are enforced by a hook.
+
+### Fixed
+- `bash_targets()` only saw code files literally present in the command, so `xargs sed -i` and `sed -i … $(…)` had an empty file list. When files come from a pipe/command substitution (or the list is empty) the OLD symbol is now matched against export/definition declarations in the cwd (bounded `grep -rlE`, 300 ms, excludes `node_modules`, `.git`, `dist`, `build`).
+- The `s` regex required a word char right after the delimiter, missing `s/\bOLD\b/NEW/` and `s/\<OLD\>/NEW/`; anchors (`\b`, `\<`, `\>`, `^`, `$`) are now accepted and OLD extracted.
+- `tests/hooks/test-refactor-guard.sh` extended with deny/allow/modes cases (prod command, `$(…)`, `\<\>`, non-exported local, non-code file, warn/off).
+
 ## [2.29.0] - 2026-10-22
 
 ### Added

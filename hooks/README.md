@@ -284,5 +284,5 @@ Ideas for additional hooks:
 
 ### refactor-guard.sh
 **Type:** PreToolUse hook (`Edit|Write|MultiEdit`, `Bash`)
-**Purpose:** WARN (never block) when a change renames/removes an exported symbol without prior LSP `findReferences` (same file) or `mcp__graphify__*` query on it in the session transcript.
-**Notes:** logic in `lib/refactor_guard.py` (python3 stdlib, <200 ms); also covers Bash `sed -i` / `perl -pi`; suggests graphify/grep when no LSP server covers the language; opt out with `SCAFFOLDING_REFACTOR_GUARD=off`.
+**Purpose:** DENY (since v2.30.0) when a change renames/removes an exported symbol without prior LSP `findReferences` (on a file defining the symbol) or `mcp__graphify__*` query naming it in the session transcript. The deny reason gives the exact `LSP` call (`filePath`, `line`, `character`) or graphify tools to run, then Edit or retry the sed.
+**Notes:** logic in `lib/refactor_guard.py` (python3 stdlib, <200 ms). Bash `sed -i` / `perl -pi` renames are caught with `\b`, `\<`, `\>` anchors and when the file list comes from `xargs` or `$(...)`: the OLD symbol is then looked up as an exported/defined symbol in the cwd (bounded `grep -rlE`, 300 ms budget, skips `node_modules`/`.git`/`dist`/`build`, checks skipped on timeout). Non-exported locals, test files and non-code files are allowed. When no LSP server covers the language it only warns. `SCAFFOLDING_REFACTOR_GUARD=warn` restores warn-only, `=off` disables.
