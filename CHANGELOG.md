@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.28.0] - 2026-10-22
+
+### Added
+- **Nine new `lspServers` entries** for the LSP sidecar (scaffolding.tool `devops/lsp`, ports 7108-7116): `csharp` (csharp-ls), `rust` (rust-analyzer), `go` (gopls), `dart` (dart language-server), `markdown` (marksman), `toml` (taplo), `sql` (postgres-language-server), `html` and `css` (vscode-langservers-extracted). Chosen from a file-type census of the projects the platform works on (C#/.NET, Rust, Go, Dart/Flutter, SQL, Markdown, TOML, HTML/CSS).
+
+### Notes
+- Each entry calls a host shim of the same name that bridges stdio to the sidecar over loopback TCP, like the existing entries. Requires the matching scaffolding.tool sidecar image; on hosts without the shim the entry simply fails to connect.
+
 ## [2.27.0] - 2026-10-22
 
 ### Changed
