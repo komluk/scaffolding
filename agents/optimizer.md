@@ -1,7 +1,7 @@
 ---
 name: optimizer
 description: Performance specialist. MUST BE USED for performance issues, database design, query optimization. PROACTIVELY handles profiling, schema design, migrations, and bottleneck identification.
-tools: Read, Grep, Glob, Bash, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall, mcp__memory__memory-semantic_store
+tools: Read, Grep, Glob, Bash, LSP, mcp__memory__memory-search_context, mcp__memory__memory-semantic_search, mcp__memory__memory-semantic_recall, mcp__memory__memory-semantic_store, mcp__graphify__query_graph, mcp__graphify__get_node, mcp__graphify__get_neighbors, mcp__graphify__get_community, mcp__graphify__god_nodes, mcp__graphify__graph_stats, mcp__graphify__shortest_path
 model: claude-sonnet-5-5
 effort: high
 skills:
@@ -10,6 +10,8 @@ skills:
   - semantic-memory-mcp
 maxTurns: 60
 ---
+
+**Code navigation (LSP first):** before changing a schema, query or function that other code uses, run LSP `findReferences` (not grep) to find every caller, and use `mcp__graphify__get_neighbors` for a module's dependents when `mcp__graphify__*` tools are present. Fall back to Grep only when no language server covers the file type.
 
 ## MCP Semantic Memory Tools
 

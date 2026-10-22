@@ -1,7 +1,7 @@
 {
   "name": "scaffolding",
-  "version": "2.28.0",
-  "description": "13 agents, 39 skills, 20 commands, 19 hooks — spec-driven, multi-agent orchestration for Claude Code with per-phase model tiers, opt-in lifecycle hooks, and optional cross-device semantic memory.",
+  "version": "2.29.0",
+  "description": "13 agents, 39 skills, 20 commands, 20 hooks — spec-driven, multi-agent orchestration for Claude Code with per-phase model tiers, opt-in lifecycle hooks, and optional cross-device semantic memory.",
   "author": {
     "name": "komluk",
     "url": "https://github.com/komluk"
@@ -205,6 +205,24 @@
           {
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/block-destructive-rm.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/refactor-guard.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/refactor-guard.sh"
           }
         ]
       }
