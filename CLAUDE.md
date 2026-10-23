@@ -59,6 +59,7 @@
 - After ANY worktree agent completes -> gitops (commit + merge + push)
 - Multi-agent coordination -> coordinator
 - Default -> developer if scope is clear and small; analyst only when genuinely ambiguous
+- When delegating analysis, design or debugging (analyst, architect, debugger, optimizer, reviewer), tell the specialist to start from the project graph (`mcp__graphify__*`), then LSP, and use grep/Read only for exact lines
 
 ---
 

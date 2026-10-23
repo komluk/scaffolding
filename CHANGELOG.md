@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.32.0] - 2026-10-23
+
+### Changed
+- Analysis agents (analyst, architect, debugger, developer, optimizer, reviewer) now share one short "Code exploration"
+  rule that replaces their former LSP-only navigation paragraph: for structure, dependency, impact, architecture or
+  "where is X used" questions start from graphify (`graph_stats` / `god_nodes`, then `query_graph` / `get_neighbors` /
+  `shortest_path`), then LSP (`goToDefinition` / `documentSymbol` / `findReferences`, loaded via ToolSearch
+  `select:LSP`), and use grep/sed/Read only for exact lines. A missing or stale graph is reported, then grep is the
+  fallback. Trivial single-file edits are exempt. Prompts only, no hook or code change.
+  Motivation: on prod, an architect told to work "from the graph" finished in ~1 min with 5 graphify calls, while two
+  comparable tasks without the hint used 40-50 grep/cat/sed calls and took 3-4 min; none of the three used LSP.
+- `CLAUDE.md` Decision Tree: one line telling the orchestrator to instruct delegated analysis/design/debugging
+  specialists to start from the project graph.
+
 ## [2.31.1] - 2026-10-23
 
 ### Fixed
