@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.31.0] - 2026-10-23
+
+### Changed
+- refactor-guard defaults to **deny** again. Verified on prod VM120: the LSP shim wedge is fixed (shims exit non-zero so
+  the CLI restarts the server), and TypeScript `findReferences` returns the full set (10/10) once the project is indexed.
+- Agents and the deny reason now say: if `findReferences` returns only the declaration for an imported symbol, the
+  TypeScript server is still indexing; call it again after a few seconds (first request after start returned 1, 3 s later 10).
+
 ## [2.30.1] - 2026-10-23
 
 ### Fixed
