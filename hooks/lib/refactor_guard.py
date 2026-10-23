@@ -4,8 +4,9 @@
 Detects an Edit/MultiEdit/Write (or Bash `sed -i` / `perl -pi`, including file lists coming from
 `xargs` / `$(...)`) that renames or removes an exported symbol, then checks the session transcript for an
 earlier LSP findReferences (on a file defining the symbol) or graphify query (symbol named in its input).
-If none: DENY (default) when an LSP server covers the language, else a non-blocking warning.
-SCAFFOLDING_REFACTOR_GUARD=warn -> always warn only; =off -> disabled. Stdlib only; run with `python3 -I`.
+If none: a warning (default, SCAFFOLDING_REFACTOR_GUARD=warn), or DENY with SCAFFOLDING_REFACTOR_GUARD=deny
+when an LSP server covers the language. =off -> disabled. Evidence is searched in the session transcript AND
+its subagents/*.jsonl. Stdlib only; run with `python3 -I`.
 """
 import glob, json, os, re, shlex, shutil, subprocess, sys, time
 
@@ -47,16 +48,40 @@ def lsp_covers(ext):
                for s in servers.values())
 
 
-def evidence(transcript, paths, sym):
-    """True if an earlier LSP findReferences on one of `paths` (files defining sym) or graphify call naming `sym` exists."""
+def _tail(path):
     try:
-        with open(transcript, "rb") as f:
+        with open(path, "rb") as f:
             f.seek(0, 2)
             f.seek(max(0, f.tell() - TAIL))
-            data = f.read().decode("utf-8", "ignore")
+            return f.read().decode("utf-8", "ignore")
     except Exception:
+        return ""
+
+
+def _transcripts(transcript):
+    """The hook's transcript plus its subagents' transcripts (<session>/subagents/*.jsonl).
+
+    Inside a subagent the hook may be handed the PARENT session's transcript, while the
+    subagent's own LSP/graphify calls live in subagents/agent-*.jsonl (seen live 2026-10-23)."""
+    out = [transcript] if transcript else []
+    if transcript.endswith(".jsonl"):
+        sub = os.path.join(transcript[:-6], "subagents")
+        try:
+            files = [os.path.join(sub, n) for n in os.listdir(sub) if n.endswith(".jsonl")]
+            files.sort(key=lambda f: os.path.getmtime(f), reverse=True)
+            out += files[:8]
+        except Exception:
+            pass
+    return out
+
+
+def evidence(transcript, paths, sym):
+    """True if an earlier LSP findReferences on one of `paths` (files defining sym) or graphify call naming `sym` exists."""
+    data = "\n".join(_tail(t) for t in _transcripts(transcript))
+    if not data:
         return False
     want = {os.path.realpath(p) for p in paths}
+    tails = {os.path.normpath(p).lstrip("./") for p in paths}
     word = re.compile(r"(?<![\w$])" + re.escape(sym) + r"(?![\w$])")
     for line in data.splitlines():
         if "findReferences" not in line and "incomingCalls" not in line and "mcp__graphify__" not in line:
@@ -71,7 +96,8 @@ def evidence(transcript, paths, sym):
             name, inp = b.get("name", ""), b.get("input") or {}
             if name == "LSP" and inp.get("operation") in LSP_OPS:
                 fp = str(inp.get("filePath", ""))
-                if fp and os.path.realpath(fp) in want:
+                # Absolute match, or a repo-relative filePath that is a suffix of a defining file.
+                if fp and (os.path.realpath(fp) in want or any(w.endswith("/" + os.path.normpath(fp).lstrip("./")) or w == fp for w in want | tails)):
                     return True
             elif name.startswith("mcp__graphify__") and name[15:] in GRAPH_OK:
                 if word.search(json.dumps(inp)):
@@ -204,7 +230,7 @@ def clean(p):
 
 
 def main():
-    mode = os.environ.get("SCAFFOLDING_REFACTOR_GUARD", "deny")
+    mode = os.environ.get("SCAFFOLDING_REFACTOR_GUARD", "warn")
     if mode == "off":
         return
     try:

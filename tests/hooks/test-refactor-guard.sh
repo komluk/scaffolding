@@ -19,8 +19,11 @@ tu mcp__graphify__get_neighbors '{"node":"unrelated"}' > "$T/graph-other.jsonl"
 run() { # legacy warn-mode helper: transcript tool_input_json [tool=Edit] -> stdout
     printf '{"tool_name":"%s","transcript_path":"%s","tool_input":%s}' "${3:-Edit}" "$1" "$2" | SCAFFOLDING_REFACTOR_GUARD="${SCAFFOLDING_REFACTOR_GUARD:-warn}" REFACTOR_GUARD_LSP="${LSP:-on}" bash "$HOOK"
 }
-dny() { # transcript tool_input_json [tool=Edit] [cwd] -> stdout (default mode = deny)
-    printf '{"tool_name":"%s","transcript_path":"%s","cwd":"%s","tool_input":%s}' "${3:-Edit}" "$1" "${4:-$T}" "$2" | REFACTOR_GUARD_LSP="${LSP:-on}" bash "$HOOK"
+dny() { # transcript tool_input_json [tool=Edit] [cwd] -> stdout (deny mode unless SCAFFOLDING_REFACTOR_GUARD set)
+    printf '{"tool_name":"%s","transcript_path":"%s","cwd":"%s","tool_input":%s}' "${3:-Edit}" "$1" "${4:-$T}" "$2" | SCAFFOLDING_REFACTOR_GUARD="${SCAFFOLDING_REFACTOR_GUARD:-deny}" REFACTOR_GUARD_LSP="${LSP:-on}" bash "$HOOK"
+}
+dflt() { # transcript tool_input_json [tool=Edit] [cwd] -> stdout with NO mode set (the shipped default)
+    printf '{"tool_name":"%s","transcript_path":"%s","cwd":"%s","tool_input":%s}' "${3:-Edit}" "$1" "${4:-$T}" "$2" | env -u SCAFFOLDING_REFACTOR_GUARD REFACTOR_GUARD_LSP="${LSP:-on}" bash "$HOOK"
 }
 decision() { printf '%s' "$1" | jq -r '.hookSpecificOutput.permissionDecision // "none"' 2>/dev/null; }
 EDIT_RENAME="{\"file_path\":\"$T/src/a.ts\",\"old_string\":\"export function foo() {}\",\"new_string\":\"export function foo2() {}\"}"
@@ -63,7 +66,7 @@ check "sed -i without rename of exported symbol -> silent" test -z "$(run "$T/em
 check "plain sed (no -i) -> silent" test -z "$(run "$T/empty.jsonl" "{\"command\":\"sed 's/foo/foo2/' $T/src/a.ts\"}" Bash)"
 check "SCAFFOLDING_REFACTOR_GUARD=off -> silent" test -z "$(SCAFFOLDING_REFACTOR_GUARD=off run "$T/empty.jsonl" "$EDIT_RENAME")"
 
-echo "# deny (default mode)"
+echo "# deny mode (SCAFFOLDING_REFACTOR_GUARD=deny)"
 # workspace fixture for xargs / $(...) renames
 W="$T/ws"; mkdir -p "$W/src" "$W/node_modules/x"
 printf 'export function createPlatformOutcomes() {}\nfunction localThing() {}\n' > "$W/src/out.ts"
@@ -110,6 +113,21 @@ check "warn mode on prod command -> additionalContext only" contains "$out" "add
 check "warn mode does not deny" test "$(decision "$out")" = none
 check "off mode on prod command -> silent" test -z "$(SCAFFOLDING_REFACTOR_GUARD=off dny "$T/empty.jsonl" "$PROD" Bash "$W")"
 check "off mode on Edit -> silent" test -z "$(SCAFFOLDING_REFACTOR_GUARD=off dny "$T/empty.jsonl" "$EDIT_RENAME")"
+echo "# default mode is warn (2.30.1)"
+out=$(dflt "$T/empty.jsonl" "$PROD" Bash "$W")
+check "no mode set -> warns, does not deny" test "$(decision "$out")" = none
+check "no mode set -> additionalContext present" contains "$out" "additionalContext"
+
+echo "# evidence in subagent transcripts (2.30.1)"
+mkdir -p "$T/sess/subagents"
+: > "$T/sess.jsonl"
+tu LSP "{\"operation\":\"findReferences\",\"filePath\":\"$W/src/out.ts\",\"line\":1,\"character\":17}" > "$T/sess/subagents/agent-1.jsonl"
+check "findReferences only in subagents/*.jsonl -> allowed in deny mode" test -z "$(dny "$T/sess.jsonl" "$PROD" Bash "$W")"
+: > "$T/sess/subagents/agent-1.jsonl"
+check "empty subagent transcript -> still denied" test "$(decision "$(dny "$T/sess.jsonl" "$PROD" Bash "$W")")" = deny
+printf '%s\n' "$(tu LSP '{"operation":"findReferences","filePath":"src/out.ts","line":1,"character":17}')" > "$T/rel.jsonl"
+check "repo-relative filePath counts as evidence" test -z "$(dny "$T/rel.jsonl" "$PROD" Bash "$W")"
+
 s=$(date +%s%N); dny "$T/empty.jsonl" "$PROD" Bash "$W" >/dev/null; e=$(( ($(date +%s%N) - s) / 1000000 ))
 check "workspace scan stays within budget (${e} ms)" test "$e" -lt 600
 
@@ -125,5 +143,5 @@ for m in "Edit|Write|MultiEdit" "Bash"; do
     check "PreToolUse[$m] -> refactor-guard.sh" test "$(jq --arg m "$m" '[.hooks.PreToolUse[]|select(.matcher==$m)|.hooks[].command|select(endswith("/hooks/refactor-guard.sh"))]|length' "$PJ")" = 1
 done
 check "refactor-guard.sh is executable" test -x "$HOOK"
-check "plugin version is 2.30.0" test "$(jq -r .version "$PJ")" = 2.30.0
+check "plugin version is 2.30.1" test "$(jq -r .version "$PJ")" = 2.30.1
 finish
