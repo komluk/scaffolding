@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.31.1] - 2026-10-23
+
+### Fixed
+- refactor-guard counted FAILED LSP / graphify calls as evidence. Live on prod (task cbaf70f3) both `findReferences`
+  calls errored ("connection got disposed") and the `sed` rename was still allowed. Each call is now paired with its
+  `tool_result` by `tool_use_id`; a result with `is_error`, an `Error:` text, a disposed connection or
+  "server is running" is not evidence. A failed call followed by a successful retry still counts.
+
 ## [2.31.0] - 2026-10-23
 
 ### Changed
