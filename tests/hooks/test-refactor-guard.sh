@@ -113,12 +113,12 @@ check "warn mode on prod command -> additionalContext only" contains "$out" "add
 check "warn mode does not deny" test "$(decision "$out")" = none
 check "off mode on prod command -> silent" test -z "$(SCAFFOLDING_REFACTOR_GUARD=off dny "$T/empty.jsonl" "$PROD" Bash "$W")"
 check "off mode on Edit -> silent" test -z "$(SCAFFOLDING_REFACTOR_GUARD=off dny "$T/empty.jsonl" "$EDIT_RENAME")"
-echo "# default mode is deny (2.31.0)"
+echo "# default mode is deny (2.31.1)"
 out=$(dflt "$T/empty.jsonl" "$PROD" Bash "$W")
 check "no mode set -> deny" test "$(decision "$out")" = deny
 check "deny reason explains indexing retry" contains "$out" "still indexing"
 
-echo "# evidence in subagent transcripts (2.31.0)"
+echo "# evidence in subagent transcripts (2.31.1)"
 mkdir -p "$T/sess/subagents"
 : > "$T/sess.jsonl"
 tu LSP "{\"operation\":\"findReferences\",\"filePath\":\"$W/src/out.ts\",\"line\":1,\"character\":17}" > "$T/sess/subagents/agent-1.jsonl"
@@ -127,6 +127,19 @@ check "findReferences only in subagents/*.jsonl -> allowed in deny mode" test -z
 check "empty subagent transcript -> still denied" test "$(decision "$(dny "$T/sess.jsonl" "$PROD" Bash "$W")")" = deny
 printf '%s\n' "$(tu LSP '{"operation":"findReferences","filePath":"src/out.ts","line":1,"character":17}')" > "$T/rel.jsonl"
 check "repo-relative filePath counts as evidence" test -z "$(dny "$T/rel.jsonl" "$PROD" Bash "$W")"
+
+echo "# failed LSP calls are not evidence (2.31.1)"
+tuid() { printf '{"type":"assistant","message":{"content":[{"type":"tool_use","id":"%s","name":"%s","input":%s}]}}\n' "$1" "$2" "$3"; }
+tres() { printf '{"type":"user","message":{"content":[{"type":"tool_result","tool_use_id":"%s","is_error":%s,"content":"%s"}]}}\n' "$1" "$2" "$3"; }
+LSPIN="{\"operation\":\"findReferences\",\"filePath\":\"$W/src/out.ts\",\"line\":1,\"character\":17}"
+{ tuid t1 LSP "$LSPIN"; tres t1 false "Error: Pending response rejected since connection got disposed"; } > "$T/lsp-fail.jsonl"
+check "LSP call that errored (disposed) -> still denied" test "$(decision "$(dny "$T/lsp-fail.jsonl" "$PROD" Bash "$W")")" = deny
+{ tuid t2 LSP "$LSPIN"; tres t2 true "boom"; } > "$T/lsp-iserr.jsonl"
+check "LSP call with is_error -> still denied" test "$(decision "$(dny "$T/lsp-iserr.jsonl" "$PROD" Bash "$W")")" = deny
+{ tuid t3 LSP "$LSPIN"; tres t3 false "Found 10 references"; } > "$T/lsp-ok.jsonl"
+check "LSP call that succeeded -> allowed" test -z "$(dny "$T/lsp-ok.jsonl" "$PROD" Bash "$W")"
+{ tuid t4 LSP "$LSPIN"; tres t4 false "Error: x"; tuid t5 LSP "$LSPIN"; tres t5 false "Found 10 references"; } > "$T/lsp-retry.jsonl"
+check "failed then successful retry -> allowed" test -z "$(dny "$T/lsp-retry.jsonl" "$PROD" Bash "$W")"
 
 s=$(date +%s%N); dny "$T/empty.jsonl" "$PROD" Bash "$W" >/dev/null; e=$(( ($(date +%s%N) - s) / 1000000 ))
 check "workspace scan stays within budget (${e} ms)" test "$e" -lt 600
@@ -143,5 +156,5 @@ for m in "Edit|Write|MultiEdit" "Bash"; do
     check "PreToolUse[$m] -> refactor-guard.sh" test "$(jq --arg m "$m" '[.hooks.PreToolUse[]|select(.matcher==$m)|.hooks[].command|select(endswith("/hooks/refactor-guard.sh"))]|length' "$PJ")" = 1
 done
 check "refactor-guard.sh is executable" test -x "$HOOK"
-check "plugin version is 2.31.0" test "$(jq -r .version "$PJ")" = 2.31.0
+check "plugin version is 2.31.1" test "$(jq -r .version "$PJ")" = 2.31.1
 finish

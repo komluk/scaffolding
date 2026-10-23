@@ -83,25 +83,40 @@ def evidence(transcript, paths, sym):
     want = {os.path.realpath(p) for p in paths}
     tails = {os.path.normpath(p).lstrip("./") for p in paths}
     word = re.compile(r"(?<![\w$])" + re.escape(sym) + r"(?![\w$])")
+    calls, failed = [], set()
     for line in data.splitlines():
-        if "findReferences" not in line and "incomingCalls" not in line and "mcp__graphify__" not in line:
+        if "findReferences" not in line and "incomingCalls" not in line and "mcp__graphify__" not in line \
+                and '"tool_result"' not in line:
             continue
         try:
             msg = (json.loads(line).get("message") or {}).get("content")
         except Exception:
             continue
         for b in msg if isinstance(msg, list) else []:
-            if not (isinstance(b, dict) and b.get("type") == "tool_use"):
+            if not isinstance(b, dict):
                 continue
-            name, inp = b.get("name", ""), b.get("input") or {}
-            if name == "LSP" and inp.get("operation") in LSP_OPS:
-                fp = str(inp.get("filePath", ""))
-                # Absolute match, or a repo-relative filePath that is a suffix of a defining file.
-                if fp and (os.path.realpath(fp) in want or any(w.endswith("/" + os.path.normpath(fp).lstrip("./")) or w == fp for w in want | tails)):
-                    return True
-            elif name.startswith("mcp__graphify__") and name[15:] in GRAPH_OK:
-                if word.search(json.dumps(inp)):
-                    return True
+            if b.get("type") == "tool_result":
+                # A failed call is no evidence: is_error, or LSP's "Error:" / disposed-connection text.
+                c = b.get("content")
+                txt = c if isinstance(c, str) else json.dumps(c)
+                if b.get("is_error") or re.match(r'\s*(\[\{"type":"text","text":")?\s*Error\b', txt or "") \
+                        or "connection got disposed" in (txt or "") or "server is running" in (txt or ""):
+                    failed.add(b.get("tool_use_id"))
+                continue
+            if b.get("type") == "tool_use":
+                calls.append(b)
+    for b in calls:
+        if b.get("id") in failed:
+            continue
+        name, inp = b.get("name", ""), b.get("input") or {}
+        if name == "LSP" and inp.get("operation") in LSP_OPS:
+            fp = str(inp.get("filePath", ""))
+            # Absolute match, or a repo-relative filePath that is a suffix of a defining file.
+            if fp and (os.path.realpath(fp) in want or any(w.endswith("/" + os.path.normpath(fp).lstrip("./")) or w == fp for w in want | tails)):
+                return True
+        elif name.startswith("mcp__graphify__") and name[15:] in GRAPH_OK:
+            if word.search(json.dumps(inp)):
+                return True
     return False
 
 
