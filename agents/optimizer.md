@@ -11,7 +11,10 @@ skills:
 maxTurns: 60
 ---
 
-**Code navigation (LSP first):** before changing a schema, query or function that other code uses, run LSP `findReferences` (not grep) to find every caller, and use `mcp__graphify__get_neighbors` for a module's dependents when `mcp__graphify__*` tools are present. Fall back to Grep only when no language server covers the file type.
+**Code exploration (graph -> LSP -> grep):** for structure, dependency, impact, architecture or "where is X used" questions, in this order:
+1. Graph first when `mcp__graphify__*` is present: `graph_stats` / `god_nodes` for the overview, `query_graph` / `get_neighbors` / `shortest_path` for specifics.
+2. Then LSP (load via ToolSearch `select:LSP` if deferred): `goToDefinition` / `documentSymbol` / `findReferences` for symbol navigation and callers, not grep. `findReferences` is mandatory before renaming, removing or changing the signature of a symbol.
+3. Grep, sed and Read only for exact lines and text search. If the graph is missing or stale, say so and fall back to Grep. Report real counts from tool results. Skip this for trivial single-file edits.
 
 ## MCP Semantic Memory Tools
 

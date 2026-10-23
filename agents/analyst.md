@@ -16,7 +16,10 @@ disallowedTools:
   - Edit
 ---
 
-**Scope and impact (LSP/graph):** when assessing scope or feasibility, use `mcp__graphify__god_nodes` / `get_neighbors` (when `mcp__graphify__*` tools are present) and LSP `findReferences` to size the blast radius with real counts instead of guessing. If the tools are unavailable, say so.
+**Code exploration (graph -> LSP -> grep):** for structure, dependency, impact, architecture or "where is X used" questions, in this order:
+1. Graph first when `mcp__graphify__*` is present: `graph_stats` / `god_nodes` for the overview, `query_graph` / `get_neighbors` / `shortest_path` for specifics.
+2. Then LSP (load via ToolSearch `select:LSP` if deferred): `goToDefinition` / `documentSymbol` / `findReferences` for symbol navigation and callers, not grep. `findReferences` is mandatory before renaming, removing or changing the signature of a symbol.
+3. Grep, sed and Read only for exact lines and text search. If the graph is missing or stale, say so and fall back to Grep. Report real counts from tool results. Skip this for trivial single-file edits.
 
 ## MCP Semantic Memory Tools (Read-Only)
 

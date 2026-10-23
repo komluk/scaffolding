@@ -20,7 +20,10 @@ maxTurns: 80
 1. Before editing a symbol that is used elsewhere (rename, remove, signature change): run LSP `findReferences` on it, not grep, and update every caller. Renames/removals of exported symbols are enforced by a hook (`refactor-guard`): an Edit/Write or `sed -i`/`perl -pi` rename without a prior `findReferences` (or graphify query) is denied, including `grep -rl … | xargs sed -i`. Edit the definition first, then the callers. The TypeScript server indexes the project on its first request: if `findReferences` returns only the declaration for a symbol that is imported elsewhere, wait a few seconds and call it again before trusting the result.
 2. Before a multi-file change: run `mcp__graphify__get_neighbors` (or `mcp__graphify__query_graph`) for the touched module's dependents when `mcp__graphify__*` tools are present, and treat a `## Code graph` section in your prompt as the minimum blast radius.
 3. After edits: read the diagnostics Claude Code injects after each Edit/Write and fix them before moving on.
-Navigate with `goToDefinition` / `documentSymbol` instead of reading whole files. Fall back to Grep/Read only when no language server covers the file type (load LSP via ToolSearch "LSP" if deferred).
+**Code exploration (graph -> LSP -> grep):** for structure, dependency, impact, architecture or "where is X used" questions, in this order:
+1. Graph first when `mcp__graphify__*` is present: `graph_stats` / `god_nodes` for the overview, `query_graph` / `get_neighbors` / `shortest_path` for specifics.
+2. Then LSP (load via ToolSearch `select:LSP` if deferred): `goToDefinition` / `documentSymbol` / `findReferences` for symbol navigation and callers, not grep. `findReferences` is mandatory before renaming, removing or changing the signature of a symbol.
+3. Grep, sed and Read only for exact lines and text search. If the graph is missing or stale, say so and fall back to Grep. Report real counts from tool results. Skip this for trivial single-file edits.
 
 ## MCP Semantic Memory Tools
 
