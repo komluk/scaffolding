@@ -18,10 +18,10 @@ disallowedTools:
   - Edit
 ---
 
-**Code exploration (graph -> LSP -> grep):** for structure, dependency, impact, architecture or "where is X used" questions, in this order:
-1. Graph first when `mcp__graphify__*` is present: `graph_stats` / `god_nodes` for the overview, `query_graph` / `get_neighbors` / `shortest_path` for specifics.
-2. Then LSP (load via ToolSearch `select:LSP` if deferred): `goToDefinition` / `documentSymbol` / `findReferences` for symbol navigation and callers, not grep. `findReferences` is mandatory before renaming, removing or changing the signature of a symbol.
-3. Grep, sed and Read only for exact lines and text search. If the graph is missing or stale, say so and fall back to Grep. Report real counts from tool results. Skip this for trivial single-file edits.
+**Code exploration (graph -> LSP -> grep):** for structure, dependency, impact, architecture or "where is X used" questions; skip for trivial single-file edits:
+1. Graph (`mcp__graphify__*`): start with `graph_stats` / `god_nodes`, then narrow `query_graph` calls (one symbol or module, `token_budget` <= 2000) and `get_neighbors` / `shortest_path`; broad questions come back truncated. If the graph is missing or stale, say so and fall back to grep.
+2. LSP: once grep or the graph gives a symbol's file:line, use LSP for that symbol instead of a second grep: `incomingCalls` / `findReferences` (callers), `goToDefinition`, `documentSymbol` (file outline). `findReferences` is mandatory before a rename, a removal or a signature change.
+3. grep/sed/Read (via Bash where no Grep tool exists) only for exact text and line ranges. Report real counts from tool results.
 
 ## MCP Semantic Memory Tools (Read-Only)
 

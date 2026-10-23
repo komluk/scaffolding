@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.32.1] - 2026-10-23
+
+### Changed
+- "Code exploration" rule in the six analysis agents (analyst, architect, debugger, developer, optimizer, reviewer)
+  rewritten, still identical across all six and 4 lines long. Graph: start with `graph_stats` / `god_nodes`, then
+  narrow `query_graph` calls (one symbol or module, `token_budget` <= 2000) plus `get_neighbors` / `shortest_path`;
+  broad queries come back truncated. LSP now has a concrete trigger: once grep or the graph yields a symbol's
+  file:line, use `incomingCalls` / `findReferences` / `goToDefinition` / `documentSymbol` for it instead of a second
+  grep; `findReferences` stays mandatory before a rename, removal or signature change. grep/sed/Read (via Bash where
+  no Grep tool exists) only for exact text and line ranges. Removed the "load via ToolSearch if deferred" clause.
+  Prompts only, no hook or code change.
+  Motivation: on the platform LSP is available and not deferred, yet every LSP call so far was a `findReferences`
+  forced by refactor-guard; LSP needs a file:line:character and the old rule never said when to prefer it over grep,
+  and a broad first `query_graph` ("TRUNCATED: showing 81 of 2761 nodes") pushed the model back to Bash grep.
+
 ## [2.32.0] - 2026-10-23
 
 ### Changed
