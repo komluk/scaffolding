@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.30.1] - 2026-10-23
+
+### Fixed
+- refactor-guard ignored evidence gathered inside subagents: inside a subagent the hook may receive the
+  parent session's transcript, while the subagent's LSP/graphify calls live in `<session>/subagents/*.jsonl`.
+  Evidence is now searched in both. A repo-relative LSP `filePath` also counts as evidence.
+
+### Changed
+- refactor-guard defaults to **warn** again (`SCAFFOLDING_REFACTOR_GUARD=deny` opts into blocking). Live on prod
+  the TypeScript language server was unresponsive, so deny mode blocked renames with no way to produce evidence.
+  Deny returns as the default once LSP is verified healthy end to end.
+
 ## [Unreleased]
 
 ## [2.30.0] - 2026-10-22
