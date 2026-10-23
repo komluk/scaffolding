@@ -17,7 +17,7 @@ maxTurns: 80
 ---
 
 **Mandatory LSP/graph checklist** (not optional):
-1. Before editing a symbol that is used elsewhere (rename, remove, signature change): run LSP `findReferences` on it, not grep, and update every caller. Renames/removals of exported symbols are enforced by a hook (`refactor-guard`): an Edit/Write or `sed -i`/`perl -pi` rename without a prior `findReferences` (or graphify query) is flagged (a warning now; blocked once `SCAFFOLDING_REFACTOR_GUARD=deny`), including `grep -rl … | xargs sed -i`. Edit the definition first, then the callers.
+1. Before editing a symbol that is used elsewhere (rename, remove, signature change): run LSP `findReferences` on it, not grep, and update every caller. Renames/removals of exported symbols are enforced by a hook (`refactor-guard`): an Edit/Write or `sed -i`/`perl -pi` rename without a prior `findReferences` (or graphify query) is denied, including `grep -rl … | xargs sed -i`. Edit the definition first, then the callers. The TypeScript server indexes the project on its first request: if `findReferences` returns only the declaration for a symbol that is imported elsewhere, wait a few seconds and call it again before trusting the result.
 2. Before a multi-file change: run `mcp__graphify__get_neighbors` (or `mcp__graphify__query_graph`) for the touched module's dependents when `mcp__graphify__*` tools are present, and treat a `## Code graph` section in your prompt as the minimum blast radius.
 3. After edits: read the diagnostics Claude Code injects after each Edit/Write and fix them before moving on.
 Navigate with `goToDefinition` / `documentSymbol` instead of reading whole files. Fall back to Grep/Read only when no language server covers the file type (load LSP via ToolSearch "LSP" if deferred).

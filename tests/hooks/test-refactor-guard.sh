@@ -113,12 +113,12 @@ check "warn mode on prod command -> additionalContext only" contains "$out" "add
 check "warn mode does not deny" test "$(decision "$out")" = none
 check "off mode on prod command -> silent" test -z "$(SCAFFOLDING_REFACTOR_GUARD=off dny "$T/empty.jsonl" "$PROD" Bash "$W")"
 check "off mode on Edit -> silent" test -z "$(SCAFFOLDING_REFACTOR_GUARD=off dny "$T/empty.jsonl" "$EDIT_RENAME")"
-echo "# default mode is warn (2.30.1)"
+echo "# default mode is deny (2.31.0)"
 out=$(dflt "$T/empty.jsonl" "$PROD" Bash "$W")
-check "no mode set -> warns, does not deny" test "$(decision "$out")" = none
-check "no mode set -> additionalContext present" contains "$out" "additionalContext"
+check "no mode set -> deny" test "$(decision "$out")" = deny
+check "deny reason explains indexing retry" contains "$out" "still indexing"
 
-echo "# evidence in subagent transcripts (2.30.1)"
+echo "# evidence in subagent transcripts (2.31.0)"
 mkdir -p "$T/sess/subagents"
 : > "$T/sess.jsonl"
 tu LSP "{\"operation\":\"findReferences\",\"filePath\":\"$W/src/out.ts\",\"line\":1,\"character\":17}" > "$T/sess/subagents/agent-1.jsonl"
@@ -143,5 +143,5 @@ for m in "Edit|Write|MultiEdit" "Bash"; do
     check "PreToolUse[$m] -> refactor-guard.sh" test "$(jq --arg m "$m" '[.hooks.PreToolUse[]|select(.matcher==$m)|.hooks[].command|select(endswith("/hooks/refactor-guard.sh"))]|length' "$PJ")" = 1
 done
 check "refactor-guard.sh is executable" test -x "$HOOK"
-check "plugin version is 2.30.1" test "$(jq -r .version "$PJ")" = 2.30.1
+check "plugin version is 2.31.0" test "$(jq -r .version "$PJ")" = 2.31.0
 finish

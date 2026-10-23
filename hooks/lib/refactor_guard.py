@@ -4,8 +4,8 @@
 Detects an Edit/MultiEdit/Write (or Bash `sed -i` / `perl -pi`, including file lists coming from
 `xargs` / `$(...)`) that renames or removes an exported symbol, then checks the session transcript for an
 earlier LSP findReferences (on a file defining the symbol) or graphify query (symbol named in its input).
-If none: a warning (default, SCAFFOLDING_REFACTOR_GUARD=warn), or DENY with SCAFFOLDING_REFACTOR_GUARD=deny
-when an LSP server covers the language. =off -> disabled. Evidence is searched in the session transcript AND
+If none: DENY (default) when an LSP server covers the language, else a warning; SCAFFOLDING_REFACTOR_GUARD=warn
+keeps warn-only. =off -> disabled. Evidence is searched in the session transcript AND
 its subagents/*.jsonl. Stdlib only; run with `python3 -I`.
 """
 import glob, json, os, re, shlex, shutil, subprocess, sys, time
@@ -230,7 +230,7 @@ def clean(p):
 
 
 def main():
-    mode = os.environ.get("SCAFFOLDING_REFACTOR_GUARD", "warn")
+    mode = os.environ.get("SCAFFOLDING_REFACTOR_GUARD", "deny")
     if mode == "off":
         return
     try:
@@ -254,6 +254,7 @@ def main():
                   "(1) call tool `LSP` with operation=findReferences, filePath=\"%s\", line=%d, character=%d "
                   "(or `mcp__graphify__query_graph` / `mcp__graphify__get_neighbors` with the symbol name); "
                   "(2) then update every reference found using Edit, or retry the same sed after findReferences. "
+                  "If findReferences returns only the declaration, the TypeScript server is still indexing: call it again after a few seconds. "
                   "Override: SCAFFOLDING_REFACTOR_GUARD=warn (warn only) or =off." % (what, syms, clean(f), clean(f), line, ch))
         print(json.dumps({"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "deny",
                                                  "permissionDecisionReason": reason}}))
