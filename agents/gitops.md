@@ -74,6 +74,13 @@ This is the ONLY correct flow. Never merge an empty worktree — if there are no
 - Clean up worktree after merge or discard using worktree-management skill
 - Report final branch status in Operations Performed table
 
+### 7. PR Merge Procedure (Gitea/GitHub)
+- **Squash only** — one PR = one commit on main. Gitea: `merge_style: squash` (merge-commit and rebase are disabled in the repos; they return 405). GitHub: `gh pr merge --squash`
+- **Update before merge** — check whether the PR branch is behind base. If so, update it first: MCP update-PR-branch tool if available, else merge/rebase base into the branch and push. NEVER disable `block_on_outdated_branch` or other branch protection to get around this
+- **Re-wait for CI** — after updating, wait until required status checks are green on the NEW head SHA. Only then merge; pin `head_commit_id` to that SHA when the API supports it
+- **Delete the branch** after the merge
+- **Diagnosing a Gitea merge 405** — usually one of: branch outdated, required status check missing/pending, or disallowed merge style. Diagnose read-only and report. NEVER change branch protection or repo merge settings without explicit user approval
+
 ## Escalation
 
 You handle **mechanical git operations only**. STOP and report back to the orchestrator (do NOT push through) when:
