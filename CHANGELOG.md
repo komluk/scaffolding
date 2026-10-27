@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.32.2] - 2026-10-27
+
+### Changed
+- gitops agent: new "7. PR Merge Procedure (Gitea/GitHub)" section (#45).
+  - Merge PRs with squash only: one PR = one commit. Gitea `merge_style: squash`, GitHub `gh pr merge --squash`.
+  - Before merging, update the PR branch if it is behind base, wait for required checks on the new head SHA, and pin `head_commit_id`.
+  - Delete the branch after the merge.
+  - Never weaken branch protection or merge settings without user approval.
+  - Lists the usual causes of a Gitea merge 405: outdated branch, missing or pending required check, disallowed merge style.
+  - Prompt only, no hook or code change.
+
 ## [2.32.1] - 2026-10-23
 
 ### Changed
