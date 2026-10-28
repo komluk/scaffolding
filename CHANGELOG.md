@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - LSP: for callers/references in typed code, locate the definition once (graph `get_node`, LSP `workspaceSymbol` or one grep), then use `incomingCalls` / `findReferences`; never grep for "X(" call sites. Untyped JavaScript (no checkJs) is the exception: use `rg -n`.
   - grep/sed/cat via Bash only for literal text and line ranges; explicitly overrides generic "search with grep/find" guidance.
   - Motivation: on the scaffolding.tool platform the architect answered "who calls X" in a TypeScript repo with 7 Bash greps and 0 LSP/graph calls although both were available.
+  - LSP and the graph are optional (no binary on PATH, no server for the language; graphify MCP is not shipped by the plugin): rule 2 now falls back to `rg -n` / grep and the agent says LSP was unavailable.
   - Prompts only, no hook or code change.
 
 ## [2.32.2] - 2026-10-27
