@@ -16,6 +16,10 @@
 #  7. PHP: composer.json "test" script -> composer test
 #  8. JVM: ./gradlew test or ./mvnw test
 #
+# Skipped entirely when the staged changes (deletions included) are only CI
+# config under .github/ or .gitea/. Everything else (docs, generic yml) is still
+# validated. Nothing staged -> normal behavior.
+#
 # Additionally: when the repo is the scaffolding plugin itself
 # (.claude-plugin/plugin.json present), also runs validators/validate-skill.sh
 # and validators/validate-agent-frontmatter.sh.
@@ -36,6 +40,26 @@ run_check() {
         exit 1
     fi
 }
+
+# True only when something is staged and every staged path (deletions included)
+# is under .github/ or .gitea/. Runs in the hook's cwd, the same dir the validation uses.
+only_ci_config_staged() {
+    local f n=0
+    while IFS= read -r f; do
+        [ -n "$f" ] || continue
+        n=$((n + 1))
+        case "$f" in
+            .github/*|.gitea/*) ;;
+            *) return 1 ;;
+        esac
+    done < <(git diff --cached --name-only 2>/dev/null)
+    [ "$n" -gt 0 ]
+}
+
+if only_ci_config_staged; then
+    echo "[skip] only .github/.gitea changes staged -- skipping validation"
+    exit 0
+fi
 
 # --- Detect and run the project's own validation (first match only) ---
 
