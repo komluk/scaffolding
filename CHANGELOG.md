@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.32.3] - 2026-10-28
+
+### Changed
+- "Code exploration" rule in the six analysis agents (analyst, architect, debugger, developer, optimizer, reviewer), identical in all six.
+  - Graph: skip `graph_stats` / `god_nodes` when a "Project code graph" block is already in the prompt.
+  - LSP: for callers/references in typed code, locate the definition once (graph `get_node`, LSP `workspaceSymbol` or one grep), then use `incomingCalls` / `findReferences`; never grep for "X(" call sites. Untyped JavaScript (no checkJs) is the exception: use `rg -n`.
+  - grep/sed/cat via Bash only for literal text and line ranges; explicitly overrides generic "search with grep/find" guidance.
+  - Motivation: on the scaffolding.tool platform the architect answered "who calls X" in a TypeScript repo with 7 Bash greps and 0 LSP/graph calls although both were available.
+  - LSP and the graph are optional (no binary on PATH, no server for the language; graphify MCP is not shipped by the plugin): rule 2 now falls back to `rg -n` / grep and the agent says LSP was unavailable.
+  - Prompts only, no hook or code change.
+
 ## [2.32.2] - 2026-10-27
 
 ### Changed
