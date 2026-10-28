@@ -20,10 +20,10 @@ This directory contains hooks that run automatically during Claude Code workflow
 **Purpose:** Runs validation checks to prevent committing broken code
 
 **What it does:**
-- Detects frontend changes → runs `npm run validate`
-- Detects backend changes → runs `pytest`
+- Runs the first detected validation entrypoint (framework-agnostic): Makefile `test`/`check`/`validate`, justfile, package.json `validate`/`test`, pytest, `cargo test`, `go test ./...`, composer `test`, `./gradlew test` or `./mvnw test`
+- Warns and passes if no entrypoint is detected
 - Blocks commit if validation fails
-- Ensures code quality before it enters git history
+- Skips entirely when every staged path (deletions included) is under `.github/` or `.gitea/`
 
 ### 3. post-edit-format.sh
 **Type:** PostToolUse hook (Edit|Write)

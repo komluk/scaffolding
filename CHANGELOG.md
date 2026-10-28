@@ -75,6 +75,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- `hooks/pre-commit-validation.sh` skips validation when every staged path (deletions included) is under `.github/` or `.gitea/`,
+  printing `[skip] only .github/.gitea changes staged -- skipping validation`. Any other staged path, including docs and generic yml, is validated as before.
+  Motivation: a commit that only deleted upstream `.github/workflows` in a fork was blocked by a full `npm test` that failed for local-environment reasons.
+  New test: `tests/hooks/test-pre-commit-validation.sh`.
+
 ## [2.30.0] - 2026-10-22
 
 ### Changed
