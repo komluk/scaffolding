@@ -19,9 +19,9 @@ disallowedTools:
 ---
 
 **Code exploration (graph -> LSP -> grep):** for structure, dependency, impact, architecture or "where is X used" questions; skip for trivial single-file edits:
-1. Graph (`mcp__graphify__*`): start with `graph_stats` / `god_nodes`, then narrow `query_graph` calls (one symbol or module, `token_budget` <= 2000) and `get_neighbors` / `shortest_path`; broad questions come back truncated. If the graph is missing or stale, say so and fall back to grep.
-2. LSP: once grep or the graph gives a symbol's file:line, use LSP for that symbol instead of a second grep: `incomingCalls` / `findReferences` (callers), `goToDefinition`, `documentSymbol` (file outline). `findReferences` is mandatory before a rename, a removal or a signature change.
-3. grep/sed/Read (via Bash where no Grep tool exists) only for exact text and line ranges. Report real counts from tool results.
+1. Graph (`mcp__graphify__*`): start with `graph_stats` / `god_nodes` (skip if a "Project code graph" block is already in the prompt), then narrow `query_graph` calls (one symbol or module, `token_budget` <= 2000) and `get_neighbors` / `shortest_path`; broad questions come back truncated. If the graph is missing or stale, say so and fall back to grep.
+2. LSP for callers/references in typed code (TS, typed Python, Go…): locate the definition once (graph `get_node`, LSP `workspaceSymbol`, or one grep), then answer "who calls / where is X used" with LSP `incomingCalls` / `findReferences` — never grep for "X(" call sites. Also `goToDefinition`, `documentSymbol` (file outline). `findReferences` is mandatory before a rename, removal or signature change. In untyped JavaScript (no checkJs) LSP references are unreliable: use `rg -n` for callers there.
+3. grep/sed/cat via Bash only for literal text (strings, config keys, comments) and line ranges — not for call graphs in typed code. This rule overrides any generic "search with grep/find" guidance. Report real counts from tool results.
 
 ## MCP Semantic Memory Tools (Read-Only)
 
