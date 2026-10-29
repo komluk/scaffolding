@@ -57,4 +57,21 @@ reset
 out=$(run); rc=$?
 check "nothing staged -> validation runs, exit 1" test "$rc" -eq 1
 
+echo "# local git config opt-out"
+CFG_MSG="[skip] local validation disabled for this repo (git config scaffolding.precommitValidation=false)"
+echo 'changed' >> "$T/README.md"
+git -C "$T" add README.md
+git -C "$T" config scaffolding.precommitValidation false
+out=$(run); rc=$?
+check "config false -> exit 0" test "$rc" -eq 0
+check "config false prints skip message" contains "$out" "$CFG_MSG"
+git -C "$T" config scaffolding.precommitValidation true
+out=$(run); rc=$?
+check "config other value -> validation runs, exit 1" test "$rc" -eq 1
+check "config other value runs validation" contains "$out" "[gradle] running"
+git -C "$T" config --unset scaffolding.precommitValidation
+out=$(run); rc=$?
+check "config unset -> validation runs, exit 1" test "$rc" -eq 1
+reset
+
 finish

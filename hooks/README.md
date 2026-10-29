@@ -24,6 +24,7 @@ This directory contains hooks that run automatically during Claude Code workflow
 - Warns and passes if no entrypoint is detected
 - Blocks commit if validation fails
 - Skips entirely when every staged path (deletions included) is under `.github/` or `.gitea/`
+- Per-repo opt-out via local git config (nothing committed): `git config scaffolding.precommitValidation false` skips validation; unset or any other value keeps it on
 
 ### 3. post-edit-format.sh
 **Type:** PostToolUse hook (Edit|Write)
