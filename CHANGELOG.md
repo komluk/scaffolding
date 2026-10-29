@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.32.4] - 2026-10-29
+
+### Changed
+- `hooks/pre-commit-validation.sh` skips validation when every staged path (deletions included) is under `.github/` or `.gitea/`,
+  printing `[skip] only .github/.gitea changes staged -- skipping validation`. Any other staged path, including docs and generic yml, is validated as before.
+  Motivation: a commit that only deleted upstream `.github/workflows` in a fork was blocked by a full `npm test` that failed for local-environment reasons.
+  New test: `tests/hooks/test-pre-commit-validation.sh`. (#48)
+
 ## [2.32.3] - 2026-10-28
 
 ### Changed
@@ -83,14 +91,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - refactor-guard defaults to **warn** again (`SCAFFOLDING_REFACTOR_GUARD=deny` opts into blocking). Live on prod
   the TypeScript language server was unresponsive, so deny mode blocked renames with no way to produce evidence.
   Deny returns as the default once LSP is verified healthy end to end.
-
-## [Unreleased]
-
-### Changed
-- `hooks/pre-commit-validation.sh` skips validation when every staged path (deletions included) is under `.github/` or `.gitea/`,
-  printing `[skip] only .github/.gitea changes staged -- skipping validation`. Any other staged path, including docs and generic yml, is validated as before.
-  Motivation: a commit that only deleted upstream `.github/workflows` in a fork was blocked by a full `npm test` that failed for local-environment reasons.
-  New test: `tests/hooks/test-pre-commit-validation.sh`.
 
 ## [2.30.0] - 2026-10-22
 
