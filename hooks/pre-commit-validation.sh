@@ -20,6 +20,10 @@
 # config under .github/ or .gitea/. Everything else (docs, generic yml) is still
 # validated. Nothing staged -> normal behavior.
 #
+# Per-repo opt-out (local git config, nothing committed):
+#   git config scaffolding.precommitValidation false
+# Any other value, or unset, leaves validation on.
+#
 # Additionally: when the repo is the scaffolding plugin itself
 # (.claude-plugin/plugin.json present), also runs validators/validate-skill.sh
 # and validators/validate-agent-frontmatter.sh.
@@ -58,6 +62,11 @@ only_ci_config_staged() {
 
 if only_ci_config_staged; then
     echo "[skip] only .github/.gitea changes staged -- skipping validation"
+    exit 0
+fi
+
+if [ "$(git config --get scaffolding.precommitValidation 2>/dev/null)" = "false" ]; then
+    echo "[skip] local validation disabled for this repo (git config scaffolding.precommitValidation=false)"
     exit 0
 fi
 

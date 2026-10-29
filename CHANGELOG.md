@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.32.5] - 2026-10-29
+
+### Added
+- Per-repo opt-out for `hooks/pre-commit-validation.sh`: `git config scaffolding.precommitValidation false` (local config, nothing committed) prints
+  `[skip] local validation disabled for this repo (git config scaffolding.precommitValidation=false)` and exits 0. Unset or any other value keeps validation on.
+- `copilot/`: versioned Copilot CLI sync tooling (`scaffolding-sync.sh` and helpers, hook wrapper template) plus `copilot/install.sh` for one-step setup.
+
+### Fixed
+- Copilot hook wrapper validated the session cwd instead of the repo the commit targets (`git -C`, `cd X &&`, payload cwd).
+
 ## [2.32.4] - 2026-10-29
 
 ### Changed
