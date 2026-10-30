@@ -156,5 +156,5 @@ for m in "Edit|Write|MultiEdit" "Bash"; do
     check "PreToolUse[$m] -> refactor-guard.sh" test "$(jq --arg m "$m" '[.hooks.PreToolUse[]|select(.matcher==$m)|.hooks[].command|select(endswith("/hooks/refactor-guard.sh"))]|length' "$PJ")" = 1
 done
 check "refactor-guard.sh is executable" test -x "$HOOK"
-check "plugin version is 2.32.5" test "$(jq -r .version "$PJ")" = 2.32.5
+check "plugin version is 2.33.0" test "$(jq -r .version "$PJ")" = 2.33.0
 finish

@@ -12,6 +12,7 @@ check() { local d="$1"; shift; if "$@"; then ok "$d"; else bad "$d"; fi; }
 is_link_to() { [ -L "$1" ] && [ "$(readlink "$1")" = "$2" ]; }
 has_file()   { [ -f "$1" ]; }
 file_is()    { [ "$(cat "$1" 2>/dev/null)" = "$2" ]; }
+file_is_str() { [ "$1" = "$2" ]; }
 contains()   { printf '%s' "$1" | grep -qF -- "$2"; }
 
 mktmp() { mktemp -d "${TMPDIR:-/tmp}/scaffolding-test.XXXXXX"; }
