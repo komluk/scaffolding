@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.33.0] - 2026-10-30
+
+### Changed
+- `hooks/memory-project-id.sh`: the memory `project_id` is now `scaffold:` + sha256 of the lowercase `owner/repo` taken from `remote.origin.url`, not of the raw URL. Every clone of one repo (scp/ssh/https form, any host alias or IP) now shares one memory scope. A checkout without a remote still falls back to its absolute path. Existing ids change once; entries stored under the old ids need a one-time move.
+
 ## [2.32.5] - 2026-10-29
 
 ### Added

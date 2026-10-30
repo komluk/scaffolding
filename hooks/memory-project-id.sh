@@ -10,7 +10,14 @@ set -euo pipefail
 
 dir="${CLAUDE_PROJECT_DIR:-$PWD}"
 remote="$(git -C "$dir" config --get remote.origin.url 2>/dev/null || true)"
-key="${remote:-$(cd "$dir" 2>/dev/null && pwd || echo "$dir")}"
+# Key = lowercase "owner/repo" taken from the remote, so every clone of one repo
+# (scp/ssh/https URL, any host alias or IP) gets the same id. No remote -> abs path.
+slug=""
+if [ -n "$remote" ]; then
+  slug="$(printf '%s' "$remote" | sed -E 's#[/:]+$##; s#\.git$##; s#^.*[:/]([^/:]+/[^/:]+)$#\1#' | tr '[:upper:]' '[:lower:]')"
+  case "$slug" in */*) ;; *) slug="" ;; esac
+fi
+key="${slug:-${remote:-$(cd "$dir" 2>/dev/null && pwd || echo "$dir")}}"
 
 if command -v sha256sum >/dev/null 2>&1; then
   h="$(printf '%s' "$key" | sha256sum | cut -c1-16)"
