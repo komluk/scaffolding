@@ -87,10 +87,22 @@ After work is complete on a branch, execute one of these four actions based on c
 git checkout main
 git merge --ff-only <branch>  # try fast-forward first
 # if ff fails: git merge --no-ff <branch>
-git branch -d <branch>
-git worktree remove .scaffolding/worktrees/<task_id> 2>/dev/null
+# MANDATORY cleanup -- see Post-Merge Cleanup
+```
+
+### Post-Merge Cleanup (MANDATORY final step of every merge)
+Applies to ff, `--no-ff`, and squash merges (PR merged via `gh`/Gitea too). Squash merges are invisible to `git branch --merged`.
+```bash
+# from the main checkout, never from inside the worktree
+git -C <worktree> status --porcelain --untracked-files=no   # must be empty
+git worktree remove <worktree>        # --force only for untracked build output (node_modules)
+git branch -D <branch>
 git worktree prune
 ```
+- Uncommitted tracked changes -> REFUSE, keep worktree + branch, report the files.
+- Never delete remote branches here. Never touch the main checkout.
+- Put the result in the final report (Worktree Cleanup table).
+- Stale leftovers: `/worktree-gc` (dry run by default).
 
 ### Create PR
 ```bash

@@ -8,7 +8,7 @@ The plugin organizes orchestration logic into four core directories:
 
 - **`skills/`** (39 skills) — Directory per skill with `SKILL.md` frontmatter (`name`, `description`) and content. Skills auto-invoke based on trigger keywords in agent descriptions. Examples: `error-handling/SKILL.md` (guidelines for exception handling), `spec-develop/SKILL.md` (how to build to spec).
 
-- **`commands/`** (20 commands) — 9 top-level slash commands (`/context`, `/learn`, `/memory`, etc.) + 11 OpenSpec subcommands (`/specs new`, `/specs apply`). Each `.md` file is runnable as a Claude Code command.
+- **`commands/`** (21 commands) — 10 top-level slash commands (`/context`, `/learn`, `/memory`, etc.) + 11 OpenSpec subcommands (`/specs new`, `/specs apply`). Each `.md` file is runnable as a Claude Code command.
 
 - **`hooks/`** (20 hooks) — Bash scripts in `hooks/` registered in `.claude-plugin/plugin.json` (PreToolUse, PostToolUse, SessionStart, etc.). Examples: `block-subagent.sh` (hard-deny `general-purpose`), `pre-commit-validation.sh` (framework-agnostic test runner).
 
@@ -54,7 +54,7 @@ Source of truth: `.claude-plugin/plugin.json` (`version` field).
 1. **Count verification** (must stay in sync):
    - Count agents in `agents/*.md` → should match `plugin.json` / `README.md` / `CLAUDE.md` ("13 agents")
    - Count skills in `skills/*/SKILL.md` → should match "39 skills"
-   - Count commands: `commands/*.md` (9 top-level) + `commands/specs/*.md` (11) = 20 total
+   - Count commands: `commands/*.md` (10 top-level) + `commands/specs/*.md` (11) = 21 total
    - Count hooks in `hooks/*.sh` → should match "20 hooks"
 
 2. **File updates:**
