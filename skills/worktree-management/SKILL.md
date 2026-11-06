@@ -15,7 +15,7 @@ Live worktrees:
 
 Other agents (developer, architect) do NOT commit. The worktree flow is:
 1. Agent writes code/tests in worktree
-2. **gitops** commits, merges to main, pushes, cleans up
+2. **gitops** commits, merges to main, pushes, **cleans up (MANDATORY)**
 
 If a worktree has no new commits after an agent finishes, the changes are uncommitted — gitops must commit them BEFORE merge.
 
@@ -112,14 +112,32 @@ git add -A && git stash
 cd /project/root && git stash pop
 ```
 
-## Post-Finish Cleanup
+## Post-Finish Cleanup (MANDATORY after every merge or discard)
 
-After a merge or discard finishing action, clean up the worktree:
+Cleanup is the final step of every merge, for ANY worktree gitops worked in (`.scaffolding/worktrees/...`, `~/.cache/worktrees/...`, anywhere). Do it for squash-merged PRs too.
 
 ```bash
-git worktree remove .scaffolding/worktrees/{task_id[:12]} 2>/dev/null
-rm -rf .scaffolding/worktrees/{task_id[:12]}
+# from the main checkout, never from inside the worktree
+git -C <worktree> status --porcelain --untracked-files=no   # must be empty
+git worktree remove <worktree>     # --force only for untracked build output (node_modules)
+git branch -D <branch>
 git worktree prune
 ```
 
-Note: Only needed for **merge** and **discard** actions. PR and keep actions leave the worktree intact.
+- Uncommitted tracked changes -> REFUSE, keep worktree + branch, report the files.
+- Report the cleanup in the final report.
+- Never delete remote branches here.
+
+Note: Only **merge** and **discard** clean up. PR-open and keep actions leave the worktree intact (clean up after the PR is merged).
+
+### Sweeping stale worktrees: `/worktree-gc`
+
+`WorktreeRemove` only sees worktrees made by `worktree-create.sh`. Plain `git worktree add` ones (e.g. `~/.cache/worktrees/<name>`) and squash-merged branches are caught by `scripts/worktree-gc.sh`:
+
+```bash
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/worktree-gc.sh"                      # dry run
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/worktree-gc.sh" --apply              # remove
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/worktree-gc.sh" --all-repos ~/repos  # every repo under a dir
+```
+
+REMOVE only if no uncommitted tracked changes AND the work is in `origin/<default>` (no commits ahead, patch-equivalent, or squash-merged: remote ref gone + commit subjects in `origin/<default>`). Unsure -> KEEP.

@@ -56,9 +56,18 @@ When handling a worktree branch:
 2. Run `git status` — if there are uncommitted changes, stage and commit them
 3. Return to main repo, merge the branch
 4. Push to remote
-5. Clean up worktree and branch
+5. **MANDATORY cleanup** (see "Post-Merge Cleanup"): remove the worktree, delete the local branch
 
 This is the ONLY correct flow. Never merge an empty worktree — if there are no commits beyond main, the agent's work was lost. Report this as an error.
+
+### Post-Merge Cleanup (MANDATORY — final step of EVERY merge)
+A merge (local, `gh pr merge --squash`, Gitea squash) is NOT done until the local worktree and branch are gone. Squash merges are not seen by `git branch --merged` — clean up explicitly.
+1. From the main checkout (never from inside the worktree): `git -C <worktree> status --porcelain --untracked-files=no`
+2. Output not empty → REFUSE: keep worktree + branch, report the dirty files, `status: partial_success`
+3. Empty → `git worktree remove <path>` (add `--force` only for untracked build output like node_modules), then `git branch -D <branch>`, then `git worktree prune`
+4. Never delete remote branches here; never touch the main checkout
+5. Report the cleanup in the final report (see "Worktree Cleanup" in Output Format)
+6. Stale worktrees from earlier work: `/worktree-gc` (dry run first)
 
 ### 5. Push Operations
 - Push committed changes to remote after workflow completion
@@ -71,7 +80,7 @@ This is the ONLY correct flow. Never merge an empty worktree — if there are no
 ### 6. Finish Branch
 - Determine appropriate finishing action based on context: merge, pr, keep, discard
 - Execute finishing flow using patterns from git-operations skill
-- Clean up worktree after merge or discard using worktree-management skill
+- Clean up worktree + local branch after merge or discard (MANDATORY, see Post-Merge Cleanup)
 - Report final branch status in Operations Performed table
 
 ### 7. PR Merge Procedure (Gitea/GitHub)
@@ -158,6 +167,11 @@ next_agent: developer | reviewer | none | user_decision
 | # | Command | Result |
 |---|---------|--------|
 | 1 | `git ...` | Success/Failed |
+
+### Worktree Cleanup (required after every merge)
+| Worktree | Branch | Result |
+|----------|--------|--------|
+| [path] | [branch] | removed + branch deleted / KEPT: [reason, e.g. uncommitted tracked changes: files] |
 
 ### Repository State (After)
 - **Branch**: [current branch]

@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.34.0] - 2026-11-06
+
+### Added
+- `scripts/worktree-gc.sh` + `/worktree-gc` command: removes worktrees and local branches whose work is already in `origin/<default>`
+  (no commits ahead, patch-equivalent via `git cherry`, or squash-merged: remote ref gone and every commit subject, trailing ` (#N)` stripped, in `origin/<default>`).
+  Dry run by default; `--apply` removes, `--all-repos <dir>` scans each repo under `<dir>`. Keeps anything with uncommitted tracked changes, the main checkout, and anything unsure. Never deletes remote branches.
+  Tests: `tests/hooks/test-worktree-gc.sh`.
+
+### Changed
+- `agents/gitops.md`, `skills/git-operations`, `skills/worktree-management`: worktree + local branch cleanup is now a MANDATORY final step of every merge
+  (refuse on uncommitted tracked changes and report it; cleanup result must appear in the final report).
+
 ## [2.33.0] - 2026-10-30
 
 ### Changed
