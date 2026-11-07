@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.36.0] - 2026-11-07
+
+Second step of removing Python from the plugin runtime: `refactor-guard` now runs on Node.
+
+### Changed
+- `hooks/lib/refactor_guard.py` is replaced by `hooks/lib/refactor-guard.mjs` (plain ESM, `node:` built-ins only, Node >= 22) plus `hooks/lib/pystd.mjs`,
+  a port of the Python stdlib behaviour the hook depended on (`shlex.split`, `glob.glob` + `fnmatch`, `os.path.*`, `shutil.which`, `str.splitlines`,
+  text-mode reads, python `\w` / `\s`). `hooks/refactor-guard.sh` no longer calls `python3`; it keeps the bash prefilter, so a Bash call that mentions
+  neither `sed` nor `perl` never starts node. When `node` is missing it fails open (exit 0) with `scaffolding: node not found, refactor-guard not enforced` on stderr.
+- Same decisions, messages and exit codes as 2.34.0 (byte for byte), including the fixes of 2.31.1: `xargs` / `$(...)` renames (`grep` workspace scan, 300 ms budget),
+  failed LSP calls are not evidence, and `<session>/subagents/*.jsonl` is searched too. Locked in by 472 golden cases recorded from the Python original
+  (`tests/hooks/parity/cases/refactor-guard.mjs`: Edit/MultiEdit/Write on definitions in every supported language, sed / perl / xargs / `$(...)` renames,
+  LSP and graphify evidence in the main and the subagent transcript, failed and successful calls, deny / warn / off, LSP coverage), and by a differential fuzz (9100 inputs over 7 runs, 0 differences; 3000 of them on the final code)
+  against the Python hook (`tests/hooks/parity/fuzz-refactor-guard.mjs`, run with `--old <checkout of 2.34.0>/hooks`).
+- Latency on a 2.2 MB / 14k-line transcript: ~155 ms (Python ~105 ms); no transcript ~39 ms (Python ~34 ms); Bash without `sed`/`perl` ~4 ms (unchanged).
+
+### Known gaps (ported as is; separate issues)
+1. A failed LSP call is detected from text: `is_error`, a leading `Error`, `connection got disposed`, `server is running`. A list-form result
+   (`[{"type": "text", "text": "Error: ..."}]`) is serialised the way Python's `json.dumps` does, with `", "` and `": "`, so the compact-form `Error` pattern
+   never matches it: only `is_error` or the two phrases flag it, and a list-form `Error: ...` result still counts as evidence.
+2. If the workspace scan (`grep -rlE`, 300 ms budget) times out or `grep` is missing, the check is skipped (fail open).
+3. Subagent evidence: only the 8 newest `subagents/*.jsonl`, and only the last 2 MB of each transcript.
+4. Renames done with tools other than `sed -i` / `perl -pi` (`awk -i inplace`, `ed`, `python -c`, `git mv` + edits) are not detected.
+5. The scan needs `grep` (GNU/BSD with `-r -l -E -I --include --exclude-dir`) on `PATH`.
+
+### Differences from the Python hook
+- When one `sed` renames several symbols defined in the same file, Python listed them in hash-randomised `set` order (it changed between runs); the port
+  lists them in code point order. Same symbols, same decision.
+
 ## [2.35.0] - 2026-11-07
 
 First step of removing Python from the plugin runtime (plan: Node >= 22 + bash only).
