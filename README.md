@@ -155,6 +155,7 @@ on top — enable it per device with `/memory enable` (see
 ## Requirements
 
 - `git`
+- `node` >= 22 (the hooks use it for JSON handling; without it they fail open and print a notice)
 - Claude Code CLI (https://claude.ai/code)
 
 ## What's inside

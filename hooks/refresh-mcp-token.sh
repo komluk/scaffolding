@@ -30,22 +30,9 @@ esac
 [ "${#token}" -ge 16 ] || exit 0
 
 # Update only MEMORY_MCP_TOKEN, preserving everything else; bail without writing if unchanged.
-TOKEN="$token" python3 - "$SETTINGS" <<'PY' 2>/dev/null || exit 0
-import json, os, sys, tempfile
-path = sys.argv[1]
-tok = os.environ["TOKEN"]
-with open(path) as f:
-    d = json.load(f)
-env = d.setdefault("env", {})
-if env.get("MEMORY_MCP_TOKEN") == tok:
-    sys.exit(0)  # already fresh, no write
-env["MEMORY_MCP_TOKEN"] = tok
-fd, tmp = tempfile.mkstemp(dir=os.path.dirname(path))
-with os.fdopen(fd, "w") as f:
-    json.dump(d, f, indent=2)
-    f.write("\n")
-os.chmod(tmp, 0o600)
-os.replace(tmp, path)
-PY
+# hook-io set-env rewrites settings.json atomically (temp file, 0600, rename). Without node: keep the token.
+LIB="${BASH_SOURCE[0]%/*}"; [[ "$LIB" == "${BASH_SOURCE[0]}" ]] && LIB=.; LIB="$LIB/lib"
+command -v node >/dev/null 2>&1 || exit 0
+TOKEN="$token" node "$LIB/hook-io.mjs" set-env "$SETTINGS" MEMORY_MCP_TOKEN TOKEN 2>/dev/null || exit 0
 
 exit 0

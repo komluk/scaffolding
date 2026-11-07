@@ -4,16 +4,13 @@
 
 set -euo pipefail
 
-# Reason: try/except ensures empty string on malformed JSON so hook exits 0
+# Node is the JSON helper (hooks/lib/hook-io.mjs). Without it the hook cannot decide: fail open.
+LIB="${BASH_SOURCE[0]%/*}"; [[ "$LIB" == "${BASH_SOURCE[0]}" ]] && LIB=.; LIB="$LIB/lib"
+command -v node >/dev/null 2>&1 || { echo "scaffolding: node not found, block-force-push not enforced" >&2; exit 0; }
+
+# Reason: hook-io yields an empty string on malformed JSON so hook exits 0
 # (allow) instead of exit 1 (warn-but-proceed) which would let the op execute.
-CMD=$(python3 -c "
-import sys, json
-try:
-    d = json.load(sys.stdin)
-    print(d.get('tool_input', {}).get('command', ''))
-except Exception:
-    print('')
-")
+CMD=$(node "$LIB/hook-io.mjs" get tool_input.command)
 
 # Only check git push commands
 if ! echo "$CMD" | grep -q 'git push'; then

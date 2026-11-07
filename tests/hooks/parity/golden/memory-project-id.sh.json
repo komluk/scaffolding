@@ -1,0 +1,104 @@
+{
+ "github https remote": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"memory project_id = scaffold:882ad6adb274d679. When the mcp__memory__* tools are available, ALWAYS pass project_id=\\\"scaffold:882ad6adb274d679\\\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices).\"}}\n",
+  "stderr": "",
+  "state": ".\n./.scaffolding\n./.scaffolding/project-id\nscaffold:882ad6adb274d679\n"
+ },
+ "scp style remote": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"memory project_id = scaffold:882ad6adb274d679. When the mcp__memory__* tools are available, ALWAYS pass project_id=\\\"scaffold:882ad6adb274d679\\\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices).\"}}\n",
+  "stderr": "",
+  "state": ".\n./.scaffolding\n./.scaffolding/project-id\nscaffold:882ad6adb274d679\n"
+ },
+ "ssh url with port, mixed case": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"memory project_id = scaffold:882ad6adb274d679. When the mcp__memory__* tools are available, ALWAYS pass project_id=\\\"scaffold:882ad6adb274d679\\\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices).\"}}\n",
+  "stderr": "",
+  "state": ".\n./.scaffolding\n./.scaffolding/project-id\nscaffold:882ad6adb274d679\n"
+ },
+ "trailing slash remote": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"memory project_id = scaffold:882ad6adb274d679. When the mcp__memory__* tools are available, ALWAYS pass project_id=\\\"scaffold:882ad6adb274d679\\\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices).\"}}\n",
+  "stderr": "",
+  "state": ".\n./.scaffolding\n./.scaffolding/project-id\nscaffold:882ad6adb274d679\n"
+ },
+ "no .git suffix": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"memory project_id = scaffold:882ad6adb274d679. When the mcp__memory__* tools are available, ALWAYS pass project_id=\\\"scaffold:882ad6adb274d679\\\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices).\"}}\n",
+  "stderr": "",
+  "state": ".\n./.scaffolding\n./.scaffolding/project-id\nscaffold:882ad6adb274d679\n"
+ },
+ "no remote: path fallback": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"memory project_id = scaffold:@HASH:projdir@. When the mcp__memory__* tools are available, ALWAYS pass project_id=\\\"scaffold:@HASH:projdir@\\\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices).\"}}\n",
+  "stderr": "",
+  "state": ".\n./.scaffolding\n./.scaffolding/project-id\nscaffold:@HASH:projdir@\n"
+ },
+ "not a git repo: path fallback": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"memory project_id = scaffold:@HASH:projdir@. When the mcp__memory__* tools are available, ALWAYS pass project_id=\\\"scaffold:@HASH:projdir@\\\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices).\"}}\n",
+  "stderr": "",
+  "state": ".\n./.scaffolding\n./.scaffolding/project-id\nscaffold:@HASH:projdir@\n"
+ },
+ "single segment remote falls back to raw remote": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"memory project_id = scaffold:9bb636b677797b46. When the mcp__memory__* tools are available, ALWAYS pass project_id=\\\"scaffold:9bb636b677797b46\\\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices).\"}}\n",
+  "stderr": "",
+  "state": ".\n./.scaffolding\n./.scaffolding/project-id\nscaffold:9bb636b677797b46\n"
+ },
+ "local path remote": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"memory project_id = scaffold:64b3c83d834e1780. When the mcp__memory__* tools are available, ALWAYS pass project_id=\\\"scaffold:64b3c83d834e1780\\\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices).\"}}\n",
+  "stderr": "",
+  "state": ".\n./.scaffolding\n./.scaffolding/project-id\nscaffold:64b3c83d834e1780\n"
+ },
+ "remote with unicode owner": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"memory project_id = scaffold:6ee05c99f8607246. When the mcp__memory__* tools are available, ALWAYS pass project_id=\\\"scaffold:6ee05c99f8607246\\\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices).\"}}\n",
+  "stderr": "",
+  "state": ".\n./.scaffolding\n./.scaffolding/project-id\nscaffold:6ee05c99f8607246\n"
+ },
+ "nested group remote keeps last two segments": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"memory project_id = scaffold:65e817eec8cd71ed. When the mcp__memory__* tools are available, ALWAYS pass project_id=\\\"scaffold:65e817eec8cd71ed\\\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices).\"}}\n",
+  "stderr": "",
+  "state": ".\n./.scaffolding\n./.scaffolding/project-id\nscaffold:65e817eec8cd71ed\n"
+ },
+ "project dir with spaces": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"memory project_id = scaffold:@HASH:projdir@. When the mcp__memory__* tools are available, ALWAYS pass project_id=\\\"scaffold:@HASH:projdir@\\\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices).\"}}\n",
+  "stderr": "",
+  "state": "scaffold:@HASH:projdir@\n"
+ },
+ "project dir with a double quote": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"memory project_id = scaffold:@HASH:projdir@. When the mcp__memory__* tools are available, ALWAYS pass project_id=\\\"scaffold:@HASH:projdir@\\\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices).\"}}\n",
+  "stderr": "",
+  "state": "scaffold:@HASH:projdir@\n"
+ },
+ "project dir with backslash and unicode": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"memory project_id = scaffold:@HASH:projdir@. When the mcp__memory__* tools are available, ALWAYS pass project_id=\\\"scaffold:@HASH:projdir@\\\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices).\"}}\n",
+  "stderr": "",
+  "state": "scaffold:@HASH:projdir@\n"
+ },
+ "CLAUDE_PROJECT_DIR unset: uses PWD": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"memory project_id = scaffold:@HASH:cwd@. When the mcp__memory__* tools are available, ALWAYS pass project_id=\\\"scaffold:@HASH:cwd@\\\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices).\"}}\n",
+  "stderr": "",
+  "state": "scaffold:@HASH:cwd@\n"
+ },
+ "existing project-id is overwritten": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"memory project_id = scaffold:c14cddc033f64b9d. When the mcp__memory__* tools are available, ALWAYS pass project_id=\\\"scaffold:c14cddc033f64b9d\\\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices).\"}}\n",
+  "stderr": "",
+  "state": ".\n./.scaffolding\n./.scaffolding/project-id\nscaffold:c14cddc033f64b9d\n"
+ },
+ "unwritable .scaffolding: output still emitted": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"memory project_id = scaffold:c14cddc033f64b9d. When the mcp__memory__* tools are available, ALWAYS pass project_id=\\\"scaffold:c14cddc033f64b9d\\\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices).\"}}\n",
+  "stderr": "@HOOKS@/memory-project-id.sh: line 31: @SANDBOX@/proj/.scaffolding/project-id: Permission denied\n",
+  "state": ".\n./.scaffolding\n"
+ }
+}

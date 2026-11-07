@@ -1,0 +1,974 @@
+{
+ "bad input: empty stdin": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: whitespace only": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: malformed json": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: truncated json": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: top-level array": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: top-level string": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: top-level null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: tool_input null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: tool_input string": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: tool_input array": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: utf-8 BOM": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: invalid utf-8 bytes": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "Write .env denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "Edit nested .env denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ ".env.local denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env.local is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ ".env.production denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env.production is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "relative .env denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ ".envrc allowed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "env.ts allowed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "dotenv dir file allowed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "foo.env allowed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ ".env.example denied (starts with .env.)": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env.example is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "trailing slash path": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "path with spaces": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "unicode path": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "normal file allowed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "empty file_path": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "file_path is number": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "file_path is null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "file_path is list": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "file_path with newline then .env": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "file_path ends with newline": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "bash echo > .env denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "bash >> .env denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "bash >.env (no space) denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "bash > .env.local denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "bash tee .env denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "bash tee -a .env denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "bash tee .envrc allowed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bash cat .env (read) allowed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bash > /tmp/.env denied? (needs \">\" then .env)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bash multiline: redirect on first line (tail -1 sees last only)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bash multiline: redirect on last line denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "bash multiline: trailing newline": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "both file_path and command": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "file_path .env and command": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "command only, empty file_path": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "command is number": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "command is null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "command is true": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "no tool_input": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "CRLF in command": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "unicode command": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "empty command and empty path": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: .env": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: ./.env": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: ~/.env": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: absolute .env": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: deeply nested .env": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: .env.local": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env.local is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: .env.development.local": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env.development.local is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: .env.": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env. is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: .env.. ": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env.. is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: .env.bak": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env.bak is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: .env~": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: .env-local (dash, allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: .env_local (allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: .envrc (allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: .environment (allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: env (allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: .ENV (case)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: .Env (case)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: .eNv (case)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: .ENV.local (case)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: .env.LOCAL (case)": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env.LOCAL is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: .Env.Production (case)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: ENV.env": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: dir .env/ with trailing slash": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: dir .env/ with double trailing slash": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: dir .env then file": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: .env/. ": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: path traversal to .env": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: .env with trailing space": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: .env with trailing tab": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: .env with leading space": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: .env with NBSP suffix": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: .env with trailing CR": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: .env with trailing LF": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: .env with two trailing LF": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: LF then .env": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: .env then LF then other": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: .env with NUL suffix": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: .env with NUL inside": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: backslash separated path": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: windows-style forward path": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: fullwidth dot": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: unicode dir then .env.local": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env.local is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: path with spaces .env.production": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env.production is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: path ending in /.env/.env": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: only slash": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: dash prefixed .env (basename sees option)": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "error: unexpected argument '-.' found\n\n  tip: to pass '-.' as a value, use '-- -.'\n\nUsage: basename [-z] NAME [SUFFIX]\n       basename OPTION... NAME...\n\nFor more information, try '--help'.\n",
+  "state": ""
+ },
+ "x: file_path \"--\" ": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "basename: missing operand\nTry 'basename --help' for more information.\n",
+  "state": ""
+ },
+ "x: unicode-escaped .env": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: both fields, command allowed, path .env": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: duplicate file_path key last wins (allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: duplicate file_path key last wins (.env)": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: nested depth 1000 (env)": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: BOM-prefixed payload": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: file_path under notebook_path key (not read)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: path key (not read)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: sh redirect > .env": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: >> .env": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: >.env": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: >>.env": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: >  .env (spaces)": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: > .env.local": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: > .env.": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: > .env; next": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: > .env&&next": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: > .ENV (case, not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: > .Env.local (case, not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: > ./.env (not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: > /p/.env (not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: > \"./.env\" quoted (not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: > '.env' quoted (not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: >| .env clobber (not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: 2> .env": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: &> .env": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: tee .env": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: tee -a .env": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: tee -a -- .env (not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: tee -i .env (not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: tee ./.env (not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: tee .env.local": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: tee a .env (second file)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: tee\\t.env": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: tee .envrc allowed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: tee .environment allowed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: > .environment allowed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: > .envrc allowed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: cp to .env (not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: mv to .env (not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: sed -i .env (not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: dd of=.env (not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: install to .env (not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: python write .env (not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: rm .env (not a write)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: cat .env (read) allowed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: here-doc to .env": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: redirect on first of several lines": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: redirect on last of several lines": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: redirect on middle line": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: redirect then trailing newlines": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: only blank line then redirect": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: CRLF after redirect": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: CR before redirect": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: NUL in redirect target": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: NUL before .env": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: command is number-like": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: unicode text then redirect": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ },
+ "x: very long command then redirect": {
+  "code": 141,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: command has .env redirect + file_path allowed": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
+  "state": ""
+ }
+}

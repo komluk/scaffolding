@@ -1,0 +1,62 @@
+{
+ "inactive: reason with CR/CRLF": {
+  "code": 0,
+  "stdout": "{\"decision\": \"block\", \"reason\": \"a\\rb\\r\\nc\\r\"}\n",
+  "stderr": "",
+  "state": ""
+ },
+ "inactive: reason with only CR": {
+  "code": 0,
+  "stdout": "{\"decision\": \"block\", \"reason\": \"\\r\"}\n",
+  "stderr": "",
+  "state": ""
+ },
+ "inactive: reason CRLF at end": {
+  "code": 0,
+  "stdout": "{\"decision\": \"block\", \"reason\": \"line1\\r\\nline2\\r\\n\"}\n",
+  "stderr": "",
+  "state": ""
+ },
+ "inactive: bad json payload": {
+  "code": 0,
+  "stdout": "{\"decision\": \"block\", \"reason\": \"a\\r\\nb\"}\n",
+  "stderr": "",
+  "state": ""
+ },
+ "inactive: empty payload": {
+  "code": 0,
+  "stdout": "{\"decision\": \"block\", \"reason\": \"a\\rb\"}\n",
+  "stderr": "",
+  "state": ""
+ },
+ "active: silent whatever the reason": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "inactive: CR in the payload JSON string is invalid json -> inactive": {
+  "code": 0,
+  "stdout": "{\"decision\": \"block\", \"reason\": \"r\\r\"}\n",
+  "stderr": "",
+  "state": ""
+ },
+ "active: CRLF as json whitespace": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "inactive: reason with invalid utf-8 + CR": {
+  "code": 0,
+  "stdout": "{\"decision\": \"block\", \"reason\": \"a\\udcff\\r\"}\n",
+  "stderr": "",
+  "state": ""
+ },
+ "inactive: reason with NUL-free multi-line CR block": {
+  "code": 0,
+  "stdout": "{\"decision\": \"block\", \"reason\": \"Completion check:\\r\\n  - one\\r\\n  - two\\r  - three\\n\"}\n",
+  "stderr": "",
+  "state": ""
+ }
+}

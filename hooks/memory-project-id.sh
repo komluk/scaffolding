@@ -32,6 +32,7 @@ printf '%s\n' "$pid" > "$dir/.scaffolding/project-id" 2>/dev/null || true
 
 ctx="memory project_id = ${pid}. When the mcp__memory__* tools are available, ALWAYS pass project_id=\"${pid}\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices)."
 
-# SessionStart additionalContext injection.
+# SessionStart additionalContext injection (JSON-escape via node hook-io quote, with fallback).
+LIB="${BASH_SOURCE[0]%/*}"; [[ "$LIB" == "${BASH_SOURCE[0]}" ]] && LIB=.; LIB="$LIB/lib"
 printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":%s}}\n' \
-  "$(printf '%s' "$ctx" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))' 2>/dev/null || printf '"%s"' "$ctx")"
+  "$(printf '%s' "$ctx" | node "$LIB/hook-io.mjs" quote 2>/dev/null || printf '"%s"' "$ctx")"

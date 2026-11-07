@@ -10,79 +10,8 @@ if [ -z "${SCAFFOLDING_TASK_ID:-}" ]; then
     exit 0
 fi
 
-# Read tool input from stdin
-INPUT=$(cat)
-
-# Extract file_path using python3 (no jq dependency)
-FILE_PATH=$(python3 -c "
-import json, sys
-try:
-    data = json.loads(sys.argv[1])
-    # tool_input contains the parameters passed to Edit/Write
-    ti = data.get('tool_input', data)
-    print(ti.get('file_path', ''))
-except Exception:
-    print('')
-" "$INPUT" 2>/dev/null)
-
-# Skip if no file path extracted
-if [ -z "$FILE_PATH" ]; then
-    exit 0
-fi
-
-# Skip if the file does not exist yet (new file creation)
-if [ ! -f "$FILE_PATH" ]; then
-    exit 0
-fi
-
-MTIME_STORE="/tmp/scaffolding-mtime-${SCAFFOLDING_TASK_ID}.json"
-
-# Get current mtime
-CURRENT_MTIME=$(stat -c %Y "$FILE_PATH" 2>/dev/null || echo "")
-if [ -z "$CURRENT_MTIME" ]; then
-    exit 0
-fi
-
-# Ensure mtime store exists
-if [ ! -f "$MTIME_STORE" ]; then
-    echo '{}' > "$MTIME_STORE"
-fi
-
-# Check and update mtime using python3
-python3 -c "
-import json, sys
-
-file_path = sys.argv[1]
-current_mtime = sys.argv[2]
-store_path = sys.argv[3]
-
-try:
-    with open(store_path, 'r') as f:
-        store = json.load(f)
-except (json.JSONDecodeError, FileNotFoundError):
-    store = {}
-
-stored_mtime = store.get(file_path)
-
-if stored_mtime is None:
-    # First access: record mtime
-    store[file_path] = current_mtime
-    with open(store_path, 'w') as f:
-        json.dump(store, f)
-    sys.exit(0)
-
-if stored_mtime == current_mtime:
-    # Mtime unchanged: allow the edit.
-    # PostToolUse hook (file-staleness-update.sh) will re-record the new
-    # mtime after the edit completes.
-    sys.exit(0)
-
-# Mtime changed externally
-print(
-    f'File staleness conflict: {file_path} was modified externally '
-    f'(stored mtime={stored_mtime}, current mtime={current_mtime}). '
-    f'Re-read the file before editing.',
-    file=sys.stderr,
-)
-sys.exit(2)
-" "$FILE_PATH" "$CURRENT_MTIME" "$MTIME_STORE"
+# Node is the JSON/mtime helper (hooks/lib/staleness.mjs; stdin = hook JSON). It reads the file_path,
+# stats the file and compares with /tmp/scaffolding-mtime-<task>.json. Without node: fail open.
+LIB="${BASH_SOURCE[0]%/*}"; [[ "$LIB" == "${BASH_SOURCE[0]}" ]] && LIB=.; LIB="$LIB/lib"
+command -v node >/dev/null 2>&1 || { echo "scaffolding: node not found, file-staleness-check not enforced" >&2; exit 0; }
+exec node "$LIB/staleness.mjs" check

@@ -1,0 +1,182 @@
+{
+ "unset mode, empty stdin": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "unset mode, active stop": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "mode=1 advisory": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "Completion check before yielding:\n  - Did you actually run the tests, or just assume they pass?\n  - Did validation pass (the pre-commit-validation hook runs at git commit — let it run; do not bypass it)?\n  - Is the task truly complete, or only partially done?\n  - Any BLOCKED items left unreported?\n",
+  "state": ""
+ },
+ "mode=1, empty stdin": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "Completion check before yielding:\n  - Did you actually run the tests, or just assume they pass?\n  - Did validation pass (the pre-commit-validation hook runs at git commit — let it run; do not bypass it)?\n  - Is the task truly complete, or only partially done?\n  - Any BLOCKED items left unreported?\n",
+  "state": ""
+ },
+ "mode=1, malformed json": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "Completion check before yielding:\n  - Did you actually run the tests, or just assume they pass?\n  - Did validation pass (the pre-commit-validation hook runs at git commit — let it run; do not bypass it)?\n  - Is the task truly complete, or only partially done?\n  - Any BLOCKED items left unreported?\n",
+  "state": ""
+ },
+ "mode=1, stop_hook_active true: silent": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "mode=block emits decision": {
+  "code": 0,
+  "stdout": "{\"decision\": \"block\", \"reason\": \"Completion check before yielding:\\n  - Did you actually run the tests, or just assume they pass?\\n  - Did validation pass (the pre-commit-validation hook runs at git commit \\u2014 let it run; do not bypass it)?\\n  - Is the task truly complete, or only partially done?\\n  - Any BLOCKED items left unreported?\"}\n",
+  "stderr": "",
+  "state": ""
+ },
+ "mode=block, stop_hook_active true: silent": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "mode=block, no field": {
+  "code": 0,
+  "stdout": "{\"decision\": \"block\", \"reason\": \"Completion check before yielding:\\n  - Did you actually run the tests, or just assume they pass?\\n  - Did validation pass (the pre-commit-validation hook runs at git commit \\u2014 let it run; do not bypass it)?\\n  - Is the task truly complete, or only partially done?\\n  - Any BLOCKED items left unreported?\"}\n",
+  "stderr": "",
+  "state": ""
+ },
+ "mode=block, malformed json": {
+  "code": 0,
+  "stdout": "{\"decision\": \"block\", \"reason\": \"Completion check before yielding:\\n  - Did you actually run the tests, or just assume they pass?\\n  - Did validation pass (the pre-commit-validation hook runs at git commit \\u2014 let it run; do not bypass it)?\\n  - Is the task truly complete, or only partially done?\\n  - Any BLOCKED items left unreported?\"}\n",
+  "stderr": "",
+  "state": ""
+ },
+ "mode=block, empty stdin": {
+  "code": 0,
+  "stdout": "{\"decision\": \"block\", \"reason\": \"Completion check before yielding:\\n  - Did you actually run the tests, or just assume they pass?\\n  - Did validation pass (the pre-commit-validation hook runs at git commit \\u2014 let it run; do not bypass it)?\\n  - Is the task truly complete, or only partially done?\\n  - Any BLOCKED items left unreported?\"}\n",
+  "stderr": "",
+  "state": ""
+ },
+ "mode=other is advisory": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "Completion check before yielding:\n  - Did you actually run the tests, or just assume they pass?\n  - Did validation pass (the pre-commit-validation hook runs at git commit — let it run; do not bypass it)?\n  - Is the task truly complete, or only partially done?\n  - Any BLOCKED items left unreported?\n",
+  "state": ""
+ },
+ "mode=BLOCK (case) is advisory": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "Completion check before yielding:\n  - Did you actually run the tests, or just assume they pass?\n  - Did validation pass (the pre-commit-validation hook runs at git commit — let it run; do not bypass it)?\n  - Is the task truly complete, or only partially done?\n  - Any BLOCKED items left unreported?\n",
+  "state": ""
+ },
+ "stop_hook_active string \"false\" is truthy": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "stop_hook_active 0 falsy": {
+  "code": 0,
+  "stdout": "{\"decision\": \"block\", \"reason\": \"Completion check before yielding:\\n  - Did you actually run the tests, or just assume they pass?\\n  - Did validation pass (the pre-commit-validation hook runs at git commit \\u2014 let it run; do not bypass it)?\\n  - Is the task truly complete, or only partially done?\\n  - Any BLOCKED items left unreported?\"}\n",
+  "stderr": "",
+  "state": ""
+ },
+ "stop_hook_active 1 truthy": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "stop_hook_active 0.0 falsy": {
+  "code": 0,
+  "stdout": "{\"decision\": \"block\", \"reason\": \"Completion check before yielding:\\n  - Did you actually run the tests, or just assume they pass?\\n  - Did validation pass (the pre-commit-validation hook runs at git commit \\u2014 let it run; do not bypass it)?\\n  - Is the task truly complete, or only partially done?\\n  - Any BLOCKED items left unreported?\"}\n",
+  "stderr": "",
+  "state": ""
+ },
+ "stop_hook_active null falsy": {
+  "code": 0,
+  "stdout": "{\"decision\": \"block\", \"reason\": \"Completion check before yielding:\\n  - Did you actually run the tests, or just assume they pass?\\n  - Did validation pass (the pre-commit-validation hook runs at git commit \\u2014 let it run; do not bypass it)?\\n  - Is the task truly complete, or only partially done?\\n  - Any BLOCKED items left unreported?\"}\n",
+  "stderr": "",
+  "state": ""
+ },
+ "stop_hook_active empty string falsy": {
+  "code": 0,
+  "stdout": "{\"decision\": \"block\", \"reason\": \"Completion check before yielding:\\n  - Did you actually run the tests, or just assume they pass?\\n  - Did validation pass (the pre-commit-validation hook runs at git commit \\u2014 let it run; do not bypass it)?\\n  - Is the task truly complete, or only partially done?\\n  - Any BLOCKED items left unreported?\"}\n",
+  "stderr": "",
+  "state": ""
+ },
+ "stop_hook_active empty list falsy": {
+  "code": 0,
+  "stdout": "{\"decision\": \"block\", \"reason\": \"Completion check before yielding:\\n  - Did you actually run the tests, or just assume they pass?\\n  - Did validation pass (the pre-commit-validation hook runs at git commit \\u2014 let it run; do not bypass it)?\\n  - Is the task truly complete, or only partially done?\\n  - Any BLOCKED items left unreported?\"}\n",
+  "stderr": "",
+  "state": ""
+ },
+ "stop_hook_active list truthy": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "stop_hook_active empty object falsy": {
+  "code": 0,
+  "stdout": "{\"decision\": \"block\", \"reason\": \"Completion check before yielding:\\n  - Did you actually run the tests, or just assume they pass?\\n  - Did validation pass (the pre-commit-validation hook runs at git commit \\u2014 let it run; do not bypass it)?\\n  - Is the task truly complete, or only partially done?\\n  - Any BLOCKED items left unreported?\"}\n",
+  "stderr": "",
+  "state": ""
+ },
+ "stop_hook_active object truthy": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "stop_hook_active NaN truthy": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "stop_hook_active -0.0 falsy": {
+  "code": 0,
+  "stdout": "{\"decision\": \"block\", \"reason\": \"Completion check before yielding:\\n  - Did you actually run the tests, or just assume they pass?\\n  - Did validation pass (the pre-commit-validation hook runs at git commit \\u2014 let it run; do not bypass it)?\\n  - Is the task truly complete, or only partially done?\\n  - Any BLOCKED items left unreported?\"}\n",
+  "stderr": "",
+  "state": ""
+ },
+ "stop_hook_active 0e5 falsy": {
+  "code": 0,
+  "stdout": "{\"decision\": \"block\", \"reason\": \"Completion check before yielding:\\n  - Did you actually run the tests, or just assume they pass?\\n  - Did validation pass (the pre-commit-validation hook runs at git commit \\u2014 let it run; do not bypass it)?\\n  - Is the task truly complete, or only partially done?\\n  - Any BLOCKED items left unreported?\"}\n",
+  "stderr": "",
+  "state": ""
+ },
+ "top-level array": {
+  "code": 0,
+  "stdout": "{\"decision\": \"block\", \"reason\": \"Completion check before yielding:\\n  - Did you actually run the tests, or just assume they pass?\\n  - Did validation pass (the pre-commit-validation hook runs at git commit \\u2014 let it run; do not bypass it)?\\n  - Is the task truly complete, or only partially done?\\n  - Any BLOCKED items left unreported?\"}\n",
+  "stderr": "",
+  "state": ""
+ },
+ "top-level string": {
+  "code": 0,
+  "stdout": "{\"decision\": \"block\", \"reason\": \"Completion check before yielding:\\n  - Did you actually run the tests, or just assume they pass?\\n  - Did validation pass (the pre-commit-validation hook runs at git commit \\u2014 let it run; do not bypass it)?\\n  - Is the task truly complete, or only partially done?\\n  - Any BLOCKED items left unreported?\"}\n",
+  "stderr": "",
+  "state": ""
+ },
+ "invalid utf-8 stdin": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "BOM stdin": {
+  "code": 0,
+  "stdout": "{\"decision\": \"block\", \"reason\": \"Completion check before yielding:\\n  - Did you actually run the tests, or just assume they pass?\\n  - Did validation pass (the pre-commit-validation hook runs at git commit \\u2014 let it run; do not bypass it)?\\n  - Is the task truly complete, or only partially done?\\n  - Any BLOCKED items left unreported?\"}\n",
+  "stderr": "",
+  "state": ""
+ }
+}

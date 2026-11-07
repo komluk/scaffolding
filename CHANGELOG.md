@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.35.0] - 2026-11-07
+
+First step of removing Python from the plugin runtime (plan: Node >= 22 + bash only).
+
+### Changed
+- 16 hooks no longer call `python3`: `block-subagent`, `block-force-push`, `block-destructive-rm`, `block-env-write`, `file-size-warn`,
+  `file-staleness-check`, `file-staleness-update`, `post-edit-format`, `worktree-create`, `worktree-remove`, `completion-nudge`,
+  `memory-ingest`, `memory-ingest-mark`, `auto-init-check`, `memory-project-id`, `refresh-mcp-token`.
+  JSON handling moved to `hooks/lib/hook-io.mjs` and `hooks/lib/staleness.mjs` (plain ESM, `node:` built-ins only, no npm, no `package.json`).
+  The `.sh` entry points, their paths, registrations and the grep/case logic stay as they were; at most one `node` process runs per hook call
+  (`block-destructive-rm` and `worktree-create` went from two Python processes to one).
+- Behaviour is byte-identical: same exit codes, stdout and stderr (including `json.dumps` separators and `\uXXXX` escaping, Python `str.split()` /
+  truthiness / `print()` quirks, `surrogateescape` on invalid UTF-8). Locked in by 668 golden cases recorded from the Python implementation before the port.
+- New runtime requirement: **Node >= 22** on the machine that runs the hooks. When `node` is missing these hooks fail open as before (exit 0) and print
+  `scaffolding: node not found, <hook> not enforced` on stderr (`worktree-create` exits 1 with a message, as it did for missing input).
+- `file-staleness-*` read the mtime with `fs` instead of `stat -c %Y`, so they also work on macOS. The store format (`/tmp/scaffolding-mtime-<task>.json`,
+  string seconds) is unchanged and still shared with the backend.
+
+### Added
+- `tests/hooks/parity/` + `tests/hooks/test-parity.sh`: golden-output parity runner (exit code, stdout, stderr and resulting files, no `python3` on PATH).
+- Tests for hooks that had none: `test-block-hooks.sh`, `test-file-hooks.sh`, `test-stop-hooks.sh` (completion-nudge, memory-ingest, refresh-mcp-token),
+  `test-hook-io.sh`.
+- CI job `hook-tests` (setup-node 24, `bash tests/run-all.sh`, `node --check` on `hooks/lib/*.mjs`).
+
+### Removed
+- 7 tracked `.pyc` files under `hooks/lib/**/__pycache__/`; `.gitignore` now ignores `__pycache__/` and `*.pyc`.
+
+### Not changed (later steps)
+- `refactor-guard`, `action-log`, `memory-recall` and the Copilot scripts still use Python.
+
 ## [2.34.0] - 2026-11-06
 
 ### Added

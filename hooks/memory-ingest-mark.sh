@@ -40,14 +40,9 @@ fi
 touch "$SC/.ingest-dirty" 2>/dev/null || exit 0
 
 topic="task"
-if command -v python3 >/dev/null 2>&1; then
-    t=$(printf '%s' "$INPUT" | python3 -c \
-        'import json,sys
-try:
-    d = json.load(sys.stdin)
-    print(d.get("subagent_type") or "task")
-except Exception:
-    print("task")' 2>/dev/null)
+LIB="${BASH_SOURCE[0]%/*}"; [[ "$LIB" == "${BASH_SOURCE[0]}" ]] && LIB=.; LIB="$LIB/lib"
+if command -v node >/dev/null 2>&1; then
+    t=$(printf '%s' "$INPUT" | node "$LIB/hook-io.mjs" get 'subagent_type||task' 2>/dev/null)
     [ -n "$t" ] && topic="$t"
 fi
 

@@ -1,0 +1,566 @@
+{
+ "bad input: empty stdin": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: whitespace only": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: malformed json": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: truncated json": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: top-level array": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: top-level string": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: top-level null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: tool_input null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: tool_input string": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: tool_input array": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: utf-8 BOM": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: invalid utf-8 bytes": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "plain push allowed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "--force denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "--force-with-lease denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "--force-if-includes denied (matches --force)": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "-f denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "state": ""
+ },
+ "combined -fu denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "state": ""
+ },
+ "combined -uf denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "state": ""
+ },
+ "-u only allowed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "branch name containing f allowed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "branch --follow-tags allowed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "chained after &&": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "git pushd no real push but contains \"git push\"": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "state": ""
+ },
+ "not a push": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "empty command": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "multiline command, force on 2nd line": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "multiline command, push on 1st line, -f later": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "state": ""
+ },
+ "tab before -f": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "quoted message mentions git push --force": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "unicode in command": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "command is a number": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "command is null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "command is a list": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "command is false": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "command is an object": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "state": ""
+ },
+ "missing command": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "huge command": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "CRLF in command": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "command with NUL char": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: -f denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "state": ""
+ },
+ "x: --force denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "x: --force-with-lease denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "x: --force-with-lease=ref denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "x: --force=value": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "x: +main refspec (not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: +HEAD:main refspec (not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: +refs/heads/* refspec": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: --mirror (not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: --delete (not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: :main delete refspec (not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: -uf denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "state": ""
+ },
+ "x: -fu denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "state": ""
+ },
+ "x: -vf denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "state": ""
+ },
+ "x: -nf denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "state": ""
+ },
+ "x: -u -f separate": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "state": ""
+ },
+ "x: -F uppercase (not force)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: --FORCE uppercase": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: git -c x push --force (not caught: not \"git push\")": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: git -C dir push -f (not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: git --no-pager push --force (not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: git  push (double space, not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: git\\tpush (tab, not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: git push in quotes": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "x: bash -c git push -f": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "state": ""
+ },
+ "x: env prefix": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "x: sudo git push -f": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "state": ""
+ },
+ "x: alias g push (not caught)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: hub/gh push-like": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: flag glued with = (--force-if-includes)": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "x: --forceful boundary (\\b matches)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: --force_x boundary (no \\b before _)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: --force-x": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "x: -f after --": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "state": ""
+ },
+ "x: -f as branch name after --": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "state": ""
+ },
+ "x: ref containing -f in middle": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: branch named fix-f": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: option with f later (--follow-tags)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: -o option value with f": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: --set-upstream-to? with f": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: git push on second line": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "state": ""
+ },
+ "x: git push; -f in other command": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "state": ""
+ },
+ "x: git push --force-with-lease after &&": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "x: unicode branch then -f": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "state": ""
+ },
+ "x: unicode whitespace before -f (NBSP, not matched by \"( |^)\")": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: NBSP before --force": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "x: git push with NUL then -f": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "state": ""
+ },
+ "x: git push --force with CR": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "x: git push with trailing -f at end": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "state": ""
+ },
+ "x: -f in quoted arg": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "state": ""
+ },
+ "x: unicode-escaped git push": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "x: nested depth 1000 (force push)": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "state": ""
+ },
+ "x: duplicate command key last wins": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: BOM-prefixed payload": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ }
+}

@@ -6,16 +6,13 @@
 
 set +e
 
-# Reason: try/except yields empty string on malformed JSON so the hook exits 0
+# Node is the JSON helper (hooks/lib/hook-io.mjs). Without it the hook cannot decide: fail open.
+LIB="${BASH_SOURCE[0]%/*}"; [[ "$LIB" == "${BASH_SOURCE[0]}" ]] && LIB=.; LIB="$LIB/lib"
+command -v node >/dev/null 2>&1 || { echo "scaffolding: node not found, block-subagent not enforced" >&2; exit 0; }
+
+# Reason: hook-io yields an empty string on malformed JSON so the hook exits 0
 # (allow) rather than exit 1 (warn-but-proceed). Read tool_input.subagent_type.
-SUBAGENT_TYPE=$(python3 -c "
-import sys, json
-try:
-    d = json.load(sys.stdin)
-    print(d.get('tool_input', {}).get('subagent_type', ''))
-except Exception:
-    print('')
-" 2>/dev/null)
+SUBAGENT_TYPE=$(node "$LIB/hook-io.mjs" get tool_input.subagent_type 2>/dev/null)
 
 case "$SUBAGENT_TYPE" in
   general-purpose|explore)

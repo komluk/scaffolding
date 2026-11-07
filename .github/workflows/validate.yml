@@ -115,6 +115,24 @@ jobs:
             bash -n "$f"
           done
 
+  hook-tests:
+    name: hook tests (node)
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: node --check hooks/lib/*.mjs
+        run: |
+          for f in hooks/lib/*.mjs tests/hooks/parity/run.mjs tests/hooks/parity/cases/*.mjs; do
+            node --check "$f"
+          done
+      - name: bash tests/run-all.sh
+        run: bash tests/run-all.sh
+
   shellcheck:
     name: shellcheck (informational)
     runs-on: ubuntu-latest

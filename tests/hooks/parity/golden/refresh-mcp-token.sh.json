@@ -1,0 +1,206 @@
+{
+ "no vault CLI: no-op": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{}\n"
+ },
+ "no settings file: no-op": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "ls: cannot access 'home/.claude': No such file or directory\n"
+ },
+ "vault fails: keeps existing": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"env\":{\"MEMORY_MCP_TOKEN\":\"old\"}}\n"
+ },
+ "empty token rejected": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"env\":{\"MEMORY_MCP_TOKEN\":\"old\"}}\n"
+ },
+ "token containing Error rejected": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"env\":{\"MEMORY_MCP_TOKEN\":\"old\"}}\n"
+ },
+ "token containing denied rejected": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"env\":{\"MEMORY_MCP_TOKEN\":\"old\"}}\n"
+ },
+ "token shorter than 16 rejected": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"env\":{\"MEMORY_MCP_TOKEN\":\"old\"}}\n"
+ },
+ "token exactly 16 accepted": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\n  \"env\": {\n    \"MEMORY_MCP_TOKEN\": \"1234567890123456\"\n  }\n}\n600\n"
+ },
+ "unchanged token: file untouched": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"env\":{\"MEMORY_MCP_TOKEN\":\"tok-tok-tok-tok-tok\"},   \"x\":1}644 1700000000\n"
+ },
+ "updates token, keeps other settings, mode 600": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\n  \"env\": {\n    \"MEMORY_MCP_TOKEN\": \"new-token-new-token-new\",\n    \"OTHER\": \"1\"\n  },\n  \"permissions\": {\n    \"allow\": [\n      \"Bash\",\n      \"Read\"\n    ]\n  },\n  \"n\": [\n    1,\n    2,\n    {\n      \"a\": null\n    }\n  ],\n  \"f\": 1.5,\n  \"t\": true\n}\n600\nsettings.json\n"
+ },
+ "adds env block when missing": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\n  \"a\": 1,\n  \"env\": {\n    \"MEMORY_MCP_TOKEN\": \"new-token-new-token-new\"\n  }\n}\n"
+ },
+ "adds token key when env empty": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\n  \"env\": {\n    \"MEMORY_MCP_TOKEN\": \"new-token-new-token-new\"\n  }\n}\n"
+ },
+ "empty containers keep python formatting": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\n  \"env\": {\n    \"MEMORY_MCP_TOKEN\": \"new-token-new-token-new\"\n  },\n  \"a\": [],\n  \"b\": {},\n  \"c\": [\n    [],\n    {}\n  ]\n}\n"
+ },
+ "non-ascii settings are escaped like json.dump": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\n  \"env\": {\n    \"MEMORY_MCP_TOKEN\": \"new-token-new-token-new\"\n  },\n  \"note\": \"za\\u017c\\u00f3\\u0142\\u0107 \\ud83d\\ude00 \\u00e9 / tab\\t\",\n  \"k\\u0105\": 1\n}\n"
+ },
+ "control chars and DEL in strings": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\n  \"env\": {\n    \"MEMORY_MCP_TOKEN\": \"new-token-new-token-new\"\n  },\n  \"c\": \"\\u0001\\u001f\\u007f\\b\\f\\r\\n\"\n}\n"
+ },
+ "number forms round-trip": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\n  \"env\": {\n    \"MEMORY_MCP_TOKEN\": \"new-token-new-token-new\"\n  },\n  \"n\": [\n    0,\n    0,\n    1000.0,\n    1e-07,\n    2.5,\n    1.0,\n    -0.0,\n    123456789012345678901234567890,\n    Infinity,\n    0.1,\n    1e+17,\n    1e+16,\n    1000000000000000.0,\n    12345678.9,\n    0.0001,\n    1e-05\n  ]\n}\n"
+ },
+ "NaN and Infinity round-trip": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\n  \"env\": {\n    \"MEMORY_MCP_TOKEN\": \"new-token-new-token-new\"\n  },\n  \"n\": [\n    NaN,\n    Infinity,\n    -Infinity\n  ]\n}\n"
+ },
+ "duplicate keys: last wins, first position": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\n  \"a\": 2,\n  \"env\": {\n    \"MEMORY_MCP_TOKEN\": \"new-token-new-token-new\"\n  }\n}\n"
+ },
+ "integer-like keys keep insertion order": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\n  \"env\": {\n    \"MEMORY_MCP_TOKEN\": \"new-token-new-token-new\"\n  },\n  \"b\": 1,\n  \"2\": 1,\n  \"1\": 1,\n  \"a\": 1\n}\n"
+ },
+ "token with quotes and backslash and unicode": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\n  \"env\": {\n    \"MEMORY_MCP_TOKEN\": \"ab\\\"cd\\\\ef za\\u017c\\u00f3\\u0142\\u0107 \\ud83d\\ude00 gh\"\n  }\n}\n"
+ },
+ "token with trailing newline is trimmed by $()": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\n  \"env\": {\n    \"MEMORY_MCP_TOKEN\": \"new-token-new-token-new\"\n  }\n}\n"
+ },
+ "token with inner newline": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\n  \"env\": {\n    \"MEMORY_MCP_TOKEN\": \"line-one-line-one\\nline-two\"\n  }\n}\n"
+ },
+ "malformed settings untouched": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{broken\nsettings.json\n"
+ },
+ "empty settings untouched": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "settings.json\n"
+ },
+ "settings is a list: untouched": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[1,2]\nsettings.json\n"
+ },
+ "env is not an object: untouched": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"env\":\"x\"}\nsettings.json\n"
+ },
+ "env is null: untouched": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"env\":null}\nsettings.json\n"
+ },
+ "existing token is non-string": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\n  \"env\": {\n    \"MEMORY_MCP_TOKEN\": \"new-token-new-token-new\"\n  }\n}\n"
+ },
+ "unwritable settings dir: silent": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"env\":{}}\nsettings.json\n"
+ },
+ "settings with CRLF and BOM": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "0000000 357 273 277   {   \"   e   n   v   \"   :   {   }   }\n0000015\n"
+ },
+ "settings with CRLF whitespace": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\n  \"env\": {\n    \"MEMORY_MCP_TOKEN\": \"new-token-new-token-new\"\n  }\n}\n"
+ },
+ "settings with invalid utf-8": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "0000000   {   \"   e   n   v   \"   :   {   }   ,   \"   x   \"   :   \" 377\n0000020   \"   }\n0000022\n"
+ },
+ "settings is a symlink: replaced by a regular file": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "4\nsettings.json\n{\"env\":{}}\n---\n{\n  \"env\": {\n    \"MEMORY_MCP_TOKEN\": \"new-token-new-token-new\"\n  }\n}\n"
+ },
+ "deeply nested structure": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\n  \"env\": {\n    \"MEMORY_MCP_TOKEN\": \"new-token-new-token-new\"\n  },\n  \"d\": [\n    [\n      [\n        [\n          [\n            [\n              {\n                \"a\": [\n                  {\n                    \"b\": []\n                  }\n                ]\n              }\n            ]\n          ]\n        ]\n      ]\n    ]\n  ]\n}\n"
+ }
+}

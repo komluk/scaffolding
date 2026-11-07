@@ -1,0 +1,254 @@
+{
+ "bad input: empty stdin": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"task\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "bad input: whitespace only": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"task\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "bad input: malformed json": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"task\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "bad input: truncated json": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"task\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "bad input: top-level array": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"task\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "bad input: top-level string": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"task\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "bad input: top-level null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"task\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "bad input: tool_input null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"task\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "bad input: tool_input string": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"task\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "bad input: tool_input array": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"task\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "bad input: utf-8 BOM": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"task\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "bad input: invalid utf-8 bytes": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"task\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "marks dirty, topic from subagent_type": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"developer\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "topic defaults to task when missing": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"task\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "topic default when subagent_type is empty": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"task\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "topic default when subagent_type null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"task\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "topic default when subagent_type 0": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"task\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "topic default when subagent_type false": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"task\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "topic is number": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"42\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "topic is float": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"1.0\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "topic is true": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"True\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "topic is list": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"['a', 1, None]\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "topic is object": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"{'a': 'b'}\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "topic is empty list -> task": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"task\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "topic with quotes (json-unsafe in the printf line)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"a\"b\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "topic with backslash": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"a\\nb\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "topic with real newline": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"a\nb\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "topic with trailing newline": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"dev\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "topic with percent signs": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"100%s%d\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "topic unicode": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"zażółć 😀\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "topic scaffolding:developer": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"scaffolding:developer\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "top-level array -> task": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"task\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "top-level string -> task": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"task\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "invalid utf-8 anywhere -> task": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"dev\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "off: no-op": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ ".noingest: no-op": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "no conversations dir: no-op": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "already dirty: no-op": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n"
+ },
+ "seen newer than context.md: stays clean": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-seen\n"
+ },
+ "context.md newer than seen: marks": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"developer\",\"kind\":\"breadcrumb\"}\n== .scaffolding/.ingest-seen\n"
+ },
+ "appends a second breadcrumb line when queue exists": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\nold\n{\"ts\":\"@TS@\",\"topic\":\"reviewer\",\"kind\":\"breadcrumb\"}\n"
+ },
+ "large stdin": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "== .scaffolding/.ingest-dirty\n== .scaffolding/.ingest-queue\n{\"ts\":\"@TS@\",\"topic\":\"big\",\"kind\":\"breadcrumb\"}\n"
+ }
+}
