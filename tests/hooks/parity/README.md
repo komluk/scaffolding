@@ -2,6 +2,8 @@
 
 `golden/<hook>.json` holds, per case in `cases/*.mjs`, the exit code, stdout, stderr and resulting files of
 each hook as produced by the **python3 implementation (plugin v2.34.0)**, before the port to Node.
+Exception: `block-env-write`, `block-destructive-rm`, `block-force-push` and `block-subagent` were re-recorded from the
+Node hooks in **v2.37.0**, when their known gaps were closed (102 intended decision changes, listed in CHANGELOG 2.37.0).
 `node run.mjs compare` (run by `tests/hooks/test-parity.sh`) runs the current hooks over the same inputs, in a
 fresh sandbox with a PATH that has no `python3`, and requires byte-identical results.
 

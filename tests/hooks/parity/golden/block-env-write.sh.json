@@ -180,9 +180,9 @@
   "state": ""
  },
  "file_path with newline then .env": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "file_path ends with newline": {
@@ -240,15 +240,15 @@
   "state": ""
  },
  "bash > /tmp/.env denied? (needs \">\" then .env)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "bash multiline: redirect on first line (tail -1 sees last only)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "bash multiline: redirect on last line denied": {
@@ -420,27 +420,27 @@
   "state": ""
  },
  "x: .ENV (case)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .ENV is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: .Env (case)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .Env is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: .eNv (case)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .eNv is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: .ENV.local (case)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .ENV.local is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: .env.LOCAL (case)": {
@@ -450,9 +450,9 @@
   "state": ""
  },
  "x: .Env.Production (case)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .Env.Production is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: ENV.env": {
@@ -534,9 +534,9 @@
   "state": ""
  },
  "x: LF then .env": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: .env then LF then other": {
@@ -600,15 +600,15 @@
   "state": ""
  },
  "x: dash prefixed .env (basename sees option)": {
-  "code": 1,
+  "code": 0,
   "stdout": "",
-  "stderr": "error: unexpected argument '-.' found\n\n  tip: to pass '-.' as a value, use '-- -.'\n\nUsage: basename [-z] NAME [SUFFIX]\n       basename OPTION... NAME...\n\nFor more information, try '--help'.\n",
+  "stderr": "",
   "state": ""
  },
  "x: file_path \"--\" ": {
-  "code": 1,
+  "code": 0,
   "stdout": "",
-  "stderr": "basename: missing operand\nTry 'basename --help' for more information.\n",
+  "stderr": "",
   "state": ""
  },
  "x: unicode-escaped .env": {
@@ -702,57 +702,57 @@
   "state": ""
  },
  "x: > .env; next": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: > .env&&next": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: > .ENV (case, not caught)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: > .Env.local (case, not caught)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: > ./.env (not caught)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: > /p/.env (not caught)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: > \"./.env\" quoted (not caught)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: > '.env' quoted (not caught)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: >| .env clobber (not caught)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: 2> .env": {
@@ -780,21 +780,21 @@
   "state": ""
  },
  "x: tee -a -- .env (not caught)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: tee -i .env (not caught)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: tee ./.env (not caught)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: tee .env.local": {
@@ -804,9 +804,9 @@
   "state": ""
  },
  "x: tee a .env (second file)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: tee\\t.env": {
@@ -840,33 +840,33 @@
   "state": ""
  },
  "x: cp to .env (not caught)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env via cp is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: mv to .env (not caught)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env via mv is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: sed -i .env (not caught)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env via sed is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: dd of=.env (not caught)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env via dd is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: install to .env (not caught)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env via install is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: python write .env (not caught)": {
@@ -888,15 +888,15 @@
   "state": ""
  },
  "x: here-doc to .env": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: redirect on first of several lines": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: redirect on last of several lines": {
@@ -906,9 +906,9 @@
   "state": ""
  },
  "x: redirect on middle line": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: redirect then trailing newlines": {
@@ -960,9 +960,9 @@
   "state": ""
  },
  "x: very long command then redirect": {
-  "code": 141,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually.\n",
   "state": ""
  },
  "x: command has .env redirect + file_path allowed": {

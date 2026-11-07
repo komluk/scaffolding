@@ -37,6 +37,10 @@ fi
 
 ext="${FILE_PATH##*.}"
 
+# A relative path starting with "-" would be read as an option by ruff/black/prettier/dotnet: make it ./-x.
+# (./ works for every formatter; dotnet's --include takes a value, so "--" would not help there.)
+case "$FILE_PATH" in -*) FILE_PATH="./$FILE_PATH" ;; esac
+
 format_python() {
     # Prefer a project venv's ruff/black, then PATH.
     local venv_bin=""

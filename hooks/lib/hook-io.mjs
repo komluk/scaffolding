@@ -22,10 +22,14 @@
 //   emit-block                    stdin text -> {"decision": "block", "reason": <text>} (exit 1 on bad UTF-8)
 //   emit-block --guard FIELD      stdin = <hook JSON> NUL <reason>; prints nothing when JSON.FIELD is truthy
 //                                 (Stop-hook loop guard), else the block decision: ONE process does both
-//   rm-target                     stdin JSON -> "<tool_input.command>\0<first blocked rm target or empty>\0"
+//   guard env|rm|push             stdin JSON -> the BLOCKED message of block-env-write / block-destructive-rm /
+//                                 block-force-push (hooks/lib/guards.mjs), or nothing to allow. Reads only
+//                                 tool_input.file_path / tool_input.command (+ cwd for rm); non-string or malformed
+//                                 JSON -> allow (exit 0). Any other failure exits non-zero: the hooks then block.
 //   set-env FILE KEY VARNAME      set settings.env[KEY]=$VARNAME atomically (0600), python json.dump(indent=2)
 import fs from 'node:fs';
 import path from 'node:path';
+import { envWriteGuard, pushGuard, rmGuard } from './guards.mjs';
 
 // ---------------------------------------------------------------- python-compatible JSON parse
 // dict -> Map, list -> Array, int -> BigInt, float -> Number. Grammar = Python's json module
@@ -318,21 +322,6 @@ const PY_WS = /[\t\n\v\f\r\x1c-\x1f \x85\xa0\u1680\u2000-\u200a\u2028\u2029\u202
 /** python str.split() (any unicode whitespace, no empty tokens) */
 export const pySplit = (s) => s.split(PY_WS).filter(Boolean);
 
-/** first path argument of an `rm` command that is `/`, `.`, `..`, or /etc /var /usr (or below) */
-export function blockedRmTarget(cmd) {
-  let inRm = false;
-  for (const p of pySplit(cmd)) {
-    if (p === 'rm') {
-      inRm = true;
-      continue;
-    }
-    if (!inRm || p.startsWith('-')) continue;
-    if (p === '/' || p === '.' || p === '..') return p;
-    for (const bp of ['/etc', '/var', '/usr']) if (p === bp || p.startsWith(`${bp}/`)) return p;
-  }
-  return '';
-}
-
 // ---------------------------------------------------------------- CLI
 function cmdGet(args) {
   const flags = new Set(args.filter((a) => a.startsWith('--')));
@@ -408,16 +397,32 @@ function cmdEmitBlock(args) {
   writeOut(`${pyDumps(new Map([['decision', 'block'], ['reason', reason]]))}\n`);
 }
 
-function cmdRmTarget() {
-  let cmd = '';
+function cmdGuard([which]) {
+  let ti = new Map();
+  let cwd = '';
   try {
-    const s = pyStr(lookup(parseJson(readStdin()), ['tool_input', 'command']));
-    encodeSurrogateEscape(s);
-    cmd = shellValue(s);
+    const root = parseJson(readStdin());
+    ti = lookup(root, ['tool_input'], new Map());
+    const c = root.get('cwd');
+    cwd = typeof c === 'string' ? c : '';
   } catch {
-    /* malformed input -> empty command -> allow */
+    return; // malformed input -> allow (exit 0: the hook's documented fail-open on unreadable input)
   }
-  writeOut(`${cmd}\0${blockedRmTarget(cmd)}\0`);
+  // bash drops NULs from `$(...)`; the command the shell would run has none either
+  const str = (k) => (ti instanceof Map && typeof ti.get(k) === 'string' ? ti.get(k).replaceAll('\0', '') : '');
+  let msg = '';
+  if (which === 'env') msg = envWriteGuard(str('file_path').replace(/\n+$/, ''), str('command')); // `$(...)` stripped trailing LFs
+  else if (which === 'rm') msg = rmGuard(str('command'), process.env.HOME ?? '', cwd || process.cwd());
+  else if (which === 'push') msg = pushGuard(str('command'));
+  else throw new Error('unknown guard');
+  if (!msg) return;
+  let out;
+  try {
+    out = encodeSurrogateEscape(`${msg}\n`);
+  } catch {
+    out = Buffer.from(`${msg}\n`, 'utf8'); // never let an odd byte turn a block into an allow
+  }
+  fs.writeSync(1, out);
 }
 
 function cmdSetEnv([file, key, varName]) {
@@ -450,7 +455,7 @@ function main(argv) {
     if (cmd === 'get') cmdGet(rest);
     else if (cmd === 'quote') writeOut(`${pyDumps(readStdin())}\n`);
     else if (cmd === 'emit-block') cmdEmitBlock(rest);
-    else if (cmd === 'rm-target') cmdRmTarget();
+    else if (cmd === 'guard') cmdGuard(rest);
     else if (cmd === 'set-env') cmdSetEnv(rest);
     else process.exitCode = 2;
   } catch {

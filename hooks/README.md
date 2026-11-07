@@ -127,6 +127,39 @@ Same path on both sides with different content: the share copy is kept, the loca
 
 **Related:** `count-conversations.sh <root>...` prints `<project> <n_conv> <n_files>` (sorted) for before/after migration counts. Tests: `bash tests/run-all.sh`.
 
+### 8. Blocking hooks (PreToolUse, exit 2 = deny)
+Decision logic for the first three lives in `lib/guards.mjs`, built on the shell splitter `lib/shell-words.mjs` (with `lib/shell-scan.mjs` and `lib/shell-glob.mjs` for scanning, brace
+expansion and glob matching). The splitter handles:
+- every line of a multi-line command;
+- quoting and `$'..'`;
+- `\rm`, `/bin/rm` and `/bin/r?`;
+- wrappers: `sudo`, `env [-S]`, `command`, `timeout`, `chroot`, `strace`, `taskset`, `coproc`, and others;
+- `bash -c`, `su -c`, `script -c`, `flock`, `watch`, here-strings, `$(...)`, backticks and `xargs`;
+- brace-expanding unquoted words.
+
+Each hook has a bash fast path, so a command that cannot match never starts `node`.
+
+| Hook | Matcher | Blocks |
+|------|---------|--------|
+| `block-env-write.sh` | `Edit\|Write\|MultiEdit\|Bash` | `.env` / `.env.*` (case-insensitive, `.env.example` included). Checks Edit/Write `file_path`. In Bash: `>` `>>` `>\|` `&>` `2>` `<>`, `tee`, the destination of `cp`/`mv`/`install`/`ln`/`truncate`/`curl -o`/`wget -O`/`dd of=`, `sed -i`, `perl -i`; also any glob or brace word that could name such a file (`.e?v`, `.{env,x}`) |
+| `block-destructive-rm.sh` | `Bash` | `rm -r` (any flag form, `--rec` prefixes) and `find ... -delete` / `-exec rm`. Protected: `/`, `/*`; `/etc`, `/var`, `/usr`, `/System`, `/private/etc`, `/private/var` and everything below; `/home`, `/root`, `/boot`, `/opt`, `/srv`, `/bin`, `/sbin`, `/lib*`, `/Users`, `/Applications`, `/Library`; `$HOME` and its `.ssh`, `.gnupg`, `.config`, `.local`, `.claude`; `.` / `..` at any depth; `./.git` and the repo's top-level `.git`. Not protected: `/usr/local`, `/var/tmp` and `/var/folders` (below them). Paths are normalised and resolved against `cwd`. Any `xargs rm` is blocked |
+| `block-force-push.sh` | `Bash` | `git push` with `--force*` (and abbreviations), `-f` in any flag group, `+refspec`, `--mirror`/`--mir`, or `--delete`/`--de`/`-d`/`:branch` on `main`/`master`; also through `git -c/-C/--no-pager`. Also `git -c alias.*`, `remote.*.push=`, `remote.*.mirror=`, `help.autocorrect=` |
+| `block-subagent.sh` | `Task` | `general-purpose` in any case, and exactly `explore` (`Explore`, `scaffolding:*` and `plan` are allowed) |
+
+**Fail closed.** The guard denies if the command mentions its danger words (`rm`/`unlink`/`shred`/`-delete`, `env`, `push`) and the splitter
+cannot model the text completely. That happens on an unterminated quote, `$(`, `$[` or heredoc; nesting deeper than 6; more than 12 wrappers;
+or input over 256 KB. The hook also denies if `node` exits non-zero after the fast path matched. Unreadable JSON, a non-string field, or no
+`node` on PATH still fail open with a stderr note.
+
+**Accepted gaps.** These are pattern guards, not a sandbox. The following are not seen:
+- Variable indirection (`X=rm; $X -rf /`, `cmd=$(printf rm)`), aliases and shell functions defined earlier in the session.
+- Scripts or Makefiles run from files, and interpreters (`python -c`, `node -e`, `perl -e` without `-i`).
+- Tools that write by other means: `rsync --delete`, `git clean -fdx`, `tar -C / x`, `cp` over `.env` through a symlink, editors.
+- Paths that need the file system or symlinks to resolve, other than `cwd` and the repo's `.git`.
+- `cd /; rm -rf *` inside one command: `cwd` is the hook's cwd, not the effect of `cd`.
+- `$HOME` entries outside the short protected list, and other users' home dirs below `/home/<user>`.
+- Remote pushes by other tools (`gh`, `hub`, API calls), and git config set in files instead of with `-c`.
+
 ## PostToolUse(Edit|Write) ordering — CRITICAL
 
 The registered order in **both** `.claude-plugin/plugin.json` and `settings.json`

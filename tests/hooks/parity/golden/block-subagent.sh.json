@@ -198,21 +198,21 @@
   "state": ""
  },
  "x: General-Purpose (case, allowed)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: subagent_type 'General-Purpose' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
   "state": ""
  },
  "x: GENERAL-PURPOSE (case, allowed)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: subagent_type 'GENERAL-PURPOSE' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
   "state": ""
  },
  "x: general-Purpose (case, allowed)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: subagent_type 'general-Purpose' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
   "state": ""
  },
  "x: general_purpose (underscore, allowed)": {

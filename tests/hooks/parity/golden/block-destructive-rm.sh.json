@@ -108,9 +108,9 @@
   "state": ""
  },
  "rm -rf /* not exact slash: allowed": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '/*' is not allowed.\n",
   "state": ""
  },
  "rm -rf /etc denied": {
@@ -162,9 +162,9 @@
   "state": ""
  },
  "rm -rf ./ allowed (not exact . or ..)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on './' is not allowed.\n",
   "state": ""
  },
  "rm -rf ../x allowed": {
@@ -198,15 +198,15 @@
   "state": ""
  },
  "rm -rf quoted slash is not bare slash": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '/' is not allowed.\n",
   "state": ""
  },
  "rm -r only allowed": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '/' is not allowed.\n",
   "state": ""
  },
  "rm -f only allowed": {
@@ -228,9 +228,9 @@
   "state": ""
  },
  "-rf before rm": {
-  "code": 2,
+  "code": 0,
   "stdout": "",
-  "stderr": "BLOCKED: Destructive rm -rf on '/etc' is not allowed.\n",
+  "stderr": "",
   "state": ""
  },
  "sudo rm -rf /": {
@@ -270,9 +270,9 @@
   "state": ""
  },
  "semicolon glued to path": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '/' is not allowed.\n",
   "state": ""
  },
  "rm in word (arm -rf)": {
@@ -300,9 +300,9 @@
   "state": ""
  },
  "uppercase -R and -F": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '/' is not allowed.\n",
   "state": ""
  },
  "xargs rm denied": {
@@ -360,15 +360,15 @@
   "state": ""
  },
  "multiline: split flags": {
-  "code": 2,
-  "stdout": "",
-  "stderr": "BLOCKED: Destructive rm -rf on '/' is not allowed.\n",
-  "state": ""
- },
- "non-breaking space separator": {
   "code": 0,
   "stdout": "",
   "stderr": "",
+  "state": ""
+ },
+ "non-breaking space separator": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '/' is not allowed.\n",
   "state": ""
  },
  "NBSP between args: python split sees it": {
@@ -378,9 +378,9 @@
   "state": ""
  },
  "tab separated": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '/etc' is not allowed.\n",
   "state": ""
  },
  "vertical tab separated": {
@@ -414,9 +414,9 @@
   "state": ""
  },
  "relative dot-dot chain": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '../..' is not allowed.\n",
   "state": ""
  },
  "long option --recursive and -f": {
@@ -498,51 +498,51 @@
   "state": ""
  },
  "x: rm -rf ~ (tilde not protected)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '~' is not allowed.\n",
   "state": ""
  },
  "x: rm -rf ~/ (tilde slash)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '~/' is not allowed.\n",
   "state": ""
  },
  "x: rm -rf $HOME (variable not expanded)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '$HOME' is not allowed.\n",
   "state": ""
  },
  "x: rm -rf ${HOME}": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '${HOME}' is not allowed.\n",
   "state": ""
  },
  "x: rm -rf \"$HOME\"": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '$HOME' is not allowed.\n",
   "state": ""
  },
  "x: rm -rf ../.. (two levels up)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '../..' is not allowed.\n",
   "state": ""
  },
  "x: rm -rf ../../ (trailing slash)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '../../' is not allowed.\n",
   "state": ""
  },
  "x: rm -rf ./.. ": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on './..' is not allowed.\n",
   "state": ""
  },
  "x: sudo rm -rf /var denied": {
@@ -570,15 +570,15 @@
   "state": ""
  },
  "x: backslash-escaped \\rm -rf /": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '/' is not allowed.\n",
   "state": ""
  },
  "x: /bin/rm -rf / (absolute rm path)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '/' is not allowed.\n",
   "state": ""
  },
  "x: env rm -rf /etc": {
@@ -588,15 +588,15 @@
   "state": ""
  },
  "x: bash -c \"rm -rf /\"": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '/' is not allowed.\n",
   "state": ""
  },
  "x: sh -c 'rm -rf /etc'": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '/etc' is not allowed.\n",
   "state": ""
  },
  "x: trailing slash /etc/": {
@@ -618,21 +618,21 @@
   "state": ""
  },
  "x: double slash //": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '//' is not allowed.\n",
   "state": ""
  },
  "x: /./ ": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '/./' is not allowed.\n",
   "state": ""
  },
  "x: //etc": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '//etc' is not allowed.\n",
   "state": ""
  },
  "x: /etc/../": {
@@ -654,39 +654,39 @@
   "state": ""
  },
  "x: /bin not protected": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '/bin' is not allowed.\n",
   "state": ""
  },
  "x: /boot not protected": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '/boot' is not allowed.\n",
   "state": ""
  },
  "x: /home not protected": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '/home' is not allowed.\n",
   "state": ""
  },
  "x: /root not protected": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '/root' is not allowed.\n",
   "state": ""
  },
  "x: /lib not protected": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '/lib' is not allowed.\n",
   "state": ""
  },
  "x: /opt not protected": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '/opt' is not allowed.\n",
   "state": ""
  },
  "x: /dev/sda not protected": {
@@ -696,21 +696,21 @@
   "state": ""
  },
  "x: double-quoted /etc (quote stays in token)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '/etc' is not allowed.\n",
   "state": ""
  },
  "x: single-quoted '/'": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '/' is not allowed.\n",
   "state": ""
  },
  "x: quoted /etc/x": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '/etc/x' is not allowed.\n",
   "state": ""
  },
  "x: quoted path with spaces then protected": {
@@ -732,9 +732,9 @@
   "state": ""
  },
  "x: path under /usr with spaces": {
-  "code": 2,
+  "code": 0,
   "stdout": "",
-  "stderr": "BLOCKED: Destructive rm -rf on '/usr/local/my\\' is not allowed.\n",
+  "stderr": "",
   "state": ""
  },
  "x: three targets, protected last": {
@@ -798,21 +798,21 @@
   "state": ""
  },
  "x: protected glued to semicolon": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '/etc' is not allowed.\n",
   "state": ""
  },
  "x: protected glued to &&": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '/etc' is not allowed.\n",
   "state": ""
  },
  "x: protected followed by pipe": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '/etc' is not allowed.\n",
   "state": ""
  },
  "x: protected inside $(...)": {
@@ -840,21 +840,21 @@
   "state": ""
  },
  "x: rm -rf .*": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '.*' is not allowed.\n",
   "state": ""
  },
  "x: rm -rf .git": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '.git' is not allowed.\n",
   "state": ""
  },
  "x: rm -rf . with trailing semicolon": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '.' is not allowed.\n",
   "state": ""
  },
  "x: unicode path protected-looking (fullwidth slash)": {
@@ -882,9 +882,9 @@
   "state": ""
  },
  "x: newline separated target": {
-  "code": 2,
+  "code": 0,
   "stdout": "",
-  "stderr": "BLOCKED: Destructive rm -rf on '/etc' is not allowed.\n",
+  "stderr": "",
   "state": ""
  },
  "x: CR separated target": {
@@ -936,21 +936,21 @@
   "state": ""
  },
  "x: xargs sh -c rm (not caught)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive rm -rf on '/' is not allowed.\n",
   "state": ""
  },
  "x: find -delete (no rm)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive find on '/' is not allowed.\n",
   "state": ""
  },
  "x: find -exec rm -rf": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Destructive find on '/etc' is not allowed.\n",
   "state": ""
  },
  "x: mv to /dev/null": {

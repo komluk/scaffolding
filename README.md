@@ -42,7 +42,7 @@ for full release history and current version.
 - **Six new hooks:** soft auto-init advice (`auto-init-check`), opt-in
   auto-format (`post-edit-format`), opt-in desktop/terminal notifications
   (`notify`), opt-in completion nudge (`completion-nudge`), a hard block on the
-  `general-purpose`/`explore` subagents (`block-subagent`), and a warn-only
+  `general-purpose` (any case) / `explore` subagents (`block-subagent`), and a warn-only
   >500-line file check (`file-size-warn`).
 - **Per-phase model tiers:** `analyst`, `architect`, and `reviewer` declare
   `model: opus` + `effort: high`; `developer` stays `inherit`. The reviewer on a

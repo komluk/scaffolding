@@ -1,5 +1,8 @@
 // Security-review additions for the four BLOCKING hooks. The goldens come from the python hooks, so these pin
 // every decision (denied AND allowed) the old implementation made, including the known gaps (see README).
+// Since 2.37.0 the four block-* goldens are re-recorded from the Node hooks: names saying "(not caught)",
+// "(allowed)" or "not protected" describe the old python decision, kept as stable golden keys; the golden holds
+// the current one (CHANGELOG 2.37.0 lists every flipped case).
 import { j, ti, utf8 } from './_util.mjs';
 
 const cmd = (name, command) => ({ name, stdin: j(ti({ command })) });

@@ -173,7 +173,7 @@
         ]
       },
       {
-        "matcher": "Bash(git push*)",
+        "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
@@ -191,7 +191,7 @@
         ]
       },
       {
-        "matcher": "Edit|Write",
+        "matcher": "Edit|Write|MultiEdit|Bash",
         "hooks": [
           {
             "type": "command",
@@ -200,7 +200,7 @@
         ]
       },
       {
-        "matcher": "Bash(rm *)",
+        "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
