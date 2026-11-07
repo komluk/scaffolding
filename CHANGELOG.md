@@ -5,6 +5,67 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.37.0] - 2026-11-07
+
+### Security
+- **Blocking hooks rewritten on a shell splitter** (`hooks/lib/shell-words.mjs` + `hooks/lib/guards.mjs`, new `hook-io.mjs guard env|rm|push`,
+  replacing `rm-target`). The hooks now see every line of a multi-line command, quoting, `\rm` / `/bin/rm`, `sudo` / `env` / `command` /
+  `timeout` wrappers, `bash -c` / `sh -c`, `$(...)` and `xargs`.
+- **Matchers fixed.** `Bash(rm *)` and `Bash(git push*)` are not tool-name matchers, so `block-destructive-rm` and `block-force-push`
+  are now registered on `Bash`, and `block-env-write` on `Edit|Write|Bash`. Each has a bash fast path, so `node` only starts when the
+  input mentions `env` / `push` / `rm|unlink|shred|truncate|-delete` or has a quote/backslash. `plugin.json` and `settings.json` agree.
+- `block-env-write`: case-insensitive `.env` / `.env.*` (`.env.example` stays denied); basename computed in Node (a `-.env` / `--`
+  path no longer crashes `basename`); Bash `>`, `>>`, `>|`, `&>`, `2>` to any `.env` path, quoted or not; `tee` (any flags/position);
+  `cp` / `mv` / `install` destinations (`-t` included); `sed -i` / `--in-place`; `perl -i`.
+- `block-destructive-rm`: also protects `/*`, `~`, `$HOME`, `${HOME}` and every top-level entry of `$HOME`, `/home`, `/root`, `/boot`,
+  `/opt`, `/srv`, `/bin`, `/sbin`, `/lib*`, `./`, `../..` (any depth) and `.git`. Paths are normalised (`//`, `/etc/..`, `/./`, quotes).
+  Also blocks `find <protected> -delete` / `-exec rm` and `xargs sh -c 'rm ...'`. `rm -rf node_modules`, `./dist`, `~/proj/build` stay allowed.
+- `block-force-push`: also blocks `+refspec`, `--mirror`, `--delete` / `-d` / `:branch` on `main` / `master`, and pushes through
+  `git -c x`, `git -C dir` and `--no-pager`. Quoted text (`git commit -m "... git push --force"`), `git pushd` and `-f` on another
+  command or after `--` are no longer false positives.
+- `block-subagent`: `general-purpose` is denied in any case (`General-Purpose`). `explore` stays an exact match, and `scaffolding:*` /
+  `plan` stay allowed.
+- `post-edit-format` passes a `-`-prefixed relative path as `./-x` (ruff, black, prettier, dotnet); `file-size-warn` uses `grep -- "$FILE_PATH"`.
+
+- **Fail closed when the command cannot be fully parsed** (review H1).
+  - `$(...)` matching is quote-aware, and arithmetic (`$((..))`, `$[..]`, `((..))`, `let`) is not treated as a heredoc.
+  - The parse counts as incomplete on an unterminated quote, `$(`, heredoc or `$[`, on nesting deeper than 6, on more than 12 wrappers, or on
+    input over 256 KB. When it is incomplete, a guard denies if the raw text mentions its danger words.
+  - The `.sh` hooks deny when `node` exits non-zero after the fast path matched.
+  - The wrapper loop is index-based: 240 KB of `do` keywords takes under 3 s, down from about 19 s.
+- `block-subagent`: no bash-4 `${var,,}` (macOS bash 3.2); `nocasematch` + `case`.
+- `block-force-push`: abbreviated long options (`--de`, `--mir`, `--forc`), and `git -c alias.*`, `remote.*.push=`, `remote.*.mirror=`,
+  `help.autocorrect=`.
+- `block-env-write`: `<>`; glob and brace words that could name a `.env` file (`.e?v`, `.[e]nv`, `.en*`, `.{env,bak}`); `truncate`, `ln`,
+  `curl -o/--output`, `wget -O` and `dd of=` destinations; matcher adds `MultiEdit`.
+- `block-destructive-rm`:
+  - Recursive alone is enough (`rm -r /`); long-option prefixes (`--rec`); brace and glob targets (`/{etc,tmp}`, `/e{t,x}c`);
+    the macOS `/Users`, `/Applications`, `/System`, `/Library`, `/private/etc`, `/private/var`.
+  - No longer protected: `/var/folders`, `/private/var/folders`, `/var/tmp` and `/usr/local`, all below.
+  - `.git` is protected only as `./.git` or the repo's top-level `.git`, resolved from the hook `cwd`. Nested `vendor/x/.git` is allowed.
+  - In `$HOME`, only the dir itself and `.ssh`, `.gnupg`, `.config`, `.local`, `.claude` are protected; `~/.cache/x` and `~/tmp/x` are allowed.
+  - Relative paths are resolved against `cwd`.
+- Splitter (review M4/M5):
+  - Empty `$()` / backticks and `$@` / `$*` inside a word are removed; unquoted words are brace-expanded; glob program names (`/bin/r?`)
+    match.
+  - Recurses into `env -S`, here-strings (`bash <<<`), `su -c`, `script -c`, `flock [-c]`, `watch`, `function f {..}` and `coproc`.
+  - New wrappers: `chroot`, `strace`, `ltrace`, `taskset`.
+  - `find` start paths skip `-H`, `-L`, `-P`, `-D x` and `-O<n>`; `$'\U........'`.
+  - Fast-path triggers add `` ` ``, `$`, `*`, `?`, `[` and `{`.
+
+### Changed
+- Parity goldens of the four `block-*` hooks re-recorded from the Node hooks: **106 intended decision changes** against the python
+  goldens (env-write 33, destructive-rm 46, force-push 24, subagent 3).
+  - **Now denied:** every case named "(not caught)", "(allowed)" or "not protected"; plus `rm -r /` and `rm -RF /` (recursive is enough),
+    `rm -rf .*` (a glob that can name `..`/`.git`) and `dd of=.env`.
+  - **Now allowed (old false positives):**
+    - force-push: quoted text, `git pushd`, and `-f` on another command or after `--`. A JSON list/object `command`, and a CRLF case,
+      also flip to allowed.
+    - destructive-rm: `echo -rf; rm /etc`, `rm -r\n-f /` and `rm -rf\n/etc`. A newline ends the command, so `rm` has no flags or target.
+    - destructive-rm: `rm -rf /usr/local/my\ dir`, because `/usr/local` is no longer protected.
+- `tests/hooks/test-block-bypass.sh` (new): every repro from the security review (H1, M1-M8) and the listed false positives.
+- `tests/hooks/test-block-hooks.sh`: the old "only the last line is inspected" and "`rm -rf ./` is allowed" assertions now assert the fix.
+
 ## [2.36.0] - 2026-11-07
 
 Second step of removing Python from the plugin runtime: `refactor-guard` now runs on Node.

@@ -17,7 +17,7 @@ FILE_PATH=$(node "$LIB/hook-io.mjs" get tool_input.file_path 2>/dev/null)
 [ -f "$FILE_PATH" ] || exit 0
 
 # Skip binary files silently (grep -I treats binary as non-matching).
-grep -Iq . "$FILE_PATH" 2>/dev/null || exit 0
+grep -Iq -e . -- "$FILE_PATH" 2>/dev/null || exit 0
 
 LINE_COUNT=$(wc -l < "$FILE_PATH" 2>/dev/null | tr -d ' ')
 [ -n "$LINE_COUNT" ] || exit 0

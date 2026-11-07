@@ -21,6 +21,8 @@ check "missing file: silent"         file_is_str "$(sz "$T/nope")" "rc=0"
 check "malformed input: silent"      file_is_str "$(printf '{oops' | bash "$HOOKS_DIR/file-size-warn.sh" 2>&1; echo "rc=$?")" "rc=0"
 head -c 4000 /dev/zero >"$T/bin"
 check "binary file: silent"          file_is_str "$(sz "$T/bin")" "rc=0"
+seq 1 501 >"$T/-v"
+check "dash-named file is a file, not a grep option" contains "$(cd "$T" && sz "-v")" "ADVISORY: -v has 501 lines"
 
 echo "# file-staleness-check / update"
 chk() { printf '%s' "$(fj "$1")" | SCAFFOLDING_TASK_ID="$TASK" bash "$HOOKS_DIR/file-staleness-check.sh" 2>&1; echo "rc=$?"; }
@@ -68,6 +70,11 @@ rm -f "$T/fmt/calls"
 fmt_env "$T/fmt/a.md" SCAFFOLDING_AUTOFORMAT=1 >/dev/null
 check ".md: no formatter"            test ! -e "$T/fmt/calls"
 check "missing file: silent exit 0"  file_is_str "$(fmt_env "$T/fmt/none.py" SCAFFOLDING_AUTOFORMAT=1)" "rc=0"
+touch "$T/fmt/-x.py" "$T/fmt/--version.ts"; rm -f "$T/fmt/calls"
+fmt_env "-x.py" SCAFFOLDING_AUTOFORMAT=1 >/dev/null
+check "dash-named .py reaches ruff as a path" file_is_str "$(cat "$T/fmt/calls")" "ruff format ./-x.py"
+rm -f "$T/fmt/calls"; fmt_env "--version.ts" SCAFFOLDING_AUTOFORMAT=1 >/dev/null
+check "dash-named .ts reaches prettier as a path" file_is_str "$(cat "$T/fmt/calls")" "npx --no-install prettier --write ./--version.ts"
 check "malformed input: exit 0"      file_is_str "$(printf '{oops' | (cd "$T/fmt" && env PATH="$T/fmt/bin" SCAFFOLDING_AUTOFORMAT=1 bash "$HOOKS_DIR/post-edit-format.sh" 2>&1; echo "rc=$?"))" "rc=0"
 
 finish

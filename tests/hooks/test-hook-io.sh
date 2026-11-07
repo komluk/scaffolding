@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# hooks/lib/hook-io.mjs: the JSON helper the ported hooks call (get / quote / emit-block / rm-target / set-env).
+# hooks/lib/hook-io.mjs: the JSON helper the ported hooks call (get / quote / emit-block / guard / set-env).
 # shellcheck source=lib.sh
 # shellcheck source-path=SCRIPTDIR
 . "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
@@ -54,14 +54,21 @@ echo "# parse depth (python fails open at ~10k-58k levels; the parser has no lim
 deep="$(node -e 'const d=100000;process.stdout.write("{\"x\":"+"[".repeat(d)+"]".repeat(d)+",\"tool_input\":{\"command\":\"rm -rf /\"}}")')"
 check "100000-deep payload still yields the command" file_is_str "$(printf '%s' "$deep" | io get tool_input.command)" "rm -rf /"
 
-echo "# rm-target"
-rmt() { printf '%s' "$1" | io rm-target | tr '\0' '|'; }
-check "root"                    file_is_str "$(rmt '{"tool_input":{"command":"rm -rf /"}}')" "rm -rf /|/|"
-check "/etc subtree"            file_is_str "$(rmt '{"tool_input":{"command":"rm -rf /etc/x"}}')" "rm -rf /etc/x|/etc/x|"
-check "/etcetera is not /etc"   file_is_str "$(rmt '{"tool_input":{"command":"rm -rf /etcetera"}}')" "rm -rf /etcetera||"
-check "dot and dot-dot"         file_is_str "$(rmt '{"tool_input":{"command":"rm -rf a .."}}')" "rm -rf a ..|..|"
-check "nothing protected"       file_is_str "$(rmt '{"tool_input":{"command":"rm -rf build"}}')" "rm -rf build||"
-check "malformed json"          file_is_str "$(rmt '{x')" "||"
+echo "# guard (block-env-write / block-destructive-rm / block-force-push decisions)"
+g() { printf '%s' "$2" | HOME=/home/u io guard "$1"; }
+check "rm: root"                  file_is_str "$(g rm '{"tool_input":{"command":"rm -rf /"}}')" "BLOCKED: Destructive rm -rf on '/' is not allowed."
+check "rm: /etc subtree"          file_is_str "$(g rm '{"tool_input":{"command":"rm -rf /etc/x"}}')" "BLOCKED: Destructive rm -rf on '/etc/x' is not allowed."
+check "rm: /etcetera is not /etc" file_is_str "$(g rm '{"tool_input":{"command":"rm -rf /etcetera"}}')" ""
+check "rm: dot-dot"               file_is_str "$(g rm '{"tool_input":{"command":"rm -rf a .."}}')" "BLOCKED: Destructive rm -rf on '..' is not allowed."
+check "rm: HOME top-level entry"  file_is_str "$(g rm '{"tool_input":{"command":"rm -rf ~/.ssh"}}')" "BLOCKED: Destructive rm -rf on '~/.ssh' is not allowed."
+check "rm: below HOME top level"  file_is_str "$(g rm '{"tool_input":{"command":"rm -rf ~/p/build"}}')" ""
+check "rm: nothing protected"     file_is_str "$(g rm '{"tool_input":{"command":"rm -rf build"}}')" ""
+check "rm: malformed json"        file_is_str "$(g rm '{x')" ""
+check "rm: non-string command"    file_is_str "$(g rm '{"tool_input":{"command":["rm -rf /"]}}')" ""
+check "env: path"                 file_is_str "$(g env '{"tool_input":{"file_path":"/p/.Env"}}')" "BLOCKED: Writing to .Env is not allowed. Environment files must be edited manually."
+check "env: cp destination"       file_is_str "$(g env '{"tool_input":{"command":"cp a .env"}}')" "BLOCKED: Writing to .env via cp is not allowed. Environment files must be edited manually."
+check "push: + refspec"           file_is_str "$(g push '{"tool_input":{"command":"git push origin +main"}}')" "BLOCKED: Force push via the '+' refspec '+main' is not allowed."
+check "unknown guard: nothing, exit 1" file_is_str "$(g nope '{}'; echo "rc=$?")" "rc=1"
 
 echo "# set-env (refresh-mcp-token)"
 S="$T/settings.json"

@@ -1,38 +1,31 @@
 #!/usr/bin/env bash
-# PreToolUse hook: Block writes to .env files.
+# PreToolUse hook (Edit|Write|MultiEdit and Bash): Block writes to .env / .env.* files (case-insensitive).
 # Exit 2 = abort (block the tool call), Exit 0 = allow.
+# Edit/Write: the basename of tool_input.file_path. Bash: redirects (> >> >| &> 2>), tee, cp/mv/install
+# destinations, sed -i and perl -i, on every line and inside bash -c / sudo / env wrappers.
+# Decision logic: hooks/lib/guards.mjs (envWriteGuard).
 
-set -euo pipefail
+set -uo pipefail
+
+INPUT=$(cat)
+# Fast path: nothing that could spell .env: no "env", no ".e" / ".<glob>", no quote, backslash, $, ` or glob.
+shopt -s nocasematch
+RE=$'env|\\.[e*?[{]|[\\\\\'\`$*?[]|\\{[^"}[:space:]]'
+[[ "$INPUT" =~ $RE ]] || exit 0
 
 # Node is the JSON helper (hooks/lib/hook-io.mjs). Without it the hook cannot decide: fail open.
 LIB="${BASH_SOURCE[0]%/*}"; [[ "$LIB" == "${BASH_SOURCE[0]}" ]] && LIB=.; LIB="$LIB/lib"
 command -v node >/dev/null 2>&1 || { echo "scaffolding: node not found, block-env-write not enforced" >&2; exit 0; }
 
-# Reason: hook-io yields empty strings on malformed JSON so hook exits 0
-# (allow) instead of exit 1 (warn-but-proceed) which would let the op execute.
-# Output file_path (for Edit/Write) and command (for Bash), one per line.
-TOOL_INPUT=$(node "$LIB/hook-io.mjs" get tool_input.file_path tool_input.command)
-
-FILE_PATH=$(echo "$TOOL_INPUT" | head -1)
-CMD=$(echo "$TOOL_INPUT" | tail -1)
-
-# Check Edit/Write tool: block if file_path targets .env
-if [ -n "$FILE_PATH" ]; then
-    BASENAME=$(basename "$FILE_PATH")
-    # Block if basename is exactly ".env" or starts with ".env."
-    if [ "$BASENAME" = ".env" ] || echo "$BASENAME" | grep -q '^\.env\.'; then
-        echo "BLOCKED: Writing to $BASENAME is not allowed. Environment files must be edited manually." >&2
-        exit 2
-    fi
+# Malformed JSON or a non-string field -> no message -> allow (exit 0, never exit 1 = warn-but-proceed).
+# node itself failing (crash, out of memory, killed) after the fast path matched -> block: fail closed.
+MSG=$(printf '%s' "$INPUT" | node "$LIB/hook-io.mjs" guard env); RC=$?
+if [ "$RC" -ne 0 ]; then
+    echo "BLOCKED: block-env-write could not check this command (node exited $RC). Retry, or split the command." >&2
+    exit 2
 fi
-
-# Check Bash tool: block commands that redirect output to .env files
-# Reason: Catch patterns like "echo ... > .env", "cat ... > .env", "tee .env"
-if [ -n "$CMD" ]; then
-    if echo "$CMD" | grep -qE '(>|>>)\s*\.env(\s|$|\.)|tee\s+(-a\s+)?\.env(\s|$|\.)'; then
-        echo "BLOCKED: Writing to .env via shell redirect/tee is not allowed. Environment files must be edited manually." >&2
-        exit 2
-    fi
+if [ -n "$MSG" ]; then
+    printf '%s\n' "$MSG" >&2
+    exit 2
 fi
-
 exit 0

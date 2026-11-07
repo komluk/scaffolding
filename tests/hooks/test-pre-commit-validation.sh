@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 # pre-commit-validation: skips when only .github/.gitea files are staged; otherwise still validates.
+# shellcheck source=lib.sh
+# shellcheck source-path=SCRIPTDIR
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 HOOK="$HOOKS_DIR/pre-commit-validation.sh"
 SKIP_MSG="[skip] only .github/.gitea changes staged -- skipping validation"
+[ "${1:-}" = --inner ] && INNER=1 || INNER=0
 T=$(mktmp); trap 'rm -rf "$T"' EXIT
 
 git -C "$T" init -q
@@ -73,5 +76,15 @@ git -C "$T" config --unset scaffolding.precommitValidation
 out=$(run); rc=$?
 check "config unset -> validation runs, exit 1" test "$rc" -eq 1
 reset
+
+[ "$INNER" = 1 ] && { finish; exit; }
+echo "# isolation: git env exported by an outer git (hook, rebase --exec) must not leak into the sandbox"
+# A throwaway outer repo stands in for the caller's checkout; lib.sh unsets the GIT_* location variables.
+O=$(mktmp); git -C "$O" init -q; echo keep >"$O/keep.txt"; git -C "$O" add keep.txt
+out=$(GIT_DIR="$O/.git" GIT_WORK_TREE="$O" GIT_INDEX_FILE="$O/.git/index" bash "$0" --inner 2>&1)
+check "suite passes with an outer GIT_DIR/GIT_WORK_TREE/GIT_INDEX_FILE" contains "$out" "failed=0"
+check "outer repo index untouched" test "$(git -C "$O" diff --cached --name-only)" = keep.txt
+check "outer repo has no commit" test -z "$(git -C "$O" rev-parse -q --verify HEAD)"
+rm -rf "$O"
 
 finish

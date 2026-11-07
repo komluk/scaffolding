@@ -138,9 +138,9 @@
   "state": ""
  },
  "git pushd no real push but contains \"git push\"": {
-  "code": 2,
+  "code": 0,
   "stdout": "",
-  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "stderr": "",
   "state": ""
  },
  "not a push": {
@@ -162,21 +162,21 @@
   "state": ""
  },
  "multiline command, push on 1st line, -f later": {
-  "code": 2,
-  "stdout": "",
-  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
-  "state": ""
- },
- "tab before -f": {
   "code": 0,
   "stdout": "",
   "stderr": "",
   "state": ""
  },
- "quoted message mentions git push --force": {
+ "tab before -f": {
   "code": 2,
   "stdout": "",
-  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "state": ""
+ },
+ "quoted message mentions git push --force": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
   "state": ""
  },
  "unicode in command": {
@@ -198,9 +198,9 @@
   "state": ""
  },
  "command is a list": {
-  "code": 2,
+  "code": 0,
   "stdout": "",
-  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "stderr": "",
   "state": ""
  },
  "command is false": {
@@ -210,9 +210,9 @@
   "state": ""
  },
  "command is an object": {
-  "code": 2,
+  "code": 0,
   "stdout": "",
-  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "stderr": "",
   "state": ""
  },
  "missing command": {
@@ -228,9 +228,9 @@
   "state": ""
  },
  "CRLF in command": {
-  "code": 2,
+  "code": 0,
   "stdout": "",
-  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "stderr": "",
   "state": ""
  },
  "command with NUL char": {
@@ -270,39 +270,39 @@
   "state": ""
  },
  "x: +main refspec (not caught)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Force push via the '+' refspec '+main' is not allowed.\n",
   "state": ""
  },
  "x: +HEAD:main refspec (not caught)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Force push via the '+' refspec '+HEAD:main' is not allowed.\n",
   "state": ""
  },
  "x: +refs/heads/* refspec": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Force push via the '+' refspec '+refs/heads/*:refs/heads/*' is not allowed.\n",
   "state": ""
  },
  "x: --mirror (not caught)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: git push --mirror is not allowed (it force-updates and deletes remote refs).\n",
   "state": ""
  },
  "x: --delete (not caught)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Deleting 'main' on the remote is not allowed.\n",
   "state": ""
  },
  "x: :main delete refspec (not caught)": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Deleting 'main' on the remote is not allowed.\n",
   "state": ""
  },
  "x: -uf denied": {
@@ -348,39 +348,39 @@
   "state": ""
  },
  "x: git -c x push --force (not caught: not \"git push\")": {
-  "code": 0,
-  "stdout": "",
-  "stderr": "",
-  "state": ""
- },
- "x: git -C dir push -f (not caught)": {
-  "code": 0,
-  "stdout": "",
-  "stderr": "",
-  "state": ""
- },
- "x: git --no-pager push --force (not caught)": {
-  "code": 0,
-  "stdout": "",
-  "stderr": "",
-  "state": ""
- },
- "x: git  push (double space, not caught)": {
-  "code": 0,
-  "stdout": "",
-  "stderr": "",
-  "state": ""
- },
- "x: git\\tpush (tab, not caught)": {
-  "code": 0,
-  "stdout": "",
-  "stderr": "",
-  "state": ""
- },
- "x: git push in quotes": {
   "code": 2,
   "stdout": "",
   "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "x: git -C dir push -f (not caught)": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "state": ""
+ },
+ "x: git --no-pager push --force (not caught)": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "x: git  push (double space, not caught)": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "x: git\\tpush (tab, not caught)": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: Force push is not allowed. Remove --force or --force-with-lease flag.\n",
+  "state": ""
+ },
+ "x: git push in quotes": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
   "state": ""
  },
  "x: bash -c git push -f": {
@@ -438,15 +438,15 @@
   "state": ""
  },
  "x: -f after --": {
-  "code": 2,
+  "code": 0,
   "stdout": "",
-  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "stderr": "",
   "state": ""
  },
  "x: -f as branch name after --": {
-  "code": 2,
+  "code": 0,
   "stdout": "",
-  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "stderr": "",
   "state": ""
  },
  "x: ref containing -f in middle": {
@@ -486,9 +486,9 @@
   "state": ""
  },
  "x: git push; -f in other command": {
-  "code": 2,
+  "code": 0,
   "stdout": "",
-  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "stderr": "",
   "state": ""
  },
  "x: git push --force-with-lease after &&": {
@@ -504,9 +504,9 @@
   "state": ""
  },
  "x: unicode whitespace before -f (NBSP, not matched by \"( |^)\")": {
-  "code": 0,
+  "code": 2,
   "stdout": "",
-  "stderr": "",
+  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
   "state": ""
  },
  "x: NBSP before --force": {
@@ -534,9 +534,9 @@
   "state": ""
  },
  "x: -f in quoted arg": {
-  "code": 2,
+  "code": 0,
   "stdout": "",
-  "stderr": "BLOCKED: Force push (-f) is not allowed.\n",
+  "stderr": "",
   "state": ""
  },
  "x: unicode-escaped git push": {
