@@ -141,6 +141,16 @@ function runCase(hookFile, c, idx, helper) {
   }
 }
 
+// basename's own error text differs by coreutils flavour (GNU vs uutils) and cannot be controlled by the
+// hook. In compare mode only, rewrite those tool-emitted lines to a token on both sides; exit code, stdout,
+// state and every stderr line the hook prints itself stay compared exactly.
+const TOOL_STDERR = [
+  /error: unexpected argument[\s\S]*?For more information, try '--help'\.\n/g,
+  /^basename: .*\n/gm,
+  /^Try 'basename --help' for more information\.\n/gm,
+];
+const toolNorm = (s) => TOOL_STDERR.reduce((acc, re) => acc.replace(re, '<tool:basename>\n'), s);
+
 const brief = (v) => {
   const s = JSON.stringify(v);
   return s.length > 600 ? `${s.slice(0, 600)}...` : s;
@@ -169,7 +179,10 @@ for (const spec of specs) {
       return;
     }
     const want = golden[c.name];
-    const diffs = want ? Object.keys(got).filter((k) => JSON.stringify(got[k]) !== JSON.stringify(want[k])) : ['missing-golden'];
+    const norm = (o) => (o ? { ...o, stderr: toolNorm(o.stderr) } : o);
+    const g = norm(got);
+    const w = norm(want);
+    const diffs = want ? Object.keys(g).filter((k) => JSON.stringify(g[k]) !== JSON.stringify(w[k])) : ['missing-golden'];
     if (diffs.length === 0) {
       pass++;
       console.log(`  ok   - ${c.name}`);
