@@ -1,0 +1,272 @@
+{
+ "bad input: empty stdin": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "WorktreeCreate hook: missing cwd in hook input\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\n--\nls: cannot access 'repo/.scaffolding': No such file or directory\nls: cannot access 'repo/.scaffolding/worktrees': No such file or directory\n"
+ },
+ "bad input: whitespace only": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "WorktreeCreate hook: missing cwd in hook input\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\n--\nls: cannot access 'repo/.scaffolding': No such file or directory\nls: cannot access 'repo/.scaffolding/worktrees': No such file or directory\n"
+ },
+ "bad input: malformed json": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "WorktreeCreate hook: missing cwd in hook input\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\n--\nls: cannot access 'repo/.scaffolding': No such file or directory\nls: cannot access 'repo/.scaffolding/worktrees': No such file or directory\n"
+ },
+ "bad input: truncated json": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "WorktreeCreate hook: missing cwd in hook input\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\n--\nls: cannot access 'repo/.scaffolding': No such file or directory\nls: cannot access 'repo/.scaffolding/worktrees': No such file or directory\n"
+ },
+ "bad input: top-level array": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "WorktreeCreate hook: missing cwd in hook input\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\n--\nls: cannot access 'repo/.scaffolding': No such file or directory\nls: cannot access 'repo/.scaffolding/worktrees': No such file or directory\n"
+ },
+ "bad input: top-level string": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "WorktreeCreate hook: missing cwd in hook input\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\n--\nls: cannot access 'repo/.scaffolding': No such file or directory\nls: cannot access 'repo/.scaffolding/worktrees': No such file or directory\n"
+ },
+ "bad input: top-level null": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "WorktreeCreate hook: missing cwd in hook input\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\n--\nls: cannot access 'repo/.scaffolding': No such file or directory\nls: cannot access 'repo/.scaffolding/worktrees': No such file or directory\n"
+ },
+ "bad input: tool_input null": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "WorktreeCreate hook: missing cwd in hook input\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\n--\nls: cannot access 'repo/.scaffolding': No such file or directory\nls: cannot access 'repo/.scaffolding/worktrees': No such file or directory\n"
+ },
+ "bad input: tool_input string": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "WorktreeCreate hook: missing cwd in hook input\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\n--\nls: cannot access 'repo/.scaffolding': No such file or directory\nls: cannot access 'repo/.scaffolding/worktrees': No such file or directory\n"
+ },
+ "bad input: tool_input array": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "WorktreeCreate hook: missing cwd in hook input\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\n--\nls: cannot access 'repo/.scaffolding': No such file or directory\nls: cannot access 'repo/.scaffolding/worktrees': No such file or directory\n"
+ },
+ "bad input: utf-8 BOM": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "WorktreeCreate hook: missing cwd in hook input\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\n--\nls: cannot access 'repo/.scaffolding': No such file or directory\nls: cannot access 'repo/.scaffolding/worktrees': No such file or directory\n"
+ },
+ "bad input: invalid utf-8 bytes": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "WorktreeCreate hook: missing cwd in hook input\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\n--\nls: cannot access 'repo/.scaffolding': No such file or directory\nls: cannot access 'repo/.scaffolding/worktrees': No such file or directory\n"
+ },
+ "creates worktree with name": {
+  "code": 0,
+  "stdout": "@SANDBOX@/repo/.scaffolding/worktrees/feat\n",
+  "stderr": "Preparing worktree (new branch 'worktree-feat')\nHEAD is now at @H@ init\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\nworktree @SANDBOX@/repo/.scaffolding/worktrees/feat\nbranch refs/heads/worktree-feat\n--\nworktrees\nfeat\nrepo/.scaffolding/worktrees/feat:\nls: cannot access 'repo/.scaffolding/worktrees/feat/.scaffolding': No such file or directory\n"
+ },
+ "slash in name -> plus": {
+  "code": 0,
+  "stdout": "@SANDBOX@/repo/.scaffolding/worktrees/feat+x+y\n",
+  "stderr": "Preparing worktree (new branch 'worktree-feat+x+y')\nHEAD is now at @H@ init\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\nworktree @SANDBOX@/repo/.scaffolding/worktrees/feat+x+y\nbranch refs/heads/worktree-feat+x+y\n--\nworktrees\nfeat+x+y\nrepo/.scaffolding/worktrees/feat+x+y:\nls: cannot access 'repo/.scaffolding/worktrees/feat+x+y/.scaffolding': No such file or directory\n"
+ },
+ "name missing -> worktree": {
+  "code": 0,
+  "stdout": "@SANDBOX@/repo/.scaffolding/worktrees/worktree\n",
+  "stderr": "Preparing worktree (new branch 'worktree-worktree')\nHEAD is now at @H@ init\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\nworktree @SANDBOX@/repo/.scaffolding/worktrees/worktree\nbranch refs/heads/worktree-worktree\n--\nworktrees\nworktree\nrepo/.scaffolding/worktrees/worktree:\nls: cannot access 'repo/.scaffolding/worktrees/worktree/.scaffolding': No such file or directory\n"
+ },
+ "name empty string": {
+  "code": 0,
+  "stdout": "@SANDBOX@/repo/.scaffolding/worktrees/\n",
+  "stderr": "Preparing worktree (new branch 'worktree-')\nHEAD is now at @H@ init\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\nworktree @SANDBOX@/repo/.scaffolding/worktrees\nbranch refs/heads/worktree-\n--\nworktrees\n.git\n"
+ },
+ "name null -> None": {
+  "code": 0,
+  "stdout": "@SANDBOX@/repo/.scaffolding/worktrees/None\n",
+  "stderr": "Preparing worktree (new branch 'worktree-None')\nHEAD is now at @H@ init\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\nworktree @SANDBOX@/repo/.scaffolding/worktrees/None\nbranch refs/heads/worktree-None\n--\nworktrees\nNone\nrepo/.scaffolding/worktrees/None:\nls: cannot access 'repo/.scaffolding/worktrees/None/.scaffolding': No such file or directory\n"
+ },
+ "name number": {
+  "code": 0,
+  "stdout": "@SANDBOX@/repo/.scaffolding/worktrees/7\n",
+  "stderr": "Preparing worktree (new branch 'worktree-7')\nHEAD is now at @H@ init\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\nworktree @SANDBOX@/repo/.scaffolding/worktrees/7\nbranch refs/heads/worktree-7\n--\nworktrees\n7\nrepo/.scaffolding/worktrees/7:\nls: cannot access 'repo/.scaffolding/worktrees/7/.scaffolding': No such file or directory\n"
+ },
+ "name float": {
+  "code": 0,
+  "stdout": "@SANDBOX@/repo/.scaffolding/worktrees/1.5\n",
+  "stderr": "Preparing worktree (new branch 'worktree-1.5')\nHEAD is now at @H@ init\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\nworktree @SANDBOX@/repo/.scaffolding/worktrees/1.5\nbranch refs/heads/worktree-1.5\n--\nworktrees\n1.5\nrepo/.scaffolding/worktrees/1.5:\nls: cannot access 'repo/.scaffolding/worktrees/1.5/.scaffolding': No such file or directory\n"
+ },
+ "name true": {
+  "code": 0,
+  "stdout": "@SANDBOX@/repo/.scaffolding/worktrees/True\n",
+  "stderr": "Preparing worktree (new branch 'worktree-True')\nHEAD is now at @H@ init\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\nworktree @SANDBOX@/repo/.scaffolding/worktrees/True\nbranch refs/heads/worktree-True\n--\nworktrees\nTrue\nrepo/.scaffolding/worktrees/True:\nls: cannot access 'repo/.scaffolding/worktrees/True/.scaffolding': No such file or directory\n"
+ },
+ "name list": {
+  "code": 255,
+  "stdout": "",
+  "stderr": "Preparing worktree (new branch 'worktree-['a']')\nfatal: 'worktree-['a']' is not a valid branch name\nhint: See 'git help check-ref-format'\nhint: Disable this message with \"git config set advice.refSyntax false\"\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\n--\nworktrees\n"
+ },
+ "name with spaces": {
+  "code": 255,
+  "stdout": "",
+  "stderr": "Preparing worktree (new branch 'worktree-my feature')\nfatal: 'worktree-my feature' is not a valid branch name\nhint: See 'git help check-ref-format'\nhint: Disable this message with \"git config set advice.refSyntax false\"\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\n--\nworktrees\n"
+ },
+ "name unicode": {
+  "code": 0,
+  "stdout": "@SANDBOX@/repo/.scaffolding/worktrees/zażółć\n",
+  "stderr": "Preparing worktree (new branch 'worktree-zażółć')\nHEAD is now at @H@ init\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\nworktree @SANDBOX@/repo/.scaffolding/worktrees/zażółć\nbranch refs/heads/worktree-zażółć\n--\nworktrees\nzażółć\nrepo/.scaffolding/worktrees/zażółć:\nls: cannot access 'repo/.scaffolding/worktrees/zażółć/.scaffolding': No such file or directory\n"
+ },
+ "name with trailing newline": {
+  "code": 0,
+  "stdout": "@SANDBOX@/repo/.scaffolding/worktrees/nl\n",
+  "stderr": "Preparing worktree (new branch 'worktree-nl')\nHEAD is now at @H@ init\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\nworktree @SANDBOX@/repo/.scaffolding/worktrees/nl\nbranch refs/heads/worktree-nl\n--\nworktrees\nnl\nrepo/.scaffolding/worktrees/nl:\nls: cannot access 'repo/.scaffolding/worktrees/nl/.scaffolding': No such file or directory\n"
+ },
+ "name with embedded newline": {
+  "code": 255,
+  "stdout": "",
+  "stderr": "Preparing worktree (new branch 'worktree-a\nb')\nfatal: 'worktree-a\nb' is not a valid branch name\nhint: See 'git help check-ref-format'\nhint: Disable this message with \"git config set advice.refSyntax false\"\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\n--\nworktrees\n"
+ },
+ "name with dots": {
+  "code": 255,
+  "stdout": "",
+  "stderr": "Preparing worktree (new branch 'worktree-..')\nfatal: 'worktree-..' is not a valid branch name\nhint: See 'git help check-ref-format'\nhint: Disable this message with \"git config set advice.refSyntax false\"\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\n--\nworktrees\n"
+ },
+ "name invalid for git ref": {
+  "code": 255,
+  "stdout": "",
+  "stderr": "Preparing worktree (new branch 'worktree-a b~c')\nfatal: 'worktree-a b~c' is not a valid branch name\nhint: See 'git help check-ref-format'\nhint: Disable this message with \"git config set advice.refSyntax false\"\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\n--\nworktrees\n"
+ },
+ "cwd missing": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "WorktreeCreate hook: missing cwd in hook input\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\n--\nls: cannot access 'repo/.scaffolding': No such file or directory\nls: cannot access 'repo/.scaffolding/worktrees': No such file or directory\n"
+ },
+ "cwd empty string": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "WorktreeCreate hook: missing cwd in hook input\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\n--\nls: cannot access 'repo/.scaffolding': No such file or directory\nls: cannot access 'repo/.scaffolding/worktrees': No such file or directory\n"
+ },
+ "cwd null -> None (not a repo, echoed)": {
+  "code": 0,
+  "stdout": "None\n",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\n--\nls: cannot access 'repo/.scaffolding': No such file or directory\nls: cannot access 'repo/.scaffolding/worktrees': No such file or directory\n"
+ },
+ "cwd number": {
+  "code": 0,
+  "stdout": "5\n",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\n--\nls: cannot access 'repo/.scaffolding': No such file or directory\nls: cannot access 'repo/.scaffolding/worktrees': No such file or directory\n"
+ },
+ "cwd list": {
+  "code": 0,
+  "stdout": "['a']\n",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\n--\nls: cannot access 'repo/.scaffolding': No such file or directory\nls: cannot access 'repo/.scaffolding/worktrees': No such file or directory\n"
+ },
+ "cwd not a git repo: echoed back": {
+  "code": 0,
+  "stdout": "@SANDBOX@\n",
+  "stderr": "",
+  "state": "--\nls: cannot access 'repo/.scaffolding': No such file or directory\nls: cannot access 'repo/.scaffolding/worktrees': No such file or directory\n"
+ },
+ "cwd nonexistent: echoed back": {
+  "code": 0,
+  "stdout": "@SANDBOX@/nope\n",
+  "stderr": "",
+  "state": "--\nls: cannot access 'repo/.scaffolding': No such file or directory\nls: cannot access 'repo/.scaffolding/worktrees': No such file or directory\n"
+ },
+ "cwd subdir of repo": {
+  "code": 0,
+  "stdout": "@SANDBOX@/repo/.scaffolding/worktrees/x\n",
+  "stderr": "Preparing worktree (new branch 'worktree-x')\nHEAD is now at @H@ init\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\nworktree @SANDBOX@/repo/.scaffolding/worktrees/x\nbranch refs/heads/worktree-x\n--\nworktrees\nx\nrepo/.scaffolding/worktrees/x:\nls: cannot access 'repo/.scaffolding/worktrees/x/.scaffolding': No such file or directory\n"
+ },
+ "cwd with spaces": {
+  "code": 0,
+  "stdout": "@SANDBOX@/my repo/.scaffolding/worktrees/x\n",
+  "stderr": "Preparing worktree (new branch 'worktree-x')\nHEAD is now at @H@ init\n",
+  "state": "--\nls: cannot access 'repo/.scaffolding': No such file or directory\nls: cannot access 'repo/.scaffolding/worktrees': No such file or directory\n"
+ },
+ "cwd with trailing newline": {
+  "code": 0,
+  "stdout": "@SANDBOX@/repo/.scaffolding/worktrees/x\n",
+  "stderr": "Preparing worktree (new branch 'worktree-x')\nHEAD is now at @H@ init\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\nworktree @SANDBOX@/repo/.scaffolding/worktrees/x\nbranch refs/heads/worktree-x\n--\nworktrees\nx\nrepo/.scaffolding/worktrees/x:\nls: cannot access 'repo/.scaffolding/worktrees/x/.scaffolding': No such file or directory\n"
+ },
+ "resume existing worktree": {
+  "code": 0,
+  "stdout": "@SANDBOX@/repo/.scaffolding/worktrees/w1\n",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\n--\nworktrees\nw1\nrepo/.scaffolding/worktrees/w1:\nls: cannot access 'repo/.scaffolding/worktrees/w1/.scaffolding': No such file or directory\n"
+ },
+ "conversations symlink propagated": {
+  "code": 0,
+  "stdout": "@SANDBOX@/repo/.scaffolding/worktrees/feat\n",
+  "stderr": "Preparing worktree (new branch 'worktree-feat')\nHEAD is now at @H@ init\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\nworktree @SANDBOX@/repo/.scaffolding/worktrees/feat\nbranch refs/heads/worktree-feat\n--\nconversations\nworktrees\nfeat\nrepo/.scaffolding/worktrees/feat:\nconversations\n@SANDBOX@/share/conv\n"
+ },
+ "conversations is a real dir: no link": {
+  "code": 0,
+  "stdout": "@SANDBOX@/repo/.scaffolding/worktrees/feat\n",
+  "stderr": "Preparing worktree (new branch 'worktree-feat')\nHEAD is now at @H@ init\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\nworktree @SANDBOX@/repo/.scaffolding/worktrees/feat\nbranch refs/heads/worktree-feat\n--\nconversations\nworktrees\nfeat\nrepo/.scaffolding/worktrees/feat:\nls: cannot access 'repo/.scaffolding/worktrees/feat/.scaffolding': No such file or directory\n"
+ },
+ "conversations symlink dangling": {
+  "code": 0,
+  "stdout": "@SANDBOX@/repo/.scaffolding/worktrees/feat\n",
+  "stderr": "Preparing worktree (new branch 'worktree-feat')\nHEAD is now at @H@ init\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\nworktree @SANDBOX@/repo/.scaffolding/worktrees/feat\nbranch refs/heads/worktree-feat\n--\nconversations\nworktrees\nfeat\nrepo/.scaffolding/worktrees/feat:\nls: cannot access 'repo/.scaffolding/worktrees/feat/.scaffolding': No such file or directory\n"
+ },
+ "repo without commits fails": {
+  "code": 128,
+  "stdout": "",
+  "stderr": "fatal: invalid reference: HEAD\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\n--\nworktrees\n"
+ },
+ "extra fields ignored": {
+  "code": 0,
+  "stdout": "@SANDBOX@/repo/.scaffolding/worktrees/feat\n",
+  "stderr": "Preparing worktree (new branch 'worktree-feat')\nHEAD is now at @H@ init\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\nworktree @SANDBOX@/repo/.scaffolding/worktrees/feat\nbranch refs/heads/worktree-feat\n--\nworktrees\nfeat\nrepo/.scaffolding/worktrees/feat:\nls: cannot access 'repo/.scaffolding/worktrees/feat/.scaffolding': No such file or directory\n"
+ },
+ "stdin has trailing newline": {
+  "code": 0,
+  "stdout": "@SANDBOX@/repo/.scaffolding/worktrees/feat\n",
+  "stderr": "Preparing worktree (new branch 'worktree-feat')\nHEAD is now at @H@ init\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\nworktree @SANDBOX@/repo/.scaffolding/worktrees/feat\nbranch refs/heads/worktree-feat\n--\nworktrees\nfeat\nrepo/.scaffolding/worktrees/feat:\nls: cannot access 'repo/.scaffolding/worktrees/feat/.scaffolding': No such file or directory\n"
+ },
+ "invalid utf-8 in unrelated field: python strict stdin fails": {
+  "code": 0,
+  "stdout": "@SANDBOX@/repo/.scaffolding/worktrees/n\n",
+  "stderr": "Preparing worktree (new branch 'worktree-n')\nHEAD is now at @H@ init\n",
+  "state": "worktree @SANDBOX@/repo\nbranch refs/heads/master\nworktree @SANDBOX@/repo/.scaffolding/worktrees/n\nbranch refs/heads/worktree-n\n--\nworktrees\nn\nrepo/.scaffolding/worktrees/n:\nls: cannot access 'repo/.scaffolding/worktrees/n/.scaffolding': No such file or directory\n"
+ }
+}

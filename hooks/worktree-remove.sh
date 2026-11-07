@@ -14,7 +14,9 @@
 set -euo pipefail
 
 INPUT="$(cat)"
-WORKTREE_PATH="$(printf '%s' "$INPUT" | python3 -c "import json,sys; print(json.load(sys.stdin).get('worktree_path',''))" 2>/dev/null || true)"
+LIB="${BASH_SOURCE[0]%/*}"; [[ "$LIB" == "${BASH_SOURCE[0]}" ]] && LIB=.; LIB="$LIB/lib"
+command -v node >/dev/null 2>&1 || { echo "scaffolding: node not found, worktree-remove skipped" >&2; exit 0; }
+WORKTREE_PATH="$(printf '%s' "$INPUT" | node "$LIB/hook-io.mjs" get worktree_path 2>/dev/null || true)"
 
 if [ -z "$WORKTREE_PATH" ] || [ ! -e "$WORKTREE_PATH" ]; then
   exit 0

@@ -1,0 +1,278 @@
+{
+ "gate off: no-op": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "gate = 0: no-op": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "gate = true: no-op (needs exactly 1)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "bad input: empty stdin": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "bad input: whitespace only": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "bad input: malformed json": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "bad input: truncated json": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "bad input: top-level array": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "bad input: top-level string": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "bad input: top-level null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "bad input: tool_input null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "bad input: tool_input string": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "bad input: tool_input array": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "bad input: utf-8 BOM": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "bad input: invalid utf-8 bytes": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "missing file": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "empty path": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "py -> ruff format": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "ruff: format @SANDBOX@/a.py [cwd=@SANDBOX@]\n[rc:0]\n"
+ },
+ "py -> black when no ruff": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "black: @SANDBOX@/a.py [cwd=@SANDBOX@]\n[rc:0]\n"
+ },
+ "py -> ruff preferred over black": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "ruff: format @SANDBOX@/a.py [cwd=@SANDBOX@]\n[rc:0]\n"
+ },
+ "py -> venv ruff first": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "ruff: format @SANDBOX@/a.py [cwd=@SANDBOX@]\n[rc:0]\n"
+ },
+ "py -> .venv black": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "black: @SANDBOX@/a.py [cwd=@SANDBOX@]\n[rc:0]\n"
+ },
+ "py -> app/backend/venv ruff": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "ruff: format @SANDBOX@/a.py [cwd=@SANDBOX@]\n[rc:0]\n"
+ },
+ "py -> no formatter: silent": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "ts -> npx prettier": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "npx: --no-install prettier --write @SANDBOX@/a.ts [cwd=@SANDBOX@]\n[rc:0]\n"
+ },
+ "tsx -> npx prettier": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "npx: --no-install prettier --write @SANDBOX@/a.tsx [cwd=@SANDBOX@]\n[rc:0]\n"
+ },
+ "js/jsx/json/css/scss -> prettier": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "npx: --no-install prettier --write @SANDBOX@/a.scss [cwd=@SANDBOX@]\n[rc:0]\n"
+ },
+ "json -> prettier": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "npx: --no-install prettier --write @SANDBOX@/a.json [cwd=@SANDBOX@]\n[rc:0]\n"
+ },
+ "local node_modules prettier first": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "prettier: --write @SANDBOX@/a.ts [cwd=@SANDBOX@]\n[rc:0]\n"
+ },
+ "ts -> no prettier: silent": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "cs -> dotnet format": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "dotnet: format --include @SANDBOX@/a.cs [cwd=@SANDBOX@]\n[rc:0]\n"
+ },
+ "cs -> no dotnet: silent": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "md -> no formatter": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "no extension: whole name is the ext": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "uppercase ext not matched": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "path with spaces": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "ruff: format @SANDBOX@/my dir/a b.py [cwd=@SANDBOX@]\n[rc:0]\n"
+ },
+ "unicode path": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "ruff: format @SANDBOX@/zażółć.py [cwd=@SANDBOX@]\n[rc:0]\n"
+ },
+ "relative path": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "ruff: format a.py [cwd=@SANDBOX@]\n[rc:0]\n"
+ },
+ "top-level file_path fallback": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "ruff: format @SANDBOX@/a.py [cwd=@SANDBOX@]\n[rc:0]\n"
+ },
+ "tool_input without file_path: no fallback": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "file_path is a number": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "file_path is null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "dir named like a file": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "formatter failing is swallowed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc:1]\n"
+ },
+ "formatter failing falls through to black": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "ruff-failed\nblack: @SANDBOX@/a.py [cwd=@SANDBOX@]\n[rc:0]\n"
+ },
+ "invalid utf-8 in unrelated field": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "ruff: format @SANDBOX@/a.py [cwd=@SANDBOX@]\n[rc:0]\n"
+ }
+}

@@ -20,23 +20,13 @@ INPUT=$(cat 2>/dev/null)
 DIR="${CLAUDE_PROJECT_DIR:-$PWD}"
 SC="$DIR/.scaffolding"
 
-# Loop guard (mandatory) — identical pattern to completion-nudge.sh.
-STOP_ACTIVE=$(printf '%s' "$INPUT" | python3 -c \
-    'import json,sys
-try:
-    d = json.load(sys.stdin)
-    print("true" if d.get("stop_hook_active") else "false")
-except Exception:
-    print("false")' 2>/dev/null)
-
-if [ "$STOP_ACTIVE" = "true" ]; then
-    exit 0
-fi
-
-# opt-out + no work -> no-op
+# opt-out + no work -> no-op (cheap file checks first: node only starts when there is work to do)
 [ "${SCAFFOLDING_MEMORY_INGEST:-}" = "off" ] && exit 0
 [ -f "$SC/.noingest" ] && exit 0
 [ -f "$SC/.ingest-dirty" ] || exit 0
+
+LIB="${BASH_SOURCE[0]%/*}"; [[ "$LIB" == "${BASH_SOURCE[0]}" ]] && LIB=.; LIB="$LIB/lib"
+command -v node >/dev/null 2>&1 || { echo "scaffolding: node not found, memory-ingest skipped" >&2; exit 0; }
 
 PID=$(cat "$SC/project-id" 2>/dev/null)
 
@@ -68,16 +58,19 @@ $STORE_STEP
    trigger_ingest(corpus=\"projects\", relative_path=\"<repo>/conversations/<id>/timeline.md\")
    (tylko .md; actions/*.jsonl NIGDY nie jest indeksowany)."
 
+# Loop guard (mandatory) — identical pattern to completion-nudge.sh: if the stop was already triggered
+# by a prior hook pass (stop_hook_active), do nothing. ONE node process does the guard (and, in block
+# mode, the JSON emit: hook-io emit-block --guard reads "<stdin JSON>\0<reason>").
 case "${SCAFFOLDING_MEMORY_INGEST:-}" in
     block)
-        # Enforce: force one more turn. The loop guard above makes this fire at
-        # most once (the re-prompt's Stop event carries stop_hook_active=true).
-        printf '%s' "$REASON" | python3 -c \
-            'import json,sys
-print(json.dumps({"decision": "block", "reason": sys.stdin.read()}))' 2>/dev/null
+        # Enforce: force one more turn. The loop guard makes this fire at most once
+        # (the re-prompt's Stop event carries stop_hook_active=true).
+        printf '%s\0%s' "$INPUT" "$REASON" | node "$LIB/hook-io.mjs" emit-block --guard stop_hook_active 2>/dev/null
         ;;
     *)
         # Advisory (default when env unset) — never blocks.
+        STOP_ACTIVE=$(printf '%s' "$INPUT" | node "$LIB/hook-io.mjs" get --bool stop_hook_active 2>/dev/null)
+        [ "$STOP_ACTIVE" = "true" ] && exit 0
         printf '%s\n' "$REASON" >&2
         ;;
 esac

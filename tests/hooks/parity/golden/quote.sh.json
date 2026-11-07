@@ -1,0 +1,116 @@
+{
+ "lone CR in the middle": {
+  "code": 0,
+  "stdout": "\"a\\rb\"\n",
+  "stderr": "",
+  "state": ""
+ },
+ "CRLF in the middle": {
+  "code": 0,
+  "stdout": "\"a\\r\\nb\"\n",
+  "stderr": "",
+  "state": ""
+ },
+ "mixed CR, CRLF, LF": {
+  "code": 0,
+  "stdout": "\"a\\rb\\r\\nc\\nd\"\n",
+  "stderr": "",
+  "state": ""
+ },
+ "trailing CR": {
+  "code": 0,
+  "stdout": "\"x\\r\"\n",
+  "stderr": "",
+  "state": ""
+ },
+ "trailing CRLF": {
+  "code": 0,
+  "stdout": "\"x\\r\\n\"\n",
+  "stderr": "",
+  "state": ""
+ },
+ "leading CR": {
+  "code": 0,
+  "stdout": "\"\\rx\"\n",
+  "stderr": "",
+  "state": ""
+ },
+ "only CR": {
+  "code": 0,
+  "stdout": "\"\\r\"\n",
+  "stderr": "",
+  "state": ""
+ },
+ "only CRLF": {
+  "code": 0,
+  "stdout": "\"\\r\\n\"\n",
+  "stderr": "",
+  "state": ""
+ },
+ "double CR then LF (\\r\\r\\n)": {
+  "code": 0,
+  "stdout": "\"a\\r\\r\\nb\"\n",
+  "stderr": "",
+  "state": ""
+ },
+ "LF then CR (\\n\\r)": {
+  "code": 0,
+  "stdout": "\"a\\n\\rb\"\n",
+  "stderr": "",
+  "state": ""
+ },
+ "many CRs": {
+  "code": 0,
+  "stdout": "\"\\r\\r\\r\"\n",
+  "stderr": "",
+  "state": ""
+ },
+ "CR next to quote and backslash": {
+  "code": 0,
+  "stdout": "\"a\\r\\\"b\\\"\\\\\\r\\n\"\n",
+  "stderr": "",
+  "state": ""
+ },
+ "CR next to unicode": {
+  "code": 0,
+  "stdout": "\"za|\\udcf3B\\u0007\\r=\\u0000\\r\\n\\u0019\"\n",
+  "stderr": "",
+  "state": ""
+ },
+ "plain LF still untouched": {
+  "code": 0,
+  "stdout": "\"a\\nb\\n\"\n",
+  "stderr": "",
+  "state": ""
+ },
+ "empty": {
+  "code": 0,
+  "stdout": "\"\"\n",
+  "stderr": "",
+  "state": ""
+ },
+ "utf-8 text with CRLF": {
+  "code": 0,
+  "stdout": "\"za\\u017c\\u00f3\\u0142\\u0107\\r\\ng\\u0119\\u015bl\\u0105\"\n",
+  "stderr": "",
+  "state": ""
+ },
+ "invalid utf-8 byte (C.UTF-8 surrogateescape)": {
+  "code": 0,
+  "stdout": "\"a\\udcffb\\r\\n\"\n",
+  "stderr": "",
+  "state": ""
+ },
+ "invalid utf-8 lone continuation + CR": {
+  "code": 0,
+  "stdout": "\"\\udc80\\r\"\n",
+  "stderr": "",
+  "state": ""
+ },
+ "BOM kept": {
+  "code": 0,
+  "stdout": "\"\\ufeffa\\r\"\n",
+  "stderr": "",
+  "state": ""
+ }
+}

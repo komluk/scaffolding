@@ -4,16 +4,17 @@
 
 set -euo pipefail
 
-# Reason: try/except ensures empty string on malformed JSON so hook exits 0
+# Node is the JSON helper (hooks/lib/hook-io.mjs). Without it the hook cannot decide: fail open.
+LIB="${BASH_SOURCE[0]%/*}"; [[ "$LIB" == "${BASH_SOURCE[0]}" ]] && LIB=.; LIB="$LIB/lib"
+command -v node >/dev/null 2>&1 || { echo "scaffolding: node not found, block-destructive-rm not enforced" >&2; exit 0; }
+
+# Reason: hook-io yields an empty command on malformed JSON so hook exits 0
 # (allow) instead of exit 1 (warn-but-proceed) which would let the op execute.
-CMD=$(python3 -c "
-import sys, json
-try:
-    d = json.load(sys.stdin)
-    print(d.get('tool_input', {}).get('command', ''))
-except Exception:
-    print('')
-")
+# ONE node process returns both the command and the first protected rm target,
+# NUL-terminated: "<command>\0<target or empty>\0". The flag analysis stays in bash.
+CMD=""
+BLOCKED=""
+{ IFS= read -r -d '' CMD; IFS= read -r -d '' BLOCKED; } < <(node "$LIB/hook-io.mjs" rm-target) || true
 
 # Reason: Block piped-to-rm patterns (xargs rm, xargs -I{} rm, etc.)
 # before the main rm flag analysis, since these bypass flag detection.
@@ -54,42 +55,9 @@ if ! $HAS_RECURSIVE || ! $HAS_FORCE; then
     exit 0
 fi
 
-# Reason: Use fixed-string prefix matching via python to avoid regex escaping
-# issues (e.g. unescaped dots in paths like /.). Python startswith() is exact.
-BLOCKED=$(python3 -c "
-import sys
-cmd = sys.argv[1]
-blocked_prefixes = ['/', '/etc', '/var', '/usr', '.']
-# Reason: Extract all path-like arguments after rm and its flags
-parts = cmd.split()
-in_rm = False
-for p in parts:
-    if p == 'rm':
-        in_rm = True
-        continue
-    if not in_rm:
-        continue
-    # Skip flags
-    if p.startswith('-'):
-        continue
-    # Check if this argument matches or is under a blocked prefix
-    for bp in blocked_prefixes:
-        if bp == '/':
-            # Only block exact '/' not every absolute path
-            if p == '/':
-                print(p)
-                sys.exit(0)
-        elif bp == '.':
-            if p == '.' or p == '..':
-                print(p)
-                sys.exit(0)
-        else:
-            # Prefix match: block '/etc' and '/etc/foo' etc.
-            if p == bp or p.startswith(bp + '/'):
-                print(p)
-                sys.exit(0)
-print('')
-" "$CMD")
+# Reason: protected targets ('/', '.', '..', '/etc', '/var', '/usr' and anything below them)
+# are matched as exact strings / path prefixes by `hook-io.mjs rm-target` above (no regex, so no
+# escaping issues with paths like '/.'). BLOCKED holds the first match, or is empty.
 
 if [ -n "$BLOCKED" ]; then
     echo "BLOCKED: Destructive rm -rf on '$BLOCKED' is not allowed." >&2

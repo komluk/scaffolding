@@ -17,8 +17,15 @@
 set -euo pipefail
 
 INPUT="$(cat)"
-CWD="$(printf '%s' "$INPUT" | python3 -c "import json,sys; print(json.load(sys.stdin).get('cwd',''))" 2>/dev/null || true)"
-NAME="$(printf '%s' "$INPUT" | python3 -c "import json,sys; print(json.load(sys.stdin).get('name','worktree'))" 2>/dev/null || true)"
+LIB="${BASH_SOURCE[0]%/*}"; [[ "$LIB" == "${BASH_SOURCE[0]}" ]] && LIB=.; LIB="$LIB/lib"
+if ! command -v node >/dev/null 2>&1; then
+  echo "WorktreeCreate hook: node not found (needed to read the hook input)" >&2
+  exit 1
+fi
+# One node process, both fields NUL-terminated ("name" defaults to "worktree" when the key is absent).
+CWD=""
+NAME=""
+{ IFS= read -r -d '' CWD; IFS= read -r -d '' NAME; } < <(printf '%s' "$INPUT" | node "$LIB/hook-io.mjs" get --nul cwd name=worktree 2>/dev/null) || true
 
 if [ -z "$CWD" ]; then
   echo "WorktreeCreate hook: missing cwd in hook input" >&2

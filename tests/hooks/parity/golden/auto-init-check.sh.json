@@ -1,0 +1,80 @@
+{
+ "nothing initialised: advisory with both missing": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"scaffolding: this project is not fully initialized (missing: CLAUDE.md routing protocol, .claude/settings.json). Run /init-scaffolding to install the routing protocol and hooks so agent delegation works here. This is advisory only \\u2014 no files were overwritten; the safe .scaffolding/ skeleton was created if absent.\"}}\n",
+  "stderr": "",
+  "state": ".\n./.scaffolding\n./.scaffolding/agent-memory\n./.scaffolding/agent-memory/agents\n./.scaffolding/agent-memory/shared\n./.scaffolding/conversations\n./.scaffolding/worktrees\n"
+ },
+ "only settings.json present": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"scaffolding: this project is not fully initialized (missing: CLAUDE.md routing protocol). Run /init-scaffolding to install the routing protocol and hooks so agent delegation works here. This is advisory only \\u2014 no files were overwritten; the safe .scaffolding/ skeleton was created if absent.\"}}\n",
+  "stderr": "",
+  "state": ".\n./.claude\n./.claude/settings.json\n./.scaffolding\n./.scaffolding/agent-memory\n./.scaffolding/agent-memory/agents\n./.scaffolding/agent-memory/shared\n./.scaffolding/conversations\n./.scaffolding/worktrees\n"
+ },
+ "only CLAUDE.md with @import": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"scaffolding: this project is not fully initialized (missing: .claude/settings.json). Run /init-scaffolding to install the routing protocol and hooks so agent delegation works here. This is advisory only \\u2014 no files were overwritten; the safe .scaffolding/ skeleton was created if absent.\"}}\n",
+  "stderr": "",
+  "state": ".\n./.scaffolding\n./.scaffolding/agent-memory\n./.scaffolding/agent-memory/agents\n./.scaffolding/agent-memory/shared\n./.scaffolding/conversations\n./.scaffolding/worktrees\n./CLAUDE.md\n"
+ },
+ "CLAUDE.md with literal protocol + settings: initialised": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ".\n./.claude\n./.claude/settings.json\n./CLAUDE.md\n"
+ },
+ "fully initialised: silent": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ".\n./.claude\n./.claude/settings.json\n./CLAUDE.md\n"
+ },
+ "CLAUDE.md without protocol + settings": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"scaffolding: this project is not fully initialized (missing: CLAUDE.md routing protocol). Run /init-scaffolding to install the routing protocol and hooks so agent delegation works here. This is advisory only \\u2014 no files were overwritten; the safe .scaffolding/ skeleton was created if absent.\"}}\n",
+  "stderr": "",
+  "state": ".\n./.claude\n./.claude/settings.json\n./.scaffolding\n./.scaffolding/agent-memory\n./.scaffolding/agent-memory/agents\n./.scaffolding/agent-memory/shared\n./.scaffolding/conversations\n./.scaffolding/worktrees\n./CLAUDE.md\n"
+ },
+ "platform run (TASK_ID set): silent no-op": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ".\n"
+ },
+ "empty TASK_ID is not a platform run": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"scaffolding: this project is not fully initialized (missing: CLAUDE.md routing protocol, .claude/settings.json). Run /init-scaffolding to install the routing protocol and hooks so agent delegation works here. This is advisory only \\u2014 no files were overwritten; the safe .scaffolding/ skeleton was created if absent.\"}}\n",
+  "stderr": "",
+  "state": ".\n./.scaffolding\n./.scaffolding/agent-memory\n./.scaffolding/agent-memory/agents\n./.scaffolding/agent-memory/shared\n./.scaffolding/conversations\n./.scaffolding/worktrees\n"
+ },
+ "project dir with spaces and unicode": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"scaffolding: this project is not fully initialized (missing: CLAUDE.md routing protocol, .claude/settings.json). Run /init-scaffolding to install the routing protocol and hooks so agent delegation works here. This is advisory only \\u2014 no files were overwritten; the safe .scaffolding/ skeleton was created if absent.\"}}\n",
+  "stderr": "",
+  "state": "pro j\npro j/ąę\npro j/ąę/.scaffolding\npro j/ąę/.scaffolding/agent-memory\npro j/ąę/.scaffolding/agent-memory/agents\npro j/ąę/.scaffolding/agent-memory/shared\npro j/ąę/.scaffolding/conversations\npro j/ąę/.scaffolding/worktrees\n"
+ },
+ "project dir with a double quote": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"scaffolding: this project is not fully initialized (missing: CLAUDE.md routing protocol, .claude/settings.json). Run /init-scaffolding to install the routing protocol and hooks so agent delegation works here. This is advisory only \\u2014 no files were overwritten; the safe .scaffolding/ skeleton was created if absent.\"}}\n",
+  "stderr": "",
+  "state": "./q\"d\n"
+ },
+ "CLAUDE_PROJECT_DIR unset: uses PWD": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"scaffolding: this project is not fully initialized (missing: CLAUDE.md routing protocol, .claude/settings.json). Run /init-scaffolding to install the routing protocol and hooks so agent delegation works here. This is advisory only \\u2014 no files were overwritten; the safe .scaffolding/ skeleton was created if absent.\"}}\n",
+  "stderr": "",
+  "state": ".\n./.scaffolding\n./.scaffolding/agent-memory\n./.scaffolding/agent-memory/agents\n./.scaffolding/agent-memory/shared\n./.scaffolding/conversations\n./.scaffolding/worktrees\n./proj\n"
+ },
+ "existing skeleton dirs are kept": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"scaffolding: this project is not fully initialized (missing: CLAUDE.md routing protocol, .claude/settings.json). Run /init-scaffolding to install the routing protocol and hooks so agent delegation works here. This is advisory only \\u2014 no files were overwritten; the safe .scaffolding/ skeleton was created if absent.\"}}\n",
+  "stderr": "",
+  "state": ".\n./.scaffolding\n./.scaffolding/agent-memory\n./.scaffolding/agent-memory/agents\n./.scaffolding/agent-memory/shared\n./.scaffolding/agent-memory/shared/K.md\n./.scaffolding/conversations\n./.scaffolding/worktrees\n"
+ },
+ "read-only project dir: skeleton best effort": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"scaffolding: this project is not fully initialized (missing: CLAUDE.md routing protocol, .claude/settings.json). Run /init-scaffolding to install the routing protocol and hooks so agent delegation works here. This is advisory only \\u2014 no files were overwritten; the safe .scaffolding/ skeleton was created if absent.\"}}\n",
+  "stderr": "",
+  "state": ".\n"
+ }
+}

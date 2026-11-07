@@ -24,17 +24,11 @@ fi
 # Read tool input from stdin.
 INPUT=$(cat)
 
-# Extract file_path using python3 (no jq dependency) — same pattern as
-# file-staleness-update.sh.
-FILE_PATH=$(python3 -c "
-import json, sys
-try:
-    data = json.loads(sys.argv[1])
-    ti = data.get('tool_input', data)
-    print(ti.get('file_path', ''))
-except Exception:
-    print('')
-" "$INPUT" 2>/dev/null)
+# Extract file_path with node (hooks/lib/hook-io.mjs; no jq dependency). Without node there is nothing
+# to format with the JSON, so skip silently.
+LIB="${BASH_SOURCE[0]%/*}"; [[ "$LIB" == "${BASH_SOURCE[0]}" ]] && LIB=.; LIB="$LIB/lib"
+command -v node >/dev/null 2>&1 || exit 0
+FILE_PATH=$(printf '%s' "$INPUT" | node "$LIB/hook-io.mjs" get --ti file_path 2>/dev/null)
 
 # Skip if no file path extracted or file doesn't exist.
 if [ -z "$FILE_PATH" ] || [ ! -f "$FILE_PATH" ]; then

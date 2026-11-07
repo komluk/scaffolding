@@ -1,0 +1,614 @@
+{
+ "bad input: empty stdin": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: whitespace only": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: malformed json": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: truncated json": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: top-level array": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: top-level string": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: top-level null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: tool_input null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: tool_input string": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: tool_input array": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: utf-8 BOM": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: invalid utf-8 bytes": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "general-purpose is denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'general-purpose' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "explore is denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'explore' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "scaffolding:developer allowed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "plan allowed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "Explore (case) allowed: exact match only": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "explore with trailing space allowed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "empty subagent_type allowed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "missing subagent_type": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "no tool_input": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "subagent_type is null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "subagent_type is number": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "subagent_type is list": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "subagent_type is true": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "subagent_type is float": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "subagent_type with newline": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "escaped unicode name": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'general-purpose' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "non-ascii name allowed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "nested extra fields": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'general-purpose' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "NaN elsewhere in payload": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'explore' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "duplicate key last wins": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: general-purpose": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'general-purpose' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "x: General-Purpose (case, allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: GENERAL-PURPOSE (case, allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: general-Purpose (case, allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: general_purpose (underscore, allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: general purpose (space, allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: generalpurpose (allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: explore": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'explore' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "x: Explore (case, allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: EXPLORE (case, allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: eXplore (case, allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: Explorer (allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: explore2 (allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: leading space explore (allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: trailing space explore (allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: trailing tab explore (allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: trailing LF explore (stripped by $(), denied)": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'explore' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "x: trailing LF general-purpose (denied)": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'general-purpose' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "x: two trailing LF explore (denied)": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'general-purpose' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "x: trailing CR general-purpose (allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: trailing CRLF explore (CR kept, allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: leading LF explore (allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: NUL suffix general-purpose (bash drops NUL, denied)": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'general-purpose' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "x: NUL inside general-purpose (bash drops NUL, denied)": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'general-purpose' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "x: NUL inside explore (denied)": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'explore' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "x: NUL prefix explore (denied)": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'explore' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "x: NBSP suffix (allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: non-breaking hyphen (allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: fullwidth letters (allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: cyrillic e lookalike (allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: zero-width space inside (allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: scaffolding:explore (namespaced, allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: scaffolding:general-purpose (namespaced, allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: plugin:general-purpose (namespaced, allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: general-purpose:x (allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: explore:x (allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: ns/explore (allowed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: scaffolding:developer": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: scaffolding:analyst": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: plan": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: Plan": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: claude-code-guide": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: statusline-setup": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: empty": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: only space": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: top-level subagent_type (no tool_input, not read)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: tool_name Task but subagent_type missing": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: agent_type key instead (not read)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: subagent key instead (not read)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: nested {subagent_type:{...}} (dict printed)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: list of one (printed as python list)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: string \"None\"": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: duplicate key last denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'general-purpose' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "x: duplicate tool_input key last wins": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: duplicate tool_input key last denied": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'explore' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "x: unicode-escaped general-purpose": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'general-purpose' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "x: unicode-escaped explore": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'explore' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "x: escaped NUL in explore (\\u0000)": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'explore' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "x: lone surrogate escape in name": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: BOM-prefixed payload": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: trailing garbage": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: payload with trailing CRLF": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'explore' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "x: payload with leading whitespace": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'explore' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "x: big int elsewhere": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "x: int at the 4300-digit limit": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'explore' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "x: Infinity elsewhere": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'explore' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "x: nested depth 100": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'explore' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "x: nested depth 1000": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'explore' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "x: nested depth 3000": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'explore' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ },
+ "x: huge payload around the field": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "BLOCKED: subagent_type 'explore' is denylisted by the scaffolding protocol. Use a scaffolding:<agent> (e.g. scaffolding:developer, scaffolding:analyst) instead. 'general-purpose' conflicts with the custom agents; 'explore' is for quick file searches only, never planning/analysis.\n",
+  "state": ""
+ }
+}

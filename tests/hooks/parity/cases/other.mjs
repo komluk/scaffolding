@@ -1,0 +1,72 @@
+import { BAD_INPUTS, j, ti } from './_util.mjs';
+
+const bad = BAD_INPUTS.map(([name, f]) => ({ name: `bad input: ${name}`, ...f }));
+const lines = (n) => Array.from({ length: n }, (_, i) => `line ${i}`).join('\n');
+const fsz = (name, content, extra = {}) => ({
+  name,
+  stdin: j(ti({ file_path: '@SANDBOX@/f.txt' })),
+  setup: [`printf '%s' ${JSON.stringify(content)} > f.txt`],
+  ...extra,
+});
+
+export default [
+  {
+    hook: 'file-size-warn.sh',
+    cases: [
+      ...bad,
+      { name: 'missing file silently skipped', stdin: j(ti({ file_path: '@SANDBOX@/nope.txt' })) },
+      { name: 'empty path', stdin: j(ti({ file_path: '' })) },
+      { name: 'path is a directory', stdin: j(ti({ file_path: '@SANDBOX@' })), },
+      { name: 'file_path number', stdin: j(ti({ file_path: 4 })) },
+      { name: 'file_path null', stdin: j(ti({ file_path: null })) },
+      { name: 'file_path list', stdin: j(ti({ file_path: ['x'] })) },
+      fsz('500 lines: no advisory', lines(500) + '\n'),
+      fsz('501 lines: advisory', lines(501) + '\n'),
+      fsz('501 newlines only: wc counts newlines', '\n'.repeat(501)),
+      fsz('500 newlines + unterminated last line', lines(500)),
+      fsz('1200 lines advisory', lines(1200) + '\n'),
+      fsz('small file', 'hello\n'),
+      { name: 'binary file skipped', stdin: j(ti({ file_path: '@SANDBOX@/b.bin' })), setup: ["head -c 3000 /dev/zero | tr '\\0' '\\n' > b.bin; printf '\\0\\0' >> b.bin"] },
+      { name: 'path with spaces', stdin: j(ti({ file_path: '@SANDBOX@/my dir/f x.txt' })), setup: ["mkdir 'my dir'; seq 1 600 > 'my dir/f x.txt'"] },
+      { name: 'unicode path', stdin: j(ti({ file_path: '@SANDBOX@/ąę.txt' })), setup: ["seq 1 700 > 'ąę.txt'"] },
+      { name: 'relative path resolved against cwd', stdin: j(ti({ file_path: 'rel.txt' })), setup: ['seq 1 800 > rel.txt'] },
+      { name: 'no tool_input', stdin: j({ file_path: '@SANDBOX@/f.txt' }), setup: ['seq 1 800 > f.txt'] },
+      { name: 'file_path with newline', stdin: j(ti({ file_path: '@SANDBOX@/f.txt\n' })), setup: ['seq 1 800 > f.txt'] },
+    ],
+  },
+  {
+    hook: 'completion-nudge.sh',
+    cases: [
+      { name: 'unset mode, empty stdin', stdin: '', env: {} },
+      { name: 'unset mode, active stop', stdin: j({ stop_hook_active: true }), env: {} },
+      { name: 'mode=1 advisory', stdin: j({ stop_hook_active: false }), env: { SCAFFOLDING_COMPLETION_NUDGE: '1' } },
+      { name: 'mode=1, empty stdin', stdin: '', env: { SCAFFOLDING_COMPLETION_NUDGE: '1' } },
+      { name: 'mode=1, malformed json', stdin: '{oops', env: { SCAFFOLDING_COMPLETION_NUDGE: '1' } },
+      { name: 'mode=1, stop_hook_active true: silent', stdin: j({ stop_hook_active: true }), env: { SCAFFOLDING_COMPLETION_NUDGE: '1' } },
+      { name: 'mode=block emits decision', stdin: j({ stop_hook_active: false }), env: { SCAFFOLDING_COMPLETION_NUDGE: 'block' } },
+      { name: 'mode=block, stop_hook_active true: silent', stdin: j({ stop_hook_active: true }), env: { SCAFFOLDING_COMPLETION_NUDGE: 'block' } },
+      { name: 'mode=block, no field', stdin: j({}), env: { SCAFFOLDING_COMPLETION_NUDGE: 'block' } },
+      { name: 'mode=block, malformed json', stdin: '[[', env: { SCAFFOLDING_COMPLETION_NUDGE: 'block' } },
+      { name: 'mode=block, empty stdin', stdin: '', env: { SCAFFOLDING_COMPLETION_NUDGE: 'block' } },
+      { name: 'mode=other is advisory', stdin: j({}), env: { SCAFFOLDING_COMPLETION_NUDGE: 'yes' } },
+      { name: 'mode=BLOCK (case) is advisory', stdin: j({}), env: { SCAFFOLDING_COMPLETION_NUDGE: 'BLOCK' } },
+      { name: 'stop_hook_active string "false" is truthy', stdin: j({ stop_hook_active: 'false' }), env: { SCAFFOLDING_COMPLETION_NUDGE: 'block' } },
+      { name: 'stop_hook_active 0 falsy', stdin: j({ stop_hook_active: 0 }), env: { SCAFFOLDING_COMPLETION_NUDGE: 'block' } },
+      { name: 'stop_hook_active 1 truthy', stdin: j({ stop_hook_active: 1 }), env: { SCAFFOLDING_COMPLETION_NUDGE: 'block' } },
+      { name: 'stop_hook_active 0.0 falsy', stdin: '{"stop_hook_active":0.0}', env: { SCAFFOLDING_COMPLETION_NUDGE: 'block' } },
+      { name: 'stop_hook_active null falsy', stdin: j({ stop_hook_active: null }), env: { SCAFFOLDING_COMPLETION_NUDGE: 'block' } },
+      { name: 'stop_hook_active empty string falsy', stdin: j({ stop_hook_active: '' }), env: { SCAFFOLDING_COMPLETION_NUDGE: 'block' } },
+      { name: 'stop_hook_active empty list falsy', stdin: j({ stop_hook_active: [] }), env: { SCAFFOLDING_COMPLETION_NUDGE: 'block' } },
+      { name: 'stop_hook_active list truthy', stdin: j({ stop_hook_active: [0] }), env: { SCAFFOLDING_COMPLETION_NUDGE: 'block' } },
+      { name: 'stop_hook_active empty object falsy', stdin: j({ stop_hook_active: {} }), env: { SCAFFOLDING_COMPLETION_NUDGE: 'block' } },
+      { name: 'stop_hook_active object truthy', stdin: j({ stop_hook_active: { a: 1 } }), env: { SCAFFOLDING_COMPLETION_NUDGE: 'block' } },
+      { name: 'stop_hook_active NaN truthy', stdin: '{"stop_hook_active":NaN}', env: { SCAFFOLDING_COMPLETION_NUDGE: 'block' } },
+      { name: 'stop_hook_active -0.0 falsy', stdin: '{"stop_hook_active":-0.0}', env: { SCAFFOLDING_COMPLETION_NUDGE: 'block' } },
+      { name: 'stop_hook_active 0e5 falsy', stdin: '{"stop_hook_active":0e5}', env: { SCAFFOLDING_COMPLETION_NUDGE: 'block' } },
+      { name: 'top-level array', stdin: '[true]', env: { SCAFFOLDING_COMPLETION_NUDGE: 'block' } },
+      { name: 'top-level string', stdin: '"stop_hook_active"', env: { SCAFFOLDING_COMPLETION_NUDGE: 'block' } },
+      { name: 'invalid utf-8 stdin', stdin_b64: Buffer.from('{"stop_hook_active":true,"x":"\xff"}', 'latin1').toString('base64'), env: { SCAFFOLDING_COMPLETION_NUDGE: 'block' } },
+      { name: 'BOM stdin', stdin_b64: Buffer.from('﻿{"stop_hook_active":true}', 'utf8').toString('base64'), env: { SCAFFOLDING_COMPLETION_NUDGE: 'block' } },
+    ],
+  },
+];

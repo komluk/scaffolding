@@ -51,8 +51,9 @@ missing="${missing%, }"
 
 ctx="scaffolding: this project is not fully initialized (missing: ${missing}). Run /init-scaffolding to install the routing protocol and hooks so agent delegation works here. This is advisory only — no files were overwritten; the safe .scaffolding/ skeleton was created if absent."
 
-# SessionStart additionalContext injection (JSON-escape via python3, with fallback).
+# SessionStart additionalContext injection (JSON-escape via node hook-io quote, with fallback).
+LIB="${BASH_SOURCE[0]%/*}"; [[ "$LIB" == "${BASH_SOURCE[0]}" ]] && LIB=.; LIB="$LIB/lib"
 printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":%s}}\n' \
-  "$(printf '%s' "$ctx" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))' 2>/dev/null || printf '"%s"' "$ctx")"
+  "$(printf '%s' "$ctx" | node "$LIB/hook-io.mjs" quote 2>/dev/null || printf '"%s"' "$ctx")"
 
 exit 0

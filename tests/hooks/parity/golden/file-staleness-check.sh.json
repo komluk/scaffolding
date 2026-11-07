@@ -1,0 +1,380 @@
+{
+ "bad input: empty stdin": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "bad input: whitespace only": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "bad input: malformed json": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "bad input: truncated json": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "bad input: top-level array": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "bad input: top-level string": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "bad input: top-level null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "bad input: tool_input null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "bad input: tool_input string": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "bad input: tool_input array": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "bad input: utf-8 BOM": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "bad input: invalid utf-8 bytes": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "no task id: no-op even for stale file": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "empty task id: no-op": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "missing file (new file) ignored": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "directory ignored": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "empty file_path": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "file_path missing": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "first access records mtime": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"@SANDBOX@/f.txt\": \"1700000000\"}[rc-store:0]\n"
+ },
+ "first access, store has other entries": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"/other\": \"5\", \"@SANDBOX@/f.txt\": \"1700000000\"}[rc-store:0]\n"
+ },
+ "unchanged mtime": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"@SANDBOX@/f.txt\": \"1700000000\"}[rc-store:0]\n"
+ },
+ "changed mtime": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "File staleness conflict: @SANDBOX@/f.txt was modified externally (stored mtime=1700000000, current mtime=1700000050). Re-read the file before editing.\n",
+  "state": "{\"@SANDBOX@/f.txt\": \"1700000000\"}[rc-store:0]\n"
+ },
+ "changed mtime, other entries kept": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "File staleness conflict: @SANDBOX@/f.txt was modified externally (stored mtime=1700000000, current mtime=1700000050). Re-read the file before editing.\n",
+  "state": "{\"a\": \"1\", \"@SANDBOX@/f.txt\": \"1700000000\", \"z\": [1, 2.50, null]}[rc-store:0]\n"
+ },
+ "stored value is a number": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "File staleness conflict: @SANDBOX@/f.txt was modified externally (stored mtime=1700000000, current mtime=1700000000). Re-read the file before editing.\n",
+  "state": "{\"@SANDBOX@/f.txt\": 1700000000}[rc-store:0]\n"
+ },
+ "stored value is a float": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "File staleness conflict: @SANDBOX@/f.txt was modified externally (stored mtime=1700000000.0, current mtime=1700000000). Re-read the file before editing.\n",
+  "state": "{\"@SANDBOX@/f.txt\": 1700000000.0}[rc-store:0]\n"
+ },
+ "stored value is null: first access": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"@SANDBOX@/f.txt\": \"1700000000\"}[rc-store:0]\n"
+ },
+ "stored value is a list": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "File staleness conflict: @SANDBOX@/f.txt was modified externally (stored mtime=['1700000000'], current mtime=1700000000). Re-read the file before editing.\n",
+  "state": "{\"@SANDBOX@/f.txt\": [\"1700000000\"]}[rc-store:0]\n"
+ },
+ "stored value is an object": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "File staleness conflict: @SANDBOX@/f.txt was modified externally (stored mtime={'a': True}, current mtime=1700000000). Re-read the file before editing.\n",
+  "state": "{\"@SANDBOX@/f.txt\": {\"a\": true}}[rc-store:0]\n"
+ },
+ "stored value is true": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "File staleness conflict: @SANDBOX@/f.txt was modified externally (stored mtime=True, current mtime=1700000000). Re-read the file before editing.\n",
+  "state": "{\"@SANDBOX@/f.txt\": true}[rc-store:0]\n"
+ },
+ "stored value is empty string": {
+  "code": 2,
+  "stdout": "",
+  "stderr": "File staleness conflict: @SANDBOX@/f.txt was modified externally (stored mtime=, current mtime=1700000000). Re-read the file before editing.\n",
+  "state": "{\"@SANDBOX@/f.txt\": \"\"}[rc-store:0]\n"
+ },
+ "corrupt store is reset": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"@SANDBOX@/f.txt\": \"1700000000\"}[rc-store:0]\n"
+ },
+ "empty store file is reset": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"@SANDBOX@/f.txt\": \"1700000000\"}[rc-store:0]\n"
+ },
+ "store with unicode and escapes kept": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"\\u0105\\u0119\\u00e9\": \"1\", \"q\\\"x\": \"\\\\\", \"e\": 1000.0, \"big\": 123456789012345678901234567890, \"t\": true, \"@SANDBOX@/f.txt\": \"1700000000\"}[rc-store:0]\n"
+ },
+ "pre-existing store key order kept on update": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"b\": \"2\", \"a\": \"1\", \"@SANDBOX@/f.txt\": \"1700000000\"}[rc-store:0]\n"
+ },
+ "duplicate keys in store": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"a\": \"3\", \"b\": \"2\", \"@SANDBOX@/f.txt\": \"1700000000\"}[rc-store:0]\n"
+ },
+ "store with NaN and Infinity": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"n\": NaN, \"i\": -Infinity, \"@SANDBOX@/f.txt\": \"1700000000\"}[rc-store:0]\n"
+ },
+ "fallback to top-level file_path": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"@SANDBOX@/f.txt\": \"1700000000\"}[rc-store:0]\n"
+ },
+ "tool_input present but without file_path: no fallback": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "relative file_path": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"f.txt\": \"1700000000\"}[rc-store:0]\n"
+ },
+ "path with spaces": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"@SANDBOX@/a b/f x.txt\": \"1700000001\"}[rc-store:0]\n"
+ },
+ "unicode path escaped in store": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"@SANDBOX@/za\\u017c\\u00f3\\u0142\\u0107.txt\": \"1700000002\"}[rc-store:0]\n"
+ },
+ "astral unicode path": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"@SANDBOX@/\\ud83d\\ude00.txt\": \"1700000003\"}[rc-store:0]\n"
+ },
+ "file_path with trailing newline is trimmed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"@SANDBOX@/f.txt\": \"1700000000\"}[rc-store:0]\n"
+ },
+ "file_path with trailing spaces is not a file": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "file_path is a number": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "file_path number naming an existing file": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"5\": \"1700000004\"}[rc-store:0]\n"
+ },
+ "file_path is a list": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "file_path is null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "file_path is true": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "file_path float naming an existing file": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"1.5\": \"1700000004\"}[rc-store:0]\n"
+ },
+ "file_path is None-like string \"None\"": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"None\": \"1700000004\"}[rc-store:0]\n"
+ },
+ "lone surrogate escape in file_path": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "tool_input null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "symlink to file is a file": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"@SANDBOX@/ln.txt\": \"1700000009\"}[rc-store:0]\n"
+ },
+ "dangling symlink is not a file": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "[rc-store:1]\n"
+ },
+ "mtime before 1970": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"@SANDBOX@/f.txt\": \"-5\"}[rc-store:0]\n"
+ },
+ "mtime zero": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"@SANDBOX@/f.txt\": \"0\"}[rc-store:0]\n"
+ },
+ "mtime far future": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"@SANDBOX@/f.txt\": \"4102444800\"}[rc-store:0]\n"
+ },
+ "sub-second mtime is floored": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"@SANDBOX@/f.txt\": \"1700000000\"}[rc-store:0]\n"
+ },
+ "extra payload fields ignored": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"@SANDBOX@/f.txt\": \"1700000000\"}[rc-store:0]\n"
+ },
+ "escaped slash in path": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"@SANDBOX@/f.txt\": \"1700000000\"}[rc-store:0]\n"
+ },
+ "CRLF around json": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"@SANDBOX@/f.txt\": \"1700000000\"}[rc-store:0]\n"
+ },
+ "invalid utf-8 inside unrelated field": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "{\"@SANDBOX@/f.txt\": \"1700000000\"}[rc-store:0]\n"
+ }
+}

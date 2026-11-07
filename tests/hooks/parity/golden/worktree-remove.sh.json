@@ -1,0 +1,194 @@
+{
+ "bad input: empty stdin": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nworktree @SANDBOX@/repo/.scaffolding/worktrees/w1\n--\nw1\nmaster\n+ w1\n"
+ },
+ "bad input: whitespace only": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nworktree @SANDBOX@/repo/.scaffolding/worktrees/w1\n--\nw1\nmaster\n+ w1\n"
+ },
+ "bad input: malformed json": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nworktree @SANDBOX@/repo/.scaffolding/worktrees/w1\n--\nw1\nmaster\n+ w1\n"
+ },
+ "bad input: truncated json": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nworktree @SANDBOX@/repo/.scaffolding/worktrees/w1\n--\nw1\nmaster\n+ w1\n"
+ },
+ "bad input: top-level array": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nworktree @SANDBOX@/repo/.scaffolding/worktrees/w1\n--\nw1\nmaster\n+ w1\n"
+ },
+ "bad input: top-level string": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nworktree @SANDBOX@/repo/.scaffolding/worktrees/w1\n--\nw1\nmaster\n+ w1\n"
+ },
+ "bad input: top-level null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nworktree @SANDBOX@/repo/.scaffolding/worktrees/w1\n--\nw1\nmaster\n+ w1\n"
+ },
+ "bad input: tool_input null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nworktree @SANDBOX@/repo/.scaffolding/worktrees/w1\n--\nw1\nmaster\n+ w1\n"
+ },
+ "bad input: tool_input string": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nworktree @SANDBOX@/repo/.scaffolding/worktrees/w1\n--\nw1\nmaster\n+ w1\n"
+ },
+ "bad input: tool_input array": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nworktree @SANDBOX@/repo/.scaffolding/worktrees/w1\n--\nw1\nmaster\n+ w1\n"
+ },
+ "bad input: utf-8 BOM": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nworktree @SANDBOX@/repo/.scaffolding/worktrees/w1\n--\nw1\nmaster\n+ w1\n"
+ },
+ "bad input: invalid utf-8 bytes": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nworktree @SANDBOX@/repo/.scaffolding/worktrees/w1\n--\nw1\nmaster\n+ w1\n"
+ },
+ "removes registered worktree": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\n--\nmaster\nw1\n"
+ },
+ "removes and drops conversations link, share intact": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\n--\nf.md\nmaster\nw1\n"
+ },
+ "dirty worktree is force-removed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\n--\nmaster\nw1\n"
+ },
+ "missing worktree_path": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nworktree @SANDBOX@/repo/.scaffolding/worktrees/w1\n--\nw1\nmaster\n+ w1\n"
+ },
+ "empty worktree_path": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nworktree @SANDBOX@/repo/.scaffolding/worktrees/w1\n--\nw1\nmaster\n+ w1\n"
+ },
+ "null worktree_path -> None": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nworktree @SANDBOX@/repo/.scaffolding/worktrees/w1\n--\nw1\nmaster\n+ w1\n"
+ },
+ "number worktree_path": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nworktree @SANDBOX@/repo/.scaffolding/worktrees/w1\n--\nw1\nmaster\n+ w1\n"
+ },
+ "list worktree_path": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nworktree @SANDBOX@/repo/.scaffolding/worktrees/w1\n--\nw1\nmaster\n+ w1\n"
+ },
+ "nonexistent path": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nworktree @SANDBOX@/repo/.scaffolding/worktrees/w1\n--\nw1\nmaster\n+ w1\n"
+ },
+ "path exists but not a git worktree": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\n--\nls: cannot access 'repo/.scaffolding/worktrees': No such file or directory\nls: cannot access 'share/conv': No such file or directory\nmaster\n"
+ },
+ "main checkout is refused": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "WorktreeRemove hook: refusing path outside @SANDBOX@/repo/.scaffolding/worktrees/: @SANDBOX@/repo\n",
+  "state": "worktree @SANDBOX@/repo\nworktree @SANDBOX@/repo/.scaffolding/worktrees/w1\n--\nw1\nmaster\n+ w1\n"
+ },
+ "registered worktree outside .scaffolding/worktrees is refused": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "WorktreeRemove hook: refusing path outside @SANDBOX@/repo/.scaffolding/worktrees/: @SANDBOX@/elsewhere\n",
+  "state": "worktree @SANDBOX@/repo\nworktree @SANDBOX@/elsewhere\n--\nls: cannot access 'repo/.scaffolding/worktrees': No such file or directory\nls: cannot access 'share/conv': No such file or directory\nmaster\n+ other\n"
+ },
+ "dot-dot segment ignored": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nworktree @SANDBOX@/repo/.scaffolding/worktrees/w1\n--\nw1\nmaster\n+ w1\n"
+ },
+ "substring lookalike not removed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nworktree @SANDBOX@/repo/.scaffolding/worktrees/w1\n--\nw1\nw1-evil\nmaster\n+ w1\n"
+ },
+ "trailing slash is not an exact match": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nworktree @SANDBOX@/repo/.scaffolding/worktrees/w1\n--\nw1\nmaster\n+ w1\n"
+ },
+ "relative path": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\nworktree @SANDBOX@/repo/.scaffolding/worktrees/w1\n--\nw1\nmaster\n+ w1\n"
+ },
+ "path with trailing newline": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\n--\nmaster\nw1\n"
+ },
+ "worktree name with spaces": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\n--\nmaster\nw2\n"
+ },
+ "unicode worktree path": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\n--\nmaster\nwz\n"
+ },
+ "extra fields ignored": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "worktree @SANDBOX@/repo\n--\nmaster\nw1\n"
+ }
+}

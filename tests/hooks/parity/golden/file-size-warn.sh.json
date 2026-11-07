@@ -1,0 +1,182 @@
+{
+ "bad input: empty stdin": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: whitespace only": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: malformed json": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: truncated json": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: top-level array": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: top-level string": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: top-level null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: tool_input null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: tool_input string": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: tool_input array": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: utf-8 BOM": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "bad input: invalid utf-8 bytes": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "missing file silently skipped": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "empty path": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "path is a directory": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "file_path number": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "file_path null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "file_path list": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "500 lines: no advisory": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "501 lines: advisory": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "501 newlines only: wc counts newlines": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "500 newlines + unterminated last line": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "1200 lines advisory": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "small file": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "binary file skipped": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "path with spaces": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "ADVISORY: @SANDBOX@/my dir/f x.txt has 600 lines, which exceeds the 500-line guideline. Consider splitting it into smaller modules.\n",
+  "state": ""
+ },
+ "unicode path": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "ADVISORY: @SANDBOX@/ąę.txt has 700 lines, which exceeds the 500-line guideline. Consider splitting it into smaller modules.\n",
+  "state": ""
+ },
+ "relative path resolved against cwd": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "ADVISORY: rel.txt has 800 lines, which exceeds the 500-line guideline. Consider splitting it into smaller modules.\n",
+  "state": ""
+ },
+ "no tool_input": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": ""
+ },
+ "file_path with newline": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "ADVISORY: @SANDBOX@/f.txt has 800 lines, which exceeds the 500-line guideline. Consider splitting it into smaller modules.\n",
+  "state": ""
+ }
+}
