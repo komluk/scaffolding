@@ -127,7 +127,7 @@ jobs:
           node-version: '24'
       - name: node --check hooks/lib/*.mjs
         run: |
-          for f in hooks/lib/*.mjs tests/hooks/parity/run.mjs tests/hooks/parity/cases/*.mjs; do
+          for f in hooks/lib/*.mjs tests/hooks/parity/run.mjs tests/hooks/parity/fuzz-refactor-guard.mjs tests/hooks/parity/cases/*.mjs; do
             node --check "$f"
           done
       - name: bash tests/run-all.sh
