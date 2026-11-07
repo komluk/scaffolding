@@ -38,3 +38,13 @@ does), so neither does `hook-io.mjs`.
    nested padding can no longer hide a `tool_input` from a blocking hook. Not in the corpus because the python
    threshold depends on the interpreter version; covered up to depth 3000 (within every python's range) and by
    `test-hook-io.sh` at depth 100000.
+
+## Filesystem-order-dependent behaviour (known gap, not in the goldens)
+
+`refactor-guard` enumerates directories in raw `readdir` order, in both the python (v2.34.0) and the Node
+implementation (`listdirRaw`, and the order `grep -rl` prints): the 8 newest subagent transcripts when mtimes tie,
+the first 40 workspace hits (cap), and which of several defining files is named in the deny reason. That order is
+filesystem-specific (ext4 hashes it, tmpfs is reverse-creation, overlayfs differs), so parity holds per filesystem but
+a golden recorded on one cannot be replayed on another. Such cases are therefore not recorded; the corpus keeps only
+cases with distinct mtimes and a single defining file. To check this, run the suite with `TMPDIR=/dev/shm` or a
+directory on another filesystem (the runner creates its sandboxes under `$TMPDIR`).

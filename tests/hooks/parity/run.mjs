@@ -83,7 +83,7 @@ function normalise(buf, ctx) {
 }
 
 function runCase(hookFile, c, idx, helper) {
-  const sandbox = fs.realpathSync(fs.mkdtempSync('/tmp/parity-'));
+  const sandbox = fs.realpathSync(fs.mkdtempSync(path.join(process.env.TMPDIR || '/tmp', 'parity-')));
   const task = `parity-${process.pid}-${idx}`;
   const sub = (s) => s.replaceAll('@SANDBOX@', sandbox).replaceAll('@TASK@', task);
   const storeFile = `/tmp/scaffolding-mtime-${task}.json`;

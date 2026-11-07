@@ -1583,12 +1583,6 @@
   "stderr": "",
   "state": ""
  },
- "subagent: 12 files with identical mtimes: listdir order decides the 8": {
-  "code": 0,
-  "stdout": "",
-  "stderr": "",
-  "state": ""
- },
  "subagent: sub-second mtime ordering": {
   "code": 0,
   "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"deny\", \"permissionDecisionReason\": \"refactor-guard BLOCKED: this Edit renames or removes exported `foo` (defined in @SANDBOX@/ws/src/a.ts) and no LSP findReferences on a file defining it, nor graphify query naming it, exists in this session. Do this now: (1) call tool `LSP` with operation=findReferences, filePath=\\\"@SANDBOX@/ws/src/a.ts\\\", line=1, character=17 (or `mcp__graphify__query_graph` / `mcp__graphify__get_neighbors` with the symbol name); (2) then update every reference found using Edit, or retry the same sed after findReferences. If findReferences returns only the declaration, the TypeScript server is still indexing: call it again after a few seconds. Override: SCAFFOLDING_REFACTOR_GUARD=warn (warn only) or =off.\"}}\n",
@@ -2279,12 +2273,6 @@
   "stderr": "",
   "state": ""
  },
- "xargs, prod command, defs in two files (both listed)": {
-  "code": 0,
-  "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"deny\", \"permissionDecisionReason\": \"refactor-guard BLOCKED: this Bash sed/perl in-place command renames or removes exported `createPlatformOutcomes` (defined in @SANDBOX@/ws/src/dup.ts) and no LSP findReferences on a file defining it, nor graphify query naming it, exists in this session. Do this now: (1) call tool `LSP` with operation=findReferences, filePath=\\\"@SANDBOX@/ws/src/dup.ts\\\", line=1, character=14 (or `mcp__graphify__query_graph` / `mcp__graphify__get_neighbors` with the symbol name); (2) then update every reference found using Edit, or retry the same sed after findReferences. If findReferences returns only the declaration, the TypeScript server is still indexing: call it again after a few seconds. Override: SCAFFOLDING_REFACTOR_GUARD=warn (warn only) or =off.\"}}\n",
-  "stderr": "",
-  "state": ""
- },
  "xargs, defs only in node_modules -> skipped": {
   "code": 0,
   "stdout": "",
@@ -2333,15 +2321,9 @@
   "stderr": "",
   "state": ""
  },
- "xargs, more than 40 files hit (cap 40)": {
+ "xargs, def in a subdirectory, abs path join (a second dir holds only a non-def mention)": {
   "code": 0,
-  "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"deny\", \"permissionDecisionReason\": \"refactor-guard BLOCKED: this Bash sed/perl in-place command renames or removes exported `manySym` (defined in @SANDBOX@/ws/many/f60.ts) and no LSP findReferences on a file defining it, nor graphify query naming it, exists in this session. Do this now: (1) call tool `LSP` with operation=findReferences, filePath=\\\"@SANDBOX@/ws/many/f60.ts\\\", line=1, character=17 (or `mcp__graphify__query_graph` / `mcp__graphify__get_neighbors` with the symbol name); (2) then update every reference found using Edit, or retry the same sed after findReferences. If findReferences returns only the declaration, the TypeScript server is still indexing: call it again after a few seconds. Override: SCAFFOLDING_REFACTOR_GUARD=warn (warn only) or =off.\"}}\n",
-  "stderr": "",
-  "state": ""
- },
- "xargs, files hit in two directories, abs path join": {
-  "code": 0,
-  "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"deny\", \"permissionDecisionReason\": \"refactor-guard BLOCKED: this Bash sed/perl in-place command renames or removes exported `dupSym` (defined in @SANDBOX@/ws/b/x.ts) and no LSP findReferences on a file defining it, nor graphify query naming it, exists in this session. Do this now: (1) call tool `LSP` with operation=findReferences, filePath=\\\"@SANDBOX@/ws/b/x.ts\\\", line=1, character=14 (or `mcp__graphify__query_graph` / `mcp__graphify__get_neighbors` with the symbol name); (2) then update every reference found using Edit, or retry the same sed after findReferences. If findReferences returns only the declaration, the TypeScript server is still indexing: call it again after a few seconds. Override: SCAFFOLDING_REFACTOR_GUARD=warn (warn only) or =off.\"}}\n",
+  "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"deny\", \"permissionDecisionReason\": \"refactor-guard BLOCKED: this Bash sed/perl in-place command renames or removes exported `dupSym` (defined in @SANDBOX@/ws/a/x.ts) and no LSP findReferences on a file defining it, nor graphify query naming it, exists in this session. Do this now: (1) call tool `LSP` with operation=findReferences, filePath=\\\"@SANDBOX@/ws/a/x.ts\\\", line=1, character=14 (or `mcp__graphify__query_graph` / `mcp__graphify__get_neighbors` with the symbol name); (2) then update every reference found using Edit, or retry the same sed after findReferences. If findReferences returns only the declaration, the TypeScript server is still indexing: call it again after a few seconds. Override: SCAFFOLDING_REFACTOR_GUARD=warn (warn only) or =off.\"}}\n",
   "stderr": "",
   "state": ""
  },
