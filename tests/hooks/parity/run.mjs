@@ -146,8 +146,7 @@ function runCase(hookFile, c, idx, helper) {
 // state and every stderr line the hook prints itself stay compared exactly.
 const TOOL_STDERR = [
   /error: unexpected argument[\s\S]*?For more information, try '--help'\.\n/g,
-  /^basename: .*\n/gm,
-  /^Try 'basename --help' for more information\.\n/gm,
+  /basename: [^\n]*\nTry 'basename --help' for more information\.\n/g,
 ];
 const toolNorm = (s) => TOOL_STDERR.reduce((acc, re) => acc.replace(re, '<tool:basename>\n'), s);
 
