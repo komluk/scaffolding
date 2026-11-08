@@ -169,7 +169,7 @@ Let me create one for our task.
 **DO:** Generate a UUID and create the specs directory:
 ```bash
 # Generate UUID for this conversation
-CONV_ID=$(uuidgen || python3 -c "import uuid; print(uuid.uuid4())")
+CONV_ID=$(uuidgen || cat /proc/sys/kernel/random/uuid 2>/dev/null || node -p 'require("crypto").randomUUID()')
 mkdir -p .scaffolding/conversations/$CONV_ID/specs/
 ```
 

@@ -5,6 +5,45 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.39.0] - 2026-11-08
+
+Last step of removing Python from the plugin: `memory-recall`, the Copilot tooling and the test scripts now run on Node, the remaining
+Python snippets in commands and skills are gone, and CI fails if Python comes back. The repo has no `.py` file and no `python3`
+invocation outside `tests/hooks/parity/` (record-time only, see below). **Node >= 22 is now the only runtime the plugin needs** (plus `bash`, `timeout`, `git`).
+
+### Changed
+- `hooks/memory-recall.sh` is a shim over `hooks/lib/memory-recall.mjs` (plus `ipclass.mjs`, `pyurl.mjs`; `pyurl.mjs` is the `urlsplit` port that
+  `action-log/targets.mjs` already had, moved to `hooks/lib/` and shared). Same prompt filter, URL and host checks, request bytes, response
+  parsing and output. Without `node` the hook prints `scaffolding: node not found, memory-recall not enforced` on stderr and exits 0.
+  - Plain `http` is still allowed only when every address the host resolves to is loopback or private, using python 3.14's exact `ipaddress`
+    tables (`ipclass.mjs`: 192.0.2.0/24, 198.18.0.0/15, 240.0.0.0/4 ... count as private, 100.64.0.0/10 (Tailscale / CGNAT) does not).
+  - Redirects are never followed. The proxy environment is ignored (`agent: false`; it also holds with `NODE_USE_ENV_PROXY=1`). Certificate checks stay on
+    (`NODE_TLS_REJECT_UNAUTHORIZED=0` has no effect) and trust the system store, like python/OpenSSL did. The timeout is per socket operation, as before.
+- Copilot tooling: `copilot/scaffolding-{hook-merge,skills-merge,transform}.py` became `.mjs` (+ `scaffolding-json.mjs`, a small python-compatible JSON reader/writer
+  so a user's `settings.json` keeps its key order, integers and floats); `scaffolding-sync.sh` calls `node`, `scaffolding-plugin-root.sh` and
+  `hooks/pre-commit-validation-copilot.sh.tmpl` no longer need `jq`. `install.sh` deletes the old `~/.copilot/scaffolding-*.py`.
+  **After upgrading run `~/.copilot/scaffolding-sync.sh` again** (or `bash <plugin>/copilot/install.sh`).
+- `tests/scripts/sync-secret-patterns.py` became `.mjs` (`--check` output is byte-equal with the vendored file).
+- `tests/hooks/test-memory-recall.sh` uses Node fixture servers (`tests/hooks/fixtures/http-srv.mjs`, `redirect-srv.mjs`) instead of python ones.
+- `/doctor` checks for `node` >= 22 and reads JSON with node; `/memory enable`, `/sofa`, `sofa-search`, `/specs:run|ff|new|onboard` and `spec-workflow` no longer call `python3`.
+  The `eval "$(python3 ...)"` in `/sofa` and `sofa-search` is gone: values are returned NUL-delimited and read with `read -d ''`, so no shell parses a credential or a session id.
+- `skills/ui-ux-pro-max`: removed the sections that ran `scripts/search.py` (the scripts were never shipped); the rules, quick reference, common mistakes and checklist stay.
+- CI (`validate.yml`): the frontmatter / `workflows/*.yaml` lint runs `tests/scripts/lint-yaml.mjs` with a pinned `yaml` package installed into a temp dir (no `setup-python`, no PyYAML);
+  new `no-python` job runs `tests/scripts/no-python-guard.sh` (fails on a tracked `.py` / `.pyc` / `.pyi`, a `__pycache__`, a `python`/`python3` command, a python process spawned from
+  node, `setup-python`, `pip install`, `PyYAML`; comment lines are ignored; scanned: hooks, tests, scripts, validators, copilot, .github, commands, sofa-search, spec-workflow, ui-ux-pro-max).
+  Exceptions are listed with a reason in `.github/no-python-allowlist` (one: `tests/hooks/parity/`, which needs the original python to record goldens and run the differential fuzz;
+  a stale entry fails the guard). `node --check` now also covers `copilot/*.mjs`, `tests/hooks/*.mjs` and `tests/scripts/*.mjs`.
+
+### Tests
+- `tests/hooks/parity`: 423 `memory-recall` cases recorded from the python hook (v2.38.0) against a fixture HTTP server (the runner got a `server:` case option; the request the server saw is part of the golden)
+  and 125 cases for the two Copilot settings mergers. Differential fuzz `fuzz-memory-recall.mjs`: 1500 inputs, 0 differences. `ipclass.mjs` agrees with `ipaddress` on 244 boundary addresses.
+- New `test-copilot.sh` (transform, plugin-root resolver, sync / uninstall / install, the wrapper without `jq`) and `test-no-python.sh` (the guard catches what it should).
+
+### Differences from the Python implementation
+- `scaffolding-transform`: the frontmatter is rewritten line by line, so `description` and `skills` keep the source formatting instead of the `yaml.safe_dump` re-wrapping (parsed values are identical for all six agents; body byte-identical).
+- Python error output of the settings mergers (a traceback) is now one line `scaffolding-<tool>: <message>`; exit code (1) and "nothing written" are unchanged.
+- `memory-recall`: an idle-timeout shorter than ~10 ms races the connect in both implementations and is not compared.
+
 ## [2.38.0] - 2026-11-08
 
 Third step of removing Python from the plugin runtime: the episodic action log now runs on Node.

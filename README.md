@@ -190,7 +190,7 @@ claude-scaffolding/
 
 A few skills have optional features that can use an external backend if one is
 available — for example, `semantic-memory-mcp` can persist embeddings to a
-vector store, and `ui-ux-pro-max` can draw on a local dataset. When no such
+vector store. When no such
 backend is present, these skills degrade gracefully: the agent skips the
 relevant section rather than crashing, and all core functionality continues to
 work as pure markdown.

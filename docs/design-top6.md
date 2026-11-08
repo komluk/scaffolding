@@ -218,7 +218,7 @@ re-prompts the model and can loop forever. Design:
 - The nudge is **advisory**: it writes the checklist to **stderr and `exit 0`** (does not block).
   This is the safe default — it never forces another turn, just surfaces a reminder in the
   transcript. (A stricter `exit 2`-once variant is possible but gated behind an env flag.)
-- Cheap: pure bash + a `stop_hook_active` JSON read via python3 (same pattern as existing hooks).
+- Cheap: pure bash + a `stop_hook_active` JSON read via `hook-io.mjs` (same pattern as existing hooks).
   No network, no agent spawn.
 
 ### Exit-code / behavior

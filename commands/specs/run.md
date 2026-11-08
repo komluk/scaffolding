@@ -35,7 +35,7 @@ Flags are stripped from the description before it is used as `{description}`.
 pattern `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`). NEVER use descriptive
 names, slugs, or human-readable strings as the conversation_id. If `--conversation` fails this
 pattern, reject it, generate a real UUID with `uuidgen` or
-`python3 -c "import uuid; print(uuid.uuid4())"`, and announce the substitution.
+`node -p 'require("crypto").randomUUID()'`, and announce the substitution.
 
 **Steps**
 

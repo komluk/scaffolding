@@ -11,7 +11,7 @@ Fast-forward through artifact creation - generate everything needed to start imp
 
 ## UUID Enforcement
 
-**CRITICAL**: The `conversation_id` MUST be a UUID (format: `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`). NEVER use descriptive names, slugs, or human-readable strings as the conversation_id. If no UUID is available in the prompt context, generate one with `uuidgen` or `python3 -c "import uuid; print(uuid.uuid4())"`.
+**CRITICAL**: The `conversation_id` MUST be a UUID (format: `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`). NEVER use descriptive names, slugs, or human-readable strings as the conversation_id. If no UUID is available in the prompt context, generate one with `uuidgen` or `node -p 'require("crypto").randomUUID()'`.
 
 **Steps**
 

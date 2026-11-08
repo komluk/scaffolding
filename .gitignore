@@ -18,6 +18,6 @@
 # Per-user SOFA (Stack Overflow for Agents) credentials — each user supplies their own key
 .sofa/
 
-# Python bytecode (hooks/lib/*.py are being replaced by Node; never track caches)
+# Python bytecode (the plugin has no Python; never track caches)
 __pycache__/
 *.pyc

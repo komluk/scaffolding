@@ -15,6 +15,10 @@ set -euo pipefail
 #   ~/.copilot/scaffolding-sync.sh --uninstall   remove everything this script owns
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if ! command -v node >/dev/null 2>&1; then
+  echo "ERROR: scaffolding-sync: node (>= 22) is required but was not found on PATH" >&2
+  exit 1
+fi
 # shellcheck source=./scaffolding-plugin-root.sh
 source "$SCRIPT_DIR/scaffolding-plugin-root.sh"
 
@@ -67,12 +71,12 @@ if [ "$UNINSTALL" -eq 1 ]; then
 
   for settings in "${HOOK_REPOS[@]}"; do
     [ -f "$settings" ] || continue
-    python3 "$SCRIPT_DIR/scaffolding-hook-merge.py" --remove "$settings" "$HOOK_WRAPPER" 2>/dev/null \
+    node "$SCRIPT_DIR/scaffolding-hook-merge.mjs" --remove "$settings" "$HOOK_WRAPPER" 2>/dev/null \
       && echo "  removed PreToolUse entry from: $settings"
   done
 
   if [ -f "$HOME/.copilot/settings.json" ]; then
-    python3 "$SCRIPT_DIR/scaffolding-skills-merge.py" --remove "$HOME/.copilot/settings.json" 2>/dev/null \
+    node "$SCRIPT_DIR/scaffolding-skills-merge.mjs" --remove "$HOME/.copilot/settings.json" 2>/dev/null \
       && echo "  removed skillDirectories entry from ~/.copilot/settings.json (if present)"
   fi
 
@@ -109,7 +113,7 @@ for agent in "${AGENTS[@]}"; do
   if [ "$DRY_RUN" -eq 1 ]; then
     echo "[dry-run] would write: $dest_file (name: scaffolding:$agent, from $src_file)"
   else
-    python3 "$SCRIPT_DIR/scaffolding-transform.py" "$agent" "$src_file" "$dest_file"
+    node "$SCRIPT_DIR/scaffolding-transform.mjs" "$agent" "$src_file" "$dest_file"
     written=$((written + 1))
   fi
 done
@@ -157,7 +161,7 @@ else
     if [ ! -f "$settings" ]; then
       echo '{}' > "$settings"
     fi
-    python3 "$SCRIPT_DIR/scaffolding-hook-merge.py" "$settings" "$HOOK_WRAPPER"
+    node "$SCRIPT_DIR/scaffolding-hook-merge.mjs" "$settings" "$HOOK_WRAPPER"
   done
 fi
 
@@ -166,7 +170,7 @@ SKILLS_OK=1
 if [ "$DRY_RUN" -eq 1 ]; then
   echo "[dry-run] would register skills dir: $SRC/skills (copilot skill add) and update ~/.copilot/settings.json"
 else
-  if python3 "$SCRIPT_DIR/scaffolding-skills-merge.py" "$HOME/.copilot/settings.json" "$SRC"; then
+  if node "$SCRIPT_DIR/scaffolding-skills-merge.mjs" "$HOME/.copilot/settings.json" "$SRC"; then
     if command -v copilot >/dev/null 2>&1; then
       copilot skill add "$SRC/skills" >/tmp/scaffolding-sync-skill-add.log 2>&1 || SKILLS_OK=0
     else

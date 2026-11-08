@@ -1,0 +1,754 @@
+{
+ "add to a missing file": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "add to an empty file": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "add to {}": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "add to {} written compact": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "add keeps other keys and order": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"model\": \"x\",\n  \"hooks\": {\n    \"PreCompact\": [\n      {\n        \"hooks\": []\n      }\n    ],\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  },\n  \"zeta\": 1,\n  \"alpha\": [\n    1,\n    2\n  ]\n}\n"
+ },
+ "add next to an existing Bash matcher": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"other.sh\"\n          },\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "add next to a non-Bash matcher": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Edit\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"e.sh\"\n          }\n        ]\n      },\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "idempotent: already there": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "idempotent: already there, not first": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"a.sh\"\n          },\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "first Bash matcher wins": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      },\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "Bash matcher without hooks key": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "matcher \"bash\" is not \"Bash\"": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"bash\",\n        \"hooks\": []\n      },\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "PreToolUse empty list": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "hooks empty dict": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "PreToolUse is not a list": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": {\n      \"a\": 1\n    }\n  }\n}\n"
+ },
+ "PreToolUse is a string": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": \"x\"\n  }\n}\n"
+ },
+ "PreToolUse is null": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": null\n  }\n}\n"
+ },
+ "hooks is a list": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": []\n}\n"
+ },
+ "hooks is null": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": null\n}\n"
+ },
+ "top level is a list": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n[]\n"
+ },
+ "top level is a string": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n\"x\""
+ },
+ "top level is null": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\nnull"
+ },
+ "entry is a string": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      \"x\"\n    ]\n  }\n}\n"
+ },
+ "entry is null": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      null\n    ]\n  }\n}\n"
+ },
+ "entry hooks is a dict": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": {\n          \"a\": 1\n        }\n      }\n    ]\n  }\n}\n"
+ },
+ "inner hook is a string": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          \"x\"\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "inner hook is a string after the match": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          },\n          \"x\"\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "malformed json": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n{not json"
+ },
+ "truncated json": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n{\"hooks\":"
+ },
+ "trailing comma": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n{\"a\":1,}"
+ },
+ "trailing garbage": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n{} x"
+ },
+ "utf-8 BOM": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n﻿{}"
+ },
+ "invalid utf-8": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": {
+   "b64": "YmluIGhvbWUgcy5qc29uIAo9PSBzLmpzb24KeyJhIjoi/yJ9"
+  }
+ },
+ "whitespace only": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n \n"
+ },
+ "CRLF line endings": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"a\": 1,\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "nan and infinity survive": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"a\": NaN,\n  \"b\": Infinity,\n  \"c\": -Infinity,\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "numbers: ints stay ints, floats stay floats": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"a\": 1,\n  \"b\": 1.0,\n  \"c\": 100.0,\n  \"d\": 12345678901234567890,\n  \"e\": 0,\n  \"f\": -0.0,\n  \"g\": 0.1,\n  \"h\": 1e-07,\n  \"i\": 1e+22,\n  \"j\": 1.2345678901234568e+20,\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "integer-like keys keep their order": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"b\": 1,\n  \"2\": 2,\n  \"a\": 3,\n  \"1\": 4,\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "duplicate keys: last value, first position": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"a\": 3,\n  \"b\": 2,\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "non-ascii is escaped on write": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"note\": \"za\\u017c\\u00f3\\u0142\\u0107 g\\u0119\\u015bl\\u0105 ja\\u017a\\u0144 \\u2014 \\ud83d\\ude00\",\n  \"\\u017c\\u00f3\\u0142w\": \"\\u00e9\",\n  \"ctl\": \"\\u0001\\u007f\\u2028\",\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "escapes in strings": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"s\": \"q\\\"b\\\\s/n\\n r\\r t\\t b\\b f\\f u\\u00e9 \\ud83d\\ude00 \\ud800\",\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "nesting and empties": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"a\": [],\n  \"b\": {},\n  \"c\": [\n    [],\n    {},\n    [\n      []\n    ]\n  ],\n  \"d\": {\n    \"e\": {\n      \"f\": [\n        1,\n        [\n          2,\n          [\n            3\n          ]\n        ]\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "indent 4 input is rewritten with 2": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "compact input is rewritten with 2": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreCompact\": [],\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  },\n  \"x\": [\n    1,\n    2,\n    {\n      \"y\": null\n    }\n  ]\n}\n"
+ },
+ "deep nesting": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]"
+ },
+ "wrapper path with spaces and quotes": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"/tmp/a b/\\\"q\\\"/h.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "wrapper path non-ascii": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"/tmp/za\\u017c\\u00f3\\u0142\\u0107/h.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "wrapper path empty": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "settings path missing directory": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home \n"
+ },
+ "settings path is a directory": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "..tmp bin d home \n"
+ },
+ "no arguments": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "usage: scaffolding-hook-merge.EXT [--remove] <settings.json> <wrapper-abs-path>\n",
+  "state": "bin home \n"
+ },
+ "one argument": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "usage: scaffolding-hook-merge.EXT [--remove] <settings.json> <wrapper-abs-path>\n",
+  "state": "bin home \n"
+ },
+ "three arguments": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "usage: scaffolding-hook-merge.EXT [--remove] <settings.json> <wrapper-abs-path>\n",
+  "state": "bin home \n"
+ },
+ "--remove with one argument": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "usage: scaffolding-hook-merge.EXT [--remove] <settings.json> <wrapper-abs-path>\n",
+  "state": "bin home \n"
+ },
+ "--remove only": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "usage: scaffolding-hook-merge.EXT [--remove] <settings.json> <wrapper-abs-path>\n",
+  "state": "bin home \n"
+ },
+ "unknown flag is a path": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "--add bin home \n"
+ },
+ "leaves no tmp file when the target is unwritable": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json s.json.tmp \n== s.json\n{}\n== s.json.tmp\n"
+ },
+ "hook remove: missing file": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home \n"
+ },
+ "hook remove: empty file": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n"
+ },
+ "hook remove: {}": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{}\n"
+ },
+ "hook remove: nothing registered": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"other.sh\"\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "hook remove: the only entry drops the matcher and PreToolUse": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {}\n}\n"
+ },
+ "hook remove: the only PreToolUse entry leaves other hook keys": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreCompact\": []\n  },\n  \"x\": 1\n}\n"
+ },
+ "hook remove: one of two inner hooks": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"a.sh\"\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "hook remove: keeps other matchers": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Edit\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "hook remove: from two Bash matchers": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"command\": \"z\"\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "hook remove: Bash matcher without hooks key": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\"\n      }\n    ]\n  }\n}\n"
+ },
+ "hook remove: Bash matcher with empty hooks": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": []\n      }\n    ]\n  }\n}\n"
+ },
+ "hook remove: Bash matcher with null hooks": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": null\n      }\n    ]\n  }\n}\n"
+ },
+ "hook remove: Bash matcher with empty dict hooks": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": {}\n      }\n    ]\n  }\n}\n"
+ },
+ "hook remove: Bash matcher with empty string hooks": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": \"\"\n      }\n    ]\n  }\n}\n"
+ },
+ "hook remove: Bash matcher with dict hooks": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": {\n          \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh\"\n        }\n      }\n    ]\n  }\n}\n"
+ },
+ "hook remove: Bash matcher with string hooks": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": \"abc\"\n      }\n    ]\n  }\n}\n"
+ },
+ "hook remove: inner hook is a string": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          \"x\"\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "hook remove: inner hook without command": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"type\": \"command\"\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "hook remove: PreToolUse empty list": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": []\n  }\n}\n"
+ },
+ "hook remove: PreToolUse is not a list": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": {\n      \"a\": 1\n    }\n  }\n}\n"
+ },
+ "hook remove: PreToolUse is null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": null\n  }\n}\n"
+ },
+ "hook remove: hooks missing": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"other\": 1\n}\n"
+ },
+ "hook remove: hooks is a list": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": []\n}\n"
+ },
+ "hook remove: hooks is a string": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": \"x\"\n}\n"
+ },
+ "hook remove: hooks is null": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": null\n}\n"
+ },
+ "hook remove: top level is a list": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n[]\n"
+ },
+ "hook remove: entry is a string": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      \"x\"\n    ]\n  }\n}\n"
+ },
+ "hook remove: entry is a number": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      5\n    ]\n  }\n}\n"
+ },
+ "hook remove: malformed json": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n{nope"
+ },
+ "hook remove: preserves unrelated formatting-sensitive values": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"n\": 1.0,\n  \"big\": 12345678901234567890,\n  \"u\": \"\\u00e9\",\n  \"hooks\": {}\n}\n"
+ },
+ "hook remove: wrapper compared exactly (suffix differs)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          {\n            \"command\": \"@SANDBOX@/home/.copilot/hooks/pre-commit-validation-copilot.sh.bak\"\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+ },
+ "strip: missing file": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home \n"
+ },
+ "strip: empty file": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n"
+ },
+ "strip: no skillDirectories": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"a\": 1\n}\n"
+ },
+ "strip: skillDirectories is not a list": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"skillDirectories\": \"x\"\n}\n"
+ },
+ "strip: skillDirectories is a dict": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"skillDirectories\": {\n    \"a\": 1\n  }\n}\n"
+ },
+ "strip: skillDirectories is null": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"skillDirectories\": null\n}\n"
+ },
+ "strip: empty list": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"skillDirectories\": []\n}\n"
+ },
+ "strip: only user dirs (no change, file untouched)": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"skillDirectories\": [\n    \"/home/u/skills\",\n    \"/opt/skills\"\n  ]\n}\n"
+ },
+ "strip: cache dir removed, others kept": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"skillDirectories\": [\n    \"/home/u/skills\",\n    \"/opt/skills\"\n  ]\n}\n"
+ },
+ "strip: all entries are cache dirs: key removed": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{}\n"
+ },
+ "strip: marker is a prefix match": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{}\n"
+ },
+ "strip: a sibling plugin dir stays": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"skillDirectories\": [\n    \"@SANDBOX@/home/.claude/plugins/cache/komluk-scaffolding/other/skills\"\n  ]\n}\n"
+ },
+ "strip: other HOME stays": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"skillDirectories\": [\n    \"/other/home/.claude/plugins/cache/komluk-scaffolding/scaffolding/1/skills\"\n  ]\n}\n"
+ },
+ "strip: non-string entries are kept": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"skillDirectories\": [\n    5,\n    null,\n    [\n      \"x\"\n    ],\n    {\n      \"a\": 1\n    },\n    true\n  ]\n}\n"
+ },
+ "strip: keeps other keys and disabledSkills": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"disabledSkills\": [\n    \"a\"\n  ],\n  \"zeta\": 1,\n  \"alpha\": {\n    \"b\": 2\n  }\n}\n"
+ },
+ "strip: relative entry stays": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"skillDirectories\": [\n    \"skills\"\n  ]\n}\n"
+ },
+ "strip: non-ascii and escapes survive": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"note\": \"za\\u017c\\u00f3\\u0142\\u0107 \\u2014 \\ud83d\\ude00\",\n  \"skillDirectories\": [\n    \"/home/za\\u017c\\u00f3\\u0142\\u0107/skills\"\n  ]\n}\n"
+ },
+ "strip: top level is a list": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n[]\n"
+ },
+ "strip: top level is null": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\nnull"
+ },
+ "strip: malformed json": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n{x"
+ },
+ "strip: BOM": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n﻿{}"
+ },
+ "strip: numbers keep their shape": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"a\": 1.0,\n  \"b\": 12345678901234567890,\n  \"c\": 1e-07\n}\n"
+ },
+ "strip: no arguments": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "usage: scaffolding-skills-merge.EXT <settings.json> <src-root>\n",
+  "state": "bin home \n"
+ },
+ "strip: one argument": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "usage: scaffolding-skills-merge.EXT <settings.json> <src-root>\n",
+  "state": "bin home \n"
+ },
+ "strip: three arguments": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "usage: scaffolding-skills-merge.EXT <settings.json> <src-root>\n",
+  "state": "bin home \n"
+ },
+ "strip: second argument is not read": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{}\n"
+ },
+ "strip: settings path missing directory": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home \n"
+ },
+ "skills remove: missing file": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home \n"
+ },
+ "skills remove: cache dir": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"skillDirectories\": [\n    \"/keep\"\n  ]\n}\n"
+ },
+ "skills remove: only cache dirs": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{}\n"
+ },
+ "skills remove: nothing to do": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"skillDirectories\": [\n    \"/keep\"\n  ]\n}\n"
+ },
+ "skills remove: malformed": {
+  "code": 1,
+  "stdout": "",
+  "stderr": "<error>\n",
+  "state": "bin home s.json \n== s.json\n[1,"
+ },
+ "skills remove: two arguments is a usage error": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{}\n"
+ },
+ "skills remove: no file argument is a usage error": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home \n"
+ },
+ "HOME with trailing slash": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"skillDirectories\": [\n    \"/keep\"\n  ]\n}\n"
+ },
+ "HOME unset": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"skillDirectories\": [\n    \"/keep\"\n  ]\n}\n"
+ },
+ "HOME is /": {
+  "code": 0,
+  "stdout": "",
+  "stderr": "",
+  "state": "bin home s.json \n== s.json\n{\n  \"skillDirectories\": [\n    \"/keep\"\n  ]\n}\n"
+ }
+}

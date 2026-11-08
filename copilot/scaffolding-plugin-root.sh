@@ -6,9 +6,9 @@
 #
 # Tiers (first hit wins):
 #   1. $SCAFFOLDING_PLUGIN_ROOT if set and a directory (test/override seam)
-#   2. jq -r '.plugins["scaffolding@komluk-scaffolding"][0].installPath'
-#      from ~/.claude/plugins/installed_plugins.json (authoritative — what
-#      Claude Code itself loads)
+#   2. .plugins["scaffolding@komluk-scaffolding"][0].installPath from
+#      ~/.claude/plugins/installed_plugins.json (authoritative — what
+#      Claude Code itself loads), read with node
 #   3. highest dir under the cache root by `sort -V` (warn on stderr)
 
 resolve_plugin_root() {
@@ -22,9 +22,13 @@ resolve_plugin_root() {
   fi
 
   # Tier 2: manifest (authoritative)
-  if [ -z "$root" ] && [ -f "$manifest" ] && command -v jq >/dev/null 2>&1; then
+  if [ -z "$root" ] && [ -f "$manifest" ] && command -v node >/dev/null 2>&1; then
     local manifest_path
-    manifest_path=$(jq -r '.plugins["scaffolding@komluk-scaffolding"][0].installPath // empty' "$manifest" 2>/dev/null)
+    manifest_path=$(node -e '
+      try {
+        const p = JSON.parse(require("fs").readFileSync(process.argv[1], "utf8")).plugins["scaffolding@komluk-scaffolding"][0].installPath;
+        if (typeof p === "string") process.stdout.write(p);
+      } catch {}' "$manifest" 2>/dev/null)
     if [ -n "$manifest_path" ] && [ -d "$manifest_path" ]; then
       root="$manifest_path"
     fi
