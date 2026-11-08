@@ -14,7 +14,8 @@ if ! command -v node >/dev/null 2>&1; then
     exit
 fi
 
-out="$(HOOKS_DIR="$HOOKS_DIR" node "$(dirname "${BASH_SOURCE[0]}")/parity/run.mjs" compare 2>&1)"
+# goldens record file modes, recorded under umask 0002: pin it so CI runners (umask 022) compare the same
+out="$(umask 0002; HOOKS_DIR="$HOOKS_DIR" node "$(dirname "${BASH_SOURCE[0]}")/parity/run.mjs" compare 2>&1)"
 rc=$?
 printf '%s\n' "$out" | grep -E '^(#|  FAIL|         |passed=)'
 summary="$(printf '%s\n' "$out" | grep -E '^passed=[0-9]+ failed=[0-9]+$' | tail -1)"
