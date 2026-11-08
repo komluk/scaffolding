@@ -46,19 +46,21 @@ memory is yours only; anyone without it gets 401.
    mkdir -p "$HOME/.claude/hooks"
    cp "${CLAUDE_PLUGIN_ROOT}/hooks/refresh-mcp-token.sh" "$HOME/.claude/hooks/refresh-mcp-token.sh"
    chmod 700 "$HOME/.claude/hooks/refresh-mcp-token.sh"
-   python3 - "$HOME/.claude/settings.json" <<'PY'
-   import json, os, sys
-   p = sys.argv[1]
-   d = json.load(open(p)) if os.path.exists(p) else {}
-   cmd = "$HOME/.claude/hooks/refresh-mcp-token.sh"
-   ss = d.setdefault("hooks", {}).setdefault("SessionStart", [])
-   if not any(h.get("command") == cmd for e in ss for h in e.get("hooks", [])):
-       ss.append({"matcher": "", "hooks": [{"type": "command", "command": cmd, "timeout": 30}]})
-       json.dump(d, open(p, "w"), indent=2); open(p, "a").write("\n")
-       print("auto-refresh hook installed")
-   else:
-       print("auto-refresh hook already present")
-   PY
+   node - "$HOME/.claude/settings.json" <<'JS'
+   const fs = require("fs");
+   const p = process.argv[2];
+   const d = fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, "utf8")) : {};
+   const cmd = "$HOME/.claude/hooks/refresh-mcp-token.sh";
+   d.hooks ??= {};
+   const ss = (d.hooks.SessionStart ??= []);
+   if (!ss.some((e) => (e.hooks ?? []).some((h) => h.command === cmd))) {
+     ss.push({ matcher: "", hooks: [{ type: "command", command: cmd, timeout: 30 }] });
+     fs.writeFileSync(p, JSON.stringify(d, null, 2) + "\n");
+     console.log("auto-refresh hook installed");
+   } else {
+     console.log("auto-refresh hook already present");
+   }
+   JS
    ```
    It re-pulls `MEMORY_MCP_TOKEN` from Vault (`kv/memory/mcp`) each session and keeps
    `settings.json` topped up. Requires the `vault` CLI + a valid login; a clean no-op

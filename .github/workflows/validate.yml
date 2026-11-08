@@ -27,79 +27,23 @@ jobs:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - uses: actions/checkout@v5
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-node@v4
         with:
-          python-version: '3.x'
-      - name: Install PyYAML
-        run: python -m pip install --quiet pyyaml
-      - name: Validate frontmatter in agents, skills, commands
-        run: |
-          python3 <<'PY'
-          import os
-          import sys
-          import yaml
+          node-version: '24'
+      - name: Install the yaml parser (CI only, pinned, outside the repo)
+        run: npm install --silent --no-audit --no-fund --prefix "$RUNNER_TEMP/yaml" yaml@2.9.1
+      - name: Validate frontmatter in agents, skills, commands and workflows/*.yaml
+        run: node tests/scripts/lint-yaml.mjs "$RUNNER_TEMP/yaml"
 
-          targets = []
-          for d, subdirs, files in os.walk('agents'):
-              for f in files:
-                  if f.endswith('.md'):
-                      targets.append(os.path.join(d, f))
-          for d, subdirs, files in os.walk('skills'):
-              for f in files:
-                  if f == 'SKILL.md':
-                      targets.append(os.path.join(d, f))
-          for d, subdirs, files in os.walk('commands'):
-              for f in files:
-                  if f.endswith('.md'):
-                      targets.append(os.path.join(d, f))
-
-          failed = []
-          for path in sorted(targets):
-              with open(path, 'r', encoding='utf-8') as fh:
-                  text = fh.read()
-              if not text.startswith('---'):
-                  continue
-              end = text.find('\n---', 4)
-              if end == -1:
-                  failed.append(f'{path}: unterminated frontmatter')
-                  continue
-              fm = text[4:end]
-              try:
-                  yaml.safe_load(fm)
-              except yaml.YAMLError as e:
-                  failed.append(f'{path}: {e}')
-
-          if failed:
-              print('frontmatter errors:')
-              for line in failed:
-                  print('  ' + line)
-              sys.exit(1)
-          print(f'checked {len(targets)} files, all frontmatter OK')
-          PY
-      - name: Validate workflows/*.yaml
-        run: |
-          python3 <<'PY'
-          import glob
-          import sys
-          import yaml
-
-          failed = []
-          targets = sorted(glob.glob('workflows/*.yaml'))
-          for path in targets:
-              with open(path, 'r', encoding='utf-8') as fh:
-                  try:
-                      yaml.safe_load(fh)
-                  except yaml.YAMLError as e:
-                      failed.append(f'{path}: {e}')
-
-          if failed:
-              print('workflow YAML errors:')
-              for line in failed:
-                  print('  ' + line)
-              sys.exit(1)
-          print(f'checked {len(targets)} workflow file(s), all valid YAML')
-          PY
+  no-python:
+    name: no python in the plugin
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - uses: actions/checkout@v5
+      - name: no tracked .py files and no python invocations (allowlist: .github/no-python-allowlist)
+        run: bash tests/scripts/no-python-guard.sh
 
   lint-bash:
     name: lint bash scripts
@@ -127,7 +71,7 @@ jobs:
           node-version: '24'
       - name: node --check hooks/lib/*.mjs
         run: |
-          for f in hooks/lib/*.mjs hooks/lib/action-log/*.mjs tests/hooks/action-log-fixtures.mjs tests/hooks/parity/run.mjs tests/hooks/parity/fuzz-*.mjs tests/hooks/parity/cases/*.mjs; do
+          for f in hooks/lib/*.mjs hooks/lib/action-log/*.mjs copilot/*.mjs tests/hooks/*.mjs tests/hooks/fixtures/*.mjs tests/scripts/*.mjs tests/hooks/parity/run.mjs tests/hooks/parity/fuzz-*.mjs tests/hooks/parity/cases/*.mjs; do
             node --check "$f"
           done
       - name: bash tests/run-all.sh

@@ -11,12 +11,16 @@
 // A spec with helper:true runs helpers/<hook> instead of a plugin hook: tiny wrappers around the json
 // one-liners the hooks used (quote, emit-block); they run the python line against a python hooks dir
 // (record) and hook-io against the ported one (compare).
+// A case with `server: { config: {status,headers,body|body_b64,delay_ms} }` gets a throw-away HTTP server on a free
+// 127.0.0.1 port (tests/hooks/fixtures/http-srv.mjs, raw mode); `server: { redirect: true }` starts redirect-srv.mjs.
+// @PORT@ in stdin/env/setup/after is replaced by that port, the port is masked in the output, and every request the server
+// saw (method, path, authorization / content-type / accept headers, body) is appended to the case `state` after `== requests`.
 // Each case runs in a fresh sandbox (cwd) with a fixed environment and a PATH made only of symlinks to
 // the tools in TOOLS (+ node, + python3 when recording). Placeholders in stdin/env/setup/after:
 // @SANDBOX@ @TASK@. `after` stdout is captured as `state` (resulting files). Output is normalised
 // (sandbox path, task id, dates/timestamps, git hashes, path-hash project ids, bash NUL warning); a case with
 // keepDates:true keeps dates and timestamps verbatim (the action log renders them and they are what is compared).
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -65,6 +69,31 @@ function findTool(name) {
   return null;
 }
 
+function sleepMs(ms) {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+
+/** start a fixture server in the sandbox; returns { child, port, log } once its port file shows up */
+function startServer(sandbox, server) {
+  const portFile = path.join(sandbox, 'srv.port');
+  const log = path.join(sandbox, 'srv.log');
+  const fx = path.join(here, '..', 'fixtures');
+  let args;
+  if (server.redirect) args = [path.join(fx, 'redirect-srv.mjs'), '--port-file', portFile, '--catcher-log', log];
+  else {
+    const cfg = path.join(sandbox, 'srv.json');
+    fs.writeFileSync(cfg, JSON.stringify(server.config ?? {}));
+    args = [path.join(fx, 'http-srv.mjs'), '--port-file', portFile, '--config', cfg, '--log', log];
+  }
+  const child = spawn(process.execPath, args, { stdio: 'ignore' });
+  for (let i = 0; i < 200 && !fs.existsSync(portFile); i++) sleepMs(25);
+  if (!fs.existsSync(portFile)) {
+    child.kill();
+    throw new Error('fixture server did not start');
+  }
+  return { child, port: fs.readFileSync(portFile, 'utf8'), log };
+}
+
 function normalise(buf, ctx) {
   let s;
   try {
@@ -76,6 +105,7 @@ function normalise(buf, ctx) {
   s = s.replace(/^.*warning: command substitution: ignored null byte in input\n/gm, ''); // bash text carries script path + line
   // project ids fall back to sha256(<abs project dir>)[:16]: mask only when it equals that exact hash
   for (const [label, dir] of ctx.dirs) s = s.replaceAll(`scaffold:${h16(dir)}`, `scaffold:@HASH:${label}@`);
+  if (ctx.port) s = s.replaceAll(`:${ctx.port}`, ':@PORT@').replaceAll(ctx.port, '@PORT@');
   s = s.replaceAll(ctx.hooksDir, '@HOOKS@').replaceAll(ctx.sandbox, '@SANDBOX@').replaceAll(ctx.task, '@TASK@');
   if (!ctx.keepDates) {
     s = s.replace(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/g, '@TS@');
@@ -88,7 +118,8 @@ function normalise(buf, ctx) {
 function runCase(hookFile, c, idx, helper) {
   const sandbox = fs.realpathSync(fs.mkdtempSync(path.join(process.env.TMPDIR || '/tmp', 'parity-')));
   const task = `parity-${process.pid}-${idx}`;
-  const sub = (s) => s.replaceAll('@SANDBOX@', sandbox).replaceAll('@TASK@', task);
+  let srv = null;
+  const sub = (s) => s.replaceAll('@SANDBOX@', sandbox).replaceAll('@TASK@', task).replaceAll('@PORT@', srv?.port ?? '0');
   const storeFile = `/tmp/scaffolding-mtime-${task}.json`;
   try {
     fs.mkdirSync(path.join(sandbox, 'home'));
@@ -100,6 +131,7 @@ function runCase(hookFile, c, idx, helper) {
     }
     fs.symlinkSync(process.execPath, path.join(bin, 'node'));
     fs.writeFileSync(path.join(bin, 'vault'), VAULT_STUB, { mode: 0o755 });
+    if (c.server) srv = startServer(sandbox, c.server);
     const base = { PATH: bin, HOME: `${sandbox}/home`, LC_ALL: 'C.UTF-8', TZ: 'UTC', ...GIT_ENV };
     const env = { ...base };
     for (const [k, v] of Object.entries(c.env ?? {})) {
@@ -135,8 +167,13 @@ function runCase(hookFile, c, idx, helper) {
     });
     const dirs = [['cwd', sandbox]];
     if (env.CLAUDE_PROJECT_DIR) dirs.unshift(['projdir', env.CLAUDE_PROJECT_DIR]);
-    const ctx = { sandbox, task, dirs, hooksDir, keepDates: c.keepDates === true };
-    const state = c.after?.length ? sh(c.after).stdout : Buffer.alloc(0);
+    const ctx = { sandbox, task, dirs, hooksDir, keepDates: c.keepDates === true, port: srv?.port };
+    let state = c.after?.length ? sh(c.after).stdout : Buffer.alloc(0);
+    if (srv) {
+      sleepMs(50); // the server appends to its log before it answers; this only covers a slow disk
+      const seen = fs.existsSync(srv.log) ? fs.readFileSync(srv.log) : Buffer.alloc(0);
+      state = Buffer.concat([state, Buffer.from('== requests\n'), seen]);
+    }
     return {
       code: r.status ?? `signal:${r.signal}`,
       stdout: normalise(r.stdout, ctx),
@@ -144,6 +181,7 @@ function runCase(hookFile, c, idx, helper) {
       state: normalise(state, ctx),
     };
   } finally {
+    srv?.child.kill();
     spawnSync('chmod', ['-R', 'u+rwX', sandbox]); // cases may leave read-only dirs behind
     fs.rmSync(sandbox, { recursive: true, force: true });
     fs.rmSync(storeFile, { force: true });

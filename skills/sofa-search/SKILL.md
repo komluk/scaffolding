@@ -73,26 +73,24 @@ read_sofa() {
   for f in "./.sofa/credentials.json" "$HOME/.sofa/credentials.json"; do
     [ -f "$f" ] || continue
     # Pick entry by SOFA_AGENT_NAME if set, else the first entry.
-    eval "$(SOFA_AGENT_NAME="${SOFA_AGENT_NAME:-}" python3 - "$f" <<'PY'
-import json, os, sys, shlex
-try:
-    d = json.load(open(sys.argv[1]))
-except Exception:
-    sys.exit(0)
-want = os.environ.get("SOFA_AGENT_NAME") or ""
-entry = None
-for v in d.values():
-    if want and v.get("agent_name") == want:
-        entry = v; break
-if entry is None and d:
-    entry = next(iter(d.values()))
-if entry:
-    key = entry.get("api_key", "")
-    base = entry.get("base_url") or "https://agents.stackoverflow.com"
-    print("SOFA_KEY=%s" % shlex.quote(key))
-    print("SOFA_BASE=%s" % shlex.quote(base))
-PY
-)"
+    SOFA_KEY=""
+    { IFS= read -r -d '' SOFA_KEY; IFS= read -r -d '' SOFA_BASE; } < <(
+      SOFA_AGENT_NAME="${SOFA_AGENT_NAME:-}" node - "$f" 2>/dev/null <<'JS'
+const fs = require("fs");
+let d;
+try { d = JSON.parse(fs.readFileSync(process.argv[2], "utf8")); } catch { process.exit(0); }
+const isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
+if (!isObj(d)) process.exit(0);
+const want = process.env.SOFA_AGENT_NAME || "";
+const vals = Object.values(d);
+let entry = vals.find((v) => want && isObj(v) && v.agent_name === want);
+if (entry === undefined) entry = vals[0];
+if (!isObj(entry)) process.exit(0);
+const str = (v, dflt) => (typeof v === "string" && v ? v : dflt);
+// NUL-delimited, so no shell ever parses a value (no eval).
+process.stdout.write([str(entry.api_key, ""), str(entry.base_url, "https://agents.stackoverflow.com")].map((s) => s.replaceAll("\0", "")).join("\0") + "\0");
+JS
+    )
     [ -n "${SOFA_KEY:-}" ] && return 0
   done
   return 1   # unconfigured ⇒ caller must no-op
@@ -129,17 +127,7 @@ sofa_session() {
   # Reuse a cached, unexpired session if present.
   if [ -n "${SOFA_SID:-}" ]; then
     if [ -z "${SOFA_SID_EXP:-}" ]; then return 0; fi
-    if python3 - "$SOFA_SID_EXP" <<'PY'
-import sys, datetime
-exp = sys.argv[1]
-try:
-    e = datetime.datetime.fromisoformat(exp.replace("Z", "+00:00"))
-    now = datetime.datetime.now(datetime.timezone.utc)
-    sys.exit(0 if e > now else 1)
-except Exception:
-    sys.exit(1)
-PY
-    then return 0; fi
+    if node -e 'process.exit(Date.parse(process.argv[1]) > Date.now() ? 0 : 1)' "$SOFA_SID_EXP" 2>/dev/null; then return 0; fi
   fi
   resp=$(curl -s -X POST \
     -H "Authorization: Bearer $SOFA_KEY" \
@@ -149,16 +137,13 @@ PY
     -H "X-Sofa-Model-Version: unknown" \
     -H "content-type: application/json" \
     -d '{}' "$SOFA_BASE/api/sessions") || return 1
-  eval "$(printf '%s' "$resp" | python3 -c "import sys, json, shlex
-try:
-    d = json.load(sys.stdin)
-except Exception:
-    sys.exit(0)
-sid = d.get('session_id', '')
-exp = d.get('expires_at', '')
-if sid:
-    print('SOFA_SID=%s' % shlex.quote(sid))
-    print('SOFA_SID_EXP=%s' % shlex.quote(exp or ''))" 2>/dev/null)"
+  SOFA_SID=""
+  { IFS= read -r -d '' SOFA_SID; IFS= read -r -d '' SOFA_SID_EXP; } < <(printf '%s' "$resp" | node -e '
+    let d; try { d = JSON.parse(require("fs").readFileSync(0, "utf8")); } catch { process.exit(0); }
+    const sid = d !== null && typeof d === "object" ? d.session_id : "";
+    if (typeof sid !== "string" || !sid) process.exit(0);
+    const exp = typeof d.expires_at === "string" ? d.expires_at : "";
+    process.stdout.write([sid, exp].map((s) => s.replaceAll("\0", "")).join("\0") + "\0");' 2>/dev/null)
   [ -n "${SOFA_SID:-}" ] && return 0 || return 1
 }
 ```

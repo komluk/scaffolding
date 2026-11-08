@@ -153,7 +153,7 @@ or input over 256 KB. The hook also denies if `node` exits non-zero after the fa
 
 **Accepted gaps.** These are pattern guards, not a sandbox. The following are not seen:
 - Variable indirection (`X=rm; $X -rf /`, `cmd=$(printf rm)`), aliases and shell functions defined earlier in the session.
-- Scripts or Makefiles run from files, and interpreters (`python -c`, `node -e`, `perl -e` without `-i`).
+- Scripts or Makefiles run from files, and interpreters running inline code (`node -e`, `perl -e` without `-i`, python's `-c`).
 - Tools that write by other means: `rsync --delete`, `git clean -fdx`, `tar -C / x`, `cp` over `.env` through a symlink, editors.
 - Paths that need the file system or symlinks to resolve, other than `cwd` and the repo's `.git`.
 - `cd /; rm -rf *` inside one command: `cwd` is the hook's cwd, not the effect of `cd`.
@@ -231,7 +231,7 @@ bare acknowledgements (`ok`, `yes`, `thanks`, `dalej`, etc.) are not sent.
 
 **Fail-silent:** any error, timeout, skip or zero hits prints nothing and exits 0.
 
-**Requirements:** `python3` and `timeout`. On macOS, install coreutils (`brew install coreutils`)
+**Requirements:** `node` >= 22 (logic: `hooks/lib/memory-recall.mjs`; without node the hook does nothing) and `timeout`. On macOS, install coreutils (`brew install coreutils`)
 to get `timeout`; without it the hook silently does nothing.
 
 **Security notes:**

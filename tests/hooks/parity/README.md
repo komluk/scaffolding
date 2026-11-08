@@ -14,6 +14,15 @@ Re-record only for an intended, reviewed behaviour change, from a checkout whose
 Notes: sandbox paths, task ids, dates/timestamps, git hashes and path-derived project ids are normalised.
 The mtime cases avoid sub-second boundaries (GNU stat floors, uutils stat rounds).
 
+## Cases with a server, and the Copilot mergers
+
+`memory-recall.sh` cases carry `server: { config: {status, headers, body|body_b64, delay_ms, drip_parts, drip_ms} }`: the runner starts
+`tests/hooks/fixtures/http-srv.mjs` on a free port (`@PORT@`), and the requests it saw (method, path, authorization / content-type / accept, body bytes)
+are appended to the case `state`, so "nothing was sent" and "exactly this was sent" are both compared. `copilot-merge.sh` (helper `helpers/copilot-merge.sh`)
+runs `copilot/scaffolding-{hook,skills}-merge` and records the settings file left behind. Recorded from the python scripts of v2.38.0:
+`node run.mjs record --hooks <v2.38.0>/hooks --only memory-recall.sh` (the helper finds `../copilot` next to that hooks dir).
+`fuzz-memory-recall.mjs` is the differential fuzz for the hook (`--old <v2.38.0>/hooks`, at most 2000 inputs).
+
 ## Helper specs (`helpers/`, `cases/crlf.mjs`)
 
 `quote.sh`, `emit-block.sh`, `emit-block-guard.sh` wrap the one-line python snippets the hooks used to carry

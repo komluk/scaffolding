@@ -19,7 +19,7 @@
 # repo (exit 2 is Claude Code's own native block signal) — one contract,
 # correct under both runtimes, no runtime-detection branch needed.
 #
-# Fail-open on ANY infrastructure error (missing jq, unresolvable plugin
+# Fail-open on ANY infrastructure error (missing node, unresolvable plugin
 # root, empty/unparseable stdin): exit 0. A broken hook must never make
 # committing impossible. Fail-closed ONLY on a real non-zero validator exit.
 
@@ -35,22 +35,42 @@ fail_open() {
 block() {
   local reason="$1"
   echo "BLOCKED: pre-commit-validation-copilot: $reason" >&2
-  printf '{"permissionDecision":"block","permissionDecisionReason":%s}\n' \
-    "$(printf '%s' "$reason" | jq -Rs . 2>/dev/null || printf '"%s"' "$reason")"
+  printf '{"permissionDecision":"block","permissionDecisionReason":%s}\n' "$(printf '%s' "$reason" | node -e 'process.stdout.write(JSON.stringify(require("fs").readFileSync(0, "utf8")))' 2>/dev/null || printf '"%s"' "$reason")"
   exit 2
 }
 
-command -v jq >/dev/null 2>&1 || fail_open "jq not found on PATH"
+command -v node >/dev/null 2>&1 || fail_open "node not found on PATH"
 
 payload="$(cat)"
 [ -n "$payload" ] || fail_open "empty stdin payload"
-echo "$payload" | jq -e . >/dev/null 2>&1 || fail_open "unparseable JSON payload"
 
-tool=$(jq -r '.toolName // .tool_name // empty' <<<"$payload" 2>/dev/null)
-cmd=$(jq -r '[.toolInput.command, .tool_input.command, .toolInput.cmd,
-              (.toolInput|tostring)]
-             | map(select(. != null and . != "" and . != "null")) | .[0] // ""' \
-      <<<"$payload" 2>/dev/null)
+# Payload fields, one per line: toolName, command, cwd. Backslashes and newlines inside a value are written as \\ and \n so
+# every field stays on one line (decoded again with printf %b below). Exits 3 when the payload is not JSON: fail open.
+# `cmd` is the first non-empty of toolInput.command, tool_input.command, toolInput.cmd, then the JSON text of toolInput
+# (a command in any other shape still gets scanned for `git commit`).
+fields=$(printf '%s' "$payload" | node -e '
+  // Same answers as the jq program this replaced: `jq -e .` rejects null / false; `.toolInput.command` is an error (so an
+  // empty command, which allows) when toolInput / tool_input is a string, number, boolean or array; `// empty` skips null and false.
+  let p;
+  try { p = JSON.parse(require("fs").readFileSync(0, "utf8")); } catch { process.exit(3); }
+  if (p === null || p === false) process.exit(3);
+  const isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
+  const root = isObj(p) ? p : {};
+  const raw = (v) => (v === undefined || v === null || v === false ? "" : typeof v === "string" ? v : JSON.stringify(v));
+  const str = (v) => (v === undefined || v === null || v === "" ? "" : typeof v === "string" ? v : JSON.stringify(v));
+  const ti = root.toolInput;
+  const ti2 = root.tool_input;
+  const unindexable = (v) => v !== undefined && v !== null && !isObj(v);
+  const cands = [isObj(ti) ? ti.command : undefined, isObj(ti2) ? ti2.command : undefined, isObj(ti) ? ti.cmd : undefined, ti === undefined ? undefined : typeof ti === "string" ? ti : JSON.stringify(ti)];
+  const cmd = unindexable(ti) || unindexable(ti2) ? "" : cands.map(str).find((v) => v !== "" && v !== "null") ?? "";
+  const tool = raw([root.toolName, root.tool_name].find((v) => v !== undefined && v !== null && v !== false));
+  process.stdout.write([tool, cmd, raw(root.cwd)].map((v) => String(v).replace(/\\/g, "\\\\").replace(/\n/g, "\\n")).join("\n"));
+' 2>/dev/null) || fail_open "unparseable JSON payload"
+
+unescape() { printf '%b' "$(printf '%s\n' "$fields" | sed -n "${1}p")"; }
+tool=$(unescape 1)
+cmd=$(unescape 2)
+payload_cwd=$(unescape 3)
 
 # Self-filter 1: only shell-like tools are of interest. matcher: "Bash" in
 # the registration already narrows this, but the script self-filters
@@ -114,7 +134,7 @@ strip_dir() { # strip surrounding quotes, expand leading ~
   printf '%s' "$d"
 }
 
-base=$(jq -r '.cwd // empty' <<<"$payload" 2>/dev/null)
+base="$payload_cwd"
 [ -n "$base" ] || base="$PWD"
 target="$base"
 re_val='("[^"]*"|'"'"'[^'"'"']*'"'"'|[^[:space:]]+)'

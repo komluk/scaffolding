@@ -1,0 +1,2 @@
+# Documented exceptions to tests/scripts/no-python-guard.sh: `path-prefix:reason`. A prefix that matches nothing fails the guard.
+tests/hooks/parity/:recording the goldens and the differential fuzz need the ORIGINAL python implementation (record-time only; the compare run and every test use a PATH without python3)

@@ -96,11 +96,20 @@ if [ -n "$PLUGIN_ROOT" ]; then
   fi
 fi
 
+# Check 1c — node >= 22 (every hook runs on it; without node the hooks do nothing and say so on stderr)
+NODE_MAJOR=$(node -p 'process.versions.node.split(".")[0]' 2>/dev/null || true)
+if [ -n "$NODE_MAJOR" ] && [ "$NODE_MAJOR" -ge 22 ] 2>/dev/null; then
+  pass "node $(node --version) (>= 22) found for the hooks"
+else
+  BLOCKING=$((BLOCKING+1))
+  fail "node >= 22 not found ($([ -n "$NODE_MAJOR" ] && echo "found major $NODE_MAJOR" || echo "not on PATH")) — hooks (block-*, refactor-guard, action-log, memory-recall, staleness) are not enforced" "install Node.js 22 or newer (https://nodejs.org) and make sure it is on PATH for Claude Code"
+fi
+
 # Check 4 — plugin.json valid + hooks registered
 if [ -n "$PLUGIN_ROOT" ]; then
   PJ="$PLUGIN_ROOT/.claude-plugin/plugin.json"
   [ -f "$PJ" ] || PJ="$PLUGIN_ROOT/plugin.json"
-  if [ -f "$PJ" ] && python3 -c "import json,sys; d=json.load(open(sys.argv[1])); assert d.get('hooks')" "$PJ" 2>/dev/null; then
+  if [ -f "$PJ" ] && node -e 'const d = JSON.parse(require("fs").readFileSync(process.argv[1], "utf8")); if (!d.hooks || !Object.keys(d.hooks).length) process.exit(1)' "$PJ" 2>/dev/null; then
     pass "plugin.json valid and hooks registered"
   else
     BLOCKING=$((BLOCKING+1))
@@ -113,7 +122,7 @@ echo "=== RECOMMENDED (protocol / hooks / memory tiers) ==="
 
 # Check 3a — settings.json present in plugin root
 if [ -n "$PLUGIN_ROOT" ] && [ -f "$PLUGIN_ROOT/settings.json" ] \
-   && python3 -c "import json,sys; json.load(open(sys.argv[1]))" "$PLUGIN_ROOT/settings.json" 2>/dev/null; then
+   && node -e 'JSON.parse(require("fs").readFileSync(process.argv[1], "utf8"))' "$PLUGIN_ROOT/settings.json" 2>/dev/null; then
   pass "settings.json present and valid in plugin root"
 else
   RECOMMENDED=$((RECOMMENDED+1))
@@ -154,38 +163,36 @@ fi
 # Check 5c — skills: references resolve + every skill has a description
 # (orchestration contract, Item 4). Validates the plugin install, not the repo.
 if [ -n "$PLUGIN_ROOT" ] && [ -d "$PLUGIN_ROOT/agents" ] && [ -d "$PLUGIN_ROOT/skills" ]; then
-  SKILL_ISSUES=$(python3 - "$PLUGIN_ROOT" <<'PY' 2>/dev/null || echo "ERR"
-import os, re, sys
-root = sys.argv[1]
-problems = []
-skills_dir = os.path.join(root, "skills")
-# Every skill must have a non-empty description in its frontmatter.
-for name in sorted(os.listdir(skills_dir)):
-    sk = os.path.join(skills_dir, name, "SKILL.md")
-    if not os.path.isfile(sk):
-        continue
-    head = open(sk, encoding="utf-8", errors="ignore").read()[:4000]
-    if not re.search(r'(?m)^description:\s*\S', head):
-        problems.append(f"skill '{name}' has no description:")
-# Every skills: reference in an agent must exist on disk.
-agents_dir = os.path.join(root, "agents")
-for fn in sorted(os.listdir(agents_dir)):
-    if not fn.endswith(".md"):
-        continue
-    txt = open(os.path.join(agents_dir, fn), encoding="utf-8", errors="ignore").read()
-    m = re.search(r'(?ms)^skills:\s*\n((?:\s*-\s*\S+\s*\n)+)', txt)
-    if not m:
-        continue
-    for ref in re.findall(r'-\s*([A-Za-z0-9_-]+)', m.group(1)):
-        if not os.path.isfile(os.path.join(skills_dir, ref, "SKILL.md")):
-            problems.append(f"agent '{fn}' references missing skill '{ref}'")
-print("\n".join(problems))
-PY
+  SKILL_ISSUES=$(node - "$PLUGIN_ROOT" <<'JS' 2>/dev/null || echo "ERR"
+const fs = require("fs");
+const path = require("path");
+const root = process.argv[2];
+const problems = [];
+const skillsDir = path.join(root, "skills");
+const head = (f, n) => fs.readFileSync(f).toString("utf8").slice(0, n);
+// Every skill must have a non-empty description in its frontmatter.
+for (const name of fs.readdirSync(skillsDir).sort()) {
+  const sk = path.join(skillsDir, name, "SKILL.md");
+  if (!fs.existsSync(sk) || !fs.statSync(sk).isFile()) continue;
+  if (!/^description:[ \t\n\r]*\S/m.test(head(sk, 4000))) problems.push(`skill '${name}' has no description:`);
+}
+// Every skills: reference in an agent must exist on disk.
+const agentsDir = path.join(root, "agents");
+for (const fn of fs.readdirSync(agentsDir).sort()) {
+  if (!fn.endsWith(".md")) continue;
+  const m = /^skills:[ \t]*\n((?:[ \t]*-[ \t]*\S+[ \t]*\n)+)/m.exec(fs.readFileSync(path.join(agentsDir, fn), "utf8"));
+  if (!m) continue;
+  for (const [, ref] of m[1].matchAll(/-[ \t]*([A-Za-z0-9_-]+)/g)) {
+    if (!fs.existsSync(path.join(skillsDir, ref, "SKILL.md"))) problems.push(`agent '${fn}' references missing skill '${ref}'`);
+  }
+}
+console.log(problems.join("\n"));
+JS
 )
   if [ -z "$SKILL_ISSUES" ]; then
     pass "All agent skills: references resolve and every skill has a description"
   elif [ "$SKILL_ISSUES" = "ERR" ]; then
-    : # python failed — skip silently, this is a soft check
+    : # node failed — skip silently, this is a soft check
   else
     RECOMMENDED=$((RECOMMENDED+1))
     fail "Orchestration contract issues: $(echo "$SKILL_ISSUES" | tr '\n' ';')" "fix the named skill description(s) / agent skills: reference(s) in the plugin source"
@@ -292,5 +299,5 @@ install). If everything passes, state: `All checks pass — install is healthy.`
   by `/memory enable`; it is intentionally **not** registered in `plugin.json`, so
   the hook-registration check does not expect it.
 - This command ships no separate script and adds no hook — it is fully
-  self-contained and dependency-free (bash + `python3` for JSON parsing, both
-  already required by `/init-scaffolding` and `/memory`).
+  self-contained and dependency-free (bash + `node` >= 22 for JSON parsing, both
+  needed by the plugin's hooks).

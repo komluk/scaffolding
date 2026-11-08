@@ -9,7 +9,7 @@ Spec-driven development protocol for coordinating multi-agent workflows.
 
 ## UUID Enforcement
 
-**CRITICAL**: The `conversation_id` MUST always be a UUID (format: `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`). NEVER use descriptive names, slugs, or human-readable strings. If no UUID is available, generate one with `uuidgen` or `python3 -c "import uuid; print(uuid.uuid4())"`. Self-check: does the conversation_id match the pattern `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`? If not, STOP and use a real UUID.
+**CRITICAL**: The `conversation_id` MUST always be a UUID (format: `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`). NEVER use descriptive names, slugs, or human-readable strings. If no UUID is available, generate one with `uuidgen` or `node -p 'require("crypto").randomUUID()'`. Self-check: does the conversation_id match the pattern `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`? If not, STOP and use a real UUID.
 
 ## Directory Structure
 
