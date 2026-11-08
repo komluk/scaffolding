@@ -42,7 +42,7 @@ jobs:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - uses: actions/checkout@v5
-      - name: no tracked .py files and no python invocations (allowlist: .github/no-python-allowlist)
+      - name: "no tracked .py files and no python invocations (allowlist: .github/no-python-allowlist)"
         run: bash tests/scripts/no-python-guard.sh
 
   lint-bash:
