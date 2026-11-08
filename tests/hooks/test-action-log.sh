@@ -3,12 +3,13 @@
 set +e
 . "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LIB="$HOOKS_DIR/lib/action_log.py"
+LIB="$HOOKS_DIR/lib/action-log.mjs"
 HOOK="$HOOKS_DIR/action-log.sh"
-AL() { python3 -I "$LIB" "$@"; }
+AL() { node "$LIB" "$@"; }
 
+command -v node >/dev/null 2>&1 || { bad "node is required (>=22) for the action log"; finish; exit; }
 T=$(mktmp); trap 'rm -rf "$T"' EXIT
-python3 -I "$HERE/action_log_fixtures.py" "$T/fx" || { echo "fixture generation failed"; exit 1; }
+node "$HERE/action-log-fixtures.mjs" "$T/fx" || { echo "fixture generation failed"; exit 1; }
 SID=11111111-2222-3333-4444-555555555555
 CONV=22222222-3333-4444-5555-666666666666
 
@@ -43,11 +44,11 @@ check "subagent edit carries agent+parent" bash -c "grep '/work/proj/b.py\|b.py'
 check "status error from success=false" bash -c "grep 'tofu apply' '$A' | grep -q '\"status\":\"error\"'"
 check "repeated failure in timeline" grep -q 'tofu apply.*×2' "$P/timeline.md"
 # metadata-only: only the schema keys exist
-BAD=$(python3 -I - "$A" <<'PY'
-import json, sys
-ok = {"v","ts","src","conv","run","repo","agent","parent","seq","id","tool","kind","target","status","end","calls","errors","truncated"}
-print(sum(1 for l in open(sys.argv[1]) for k in json.loads(l) if k not in ok))
-PY
+BAD=$(node - "$A" <<'JS'
+const ok = new Set(["v","ts","src","conv","run","repo","agent","parent","seq","id","tool","kind","target","status","end","calls","errors","truncated"]);
+const lines = require("node:fs").readFileSync(process.argv[2], "utf8").split("\n").filter(Boolean);
+console.log(lines.reduce((n, l) => n + Object.keys(JSON.parse(l)).filter((k) => !ok.has(k)).length, 0));
+JS
 )
 check "no non-schema (raw) fields" [ "$BAD" = 0 ]
 check "timeline <= 200 lines" [ "$(wc -l < "$P/timeline.md")" -le 200 ]
@@ -67,13 +68,13 @@ check "malformed: no tool records" bash -c "! grep -q '\"tool\":' '$M/actions/r.
 
 echo "-- caps"
 CAP="$T/share/projects/proj/conversations/$CONV-d"; mkdir -p "$CAP/tasks/r"
-python3 -I - "$CAP/tasks/r/output.jsonl" <<'PY'
-import json, sys
-with open(sys.argv[1], "w") as fh:
-    for i in range(5200):
-        fh.write(json.dumps({"type":"step","data":{"type":"tool_call","data":{"tool":"Read","input":{"file_path":"/f/%d"%i},"id":"r%d"%i}},"ts":1792489380.0})+"\n")
-    fh.write(json.dumps({"type":"step","data":{"type":"tool_call","data":{"tool":"Bash","input":{"command":"echo keep"},"id":"b1"}},"ts":1792489381.0})+"\n")
-PY
+node - "$CAP/tasks/r/output.jsonl" <<'JS'
+const out = [];
+const frame = (tool, input, id, ts) => JSON.stringify({ type: "step", data: { type: "tool_call", data: { tool, input, id } }, ts }) + "\n";
+for (let i = 0; i < 5200; i++) out.push(frame("Read", { file_path: "/f/" + i }, "r" + i, 1792489380.0));
+out.push(frame("Bash", { command: "echo keep" }, "b1", 1792489381.0));
+require("node:fs").writeFileSync(process.argv[2], out.join(""));
+JS
 AL platform --task-dir "$CAP/tasks/r" --conv-dir "$CAP"
 C=$(grep -c '"tool":' "$CAP/actions/r.jsonl")
 check "over 5000: reads dropped, exec kept ($C records)" bash -c "[ $C -le 5001 ] && grep -q 'echo keep' '$CAP/actions/r.jsonl' && grep -q '\"truncated\":2' '$CAP/actions/r.jsonl'"
@@ -123,38 +124,41 @@ printf 'garbage' | ACTION_LOG_ENABLED=1 CLAUDE_PROJECT_DIR="$R" bash "$HOOK"; ch
 
 echo "-- perf: Stop on ~45 MB transcript"
 BR="$T/bigrepo"; mkdir -p "$BR/.scaffolding/conversations"; cp "$T/fx/local/big.jsonl" "$T/cc/big.jsonl"
-t0=$(date +%s.%N)
+t0=$(date +%s%N)
 printf '{"session_id":"%s","transcript_path":"%s/cc/big.jsonl","hook_event_name":"Stop"}' "$SID" "$T" | ACTION_LOG_ENABLED=1 CLAUDE_PROJECT_DIR="$BR" bash "$HOOK"
-el=$(python3 -c "print($(date +%s.%N)-$t0)")
-check "big transcript < 5s (${el}s)" python3 -c "import sys; sys.exit(0 if $el < 5 else 1)"
+el_ms=$(( ($(date +%s%N) - t0) / 1000000 ))
+check "big transcript < 5s (${el_ms} ms)" test "$el_ms" -lt 5000
 
 echo "-- redact(): format-detectable secrets masked in every context"
 # Secrets 3 (url password), 8 (heredoc body) and 9 (Task prompt) have no detectable format: they are
 # excluded STRUCTURALLY (userinfo rule / heredoc cut / prompt never read) and covered by the leak tests above.
-RD=$(python3 -I - "$HOOKS_DIR/lib" "$T/fx/secrets.txt" <<'PY'
-import sys
-sys.path.insert(0, sys.argv[1])
-from action_log_lib.redact import redact
-sec = [s for s in open(sys.argv[2]).read().split("\n") if s]
-bad = 0
-for i, s in enumerate(sec, 1):
-    if i in (3, 8, 9):
-        continue
-    for ctx in ("%s", "run --x %s tail", "k=%s", "Authorization: Bearer %s", "https://u:%s@h/p"):
-        if s in redact(ctx % s):
-            bad += 1
-            sys.stderr.write("    UNMASKED(%r): %s...\n" % (ctx, s[:8]))
-if "Zq9PlantedPw77" in redact("https://admin:Zq9PlantedPw77@h/p"):
-    bad += 1
-print(bad)
-PY
-)
+cat > "$T/redact-check.mjs" <<'JS'
+import fs from 'node:fs';
+const { redact } = await import(process.argv[2]);
+const sec = fs.readFileSync(process.argv[3], 'utf8').split('\n').filter(Boolean);
+let bad = 0;
+sec.forEach((s, k) => {
+  if ([3, 8, 9].includes(k + 1)) return;
+  for (const ctx of ['%s', 'run --x %s tail', 'k=%s', 'Authorization: Bearer %s', 'https://u:%s@h/p']) {
+    if (redact(ctx.replace('%s', s)).includes(s)) {
+      bad++;
+      console.error(`    UNMASKED(${JSON.stringify(ctx)}): ${s.slice(0, 8)}...`);
+    }
+  }
+});
+if (redact('https://admin:' + 'Zq9PlantedPw77' + '@h/p').includes('Zq9PlantedPw77')) bad++;
+console.log(bad);
+JS
+RD=$(node "$T/redact-check.mjs" "$HOOKS_DIR/lib/action-log/redact.mjs" "$T/fx/secrets.txt")
 check "redact() masks every format-detectable secret in every context (unmasked: $RD)" [ "$RD" = 0 ]
-check "redact() keeps git sha, uuid and long paths" python3 -I -c "
-import sys; sys.path.insert(0,'$HOOKS_DIR/lib')
-from action_log_lib.redact import redact
-for t in ('a'*40, '11111111-2222-3333-4444-555555555555', 'ansible/playbooks/files/memory/ingest/pipeline_helpers_module.py'):
-    assert redact(t) == t, t
+check "redact() keeps git sha, uuid and long paths" node --input-type=module -e "
+const { redact } = await import('$HOOKS_DIR/lib/action-log/redact.mjs');
+for (const t of ['a'.repeat(40), '11111111-2222-3333-<CREDIT_CARD>', 'ansible/playbooks/files/memory/ingest/pipeline_helpers_module.py']) if (redact(t) !== t) throw new Error(t);
+"
+check "all vendored secret patterns compile in JS (a silently skipped pattern would silently stop redacting)" node --input-type=module -e "
+const m = await import('$HOOKS_DIR/lib/action-log/redact.mjs');
+const bad = m.brokenVendoredPatterns();
+if (bad.length) { console.error(bad.join('\n')); process.exit(1); }
 "
 
 echo "-- sync script: no internal literals in vendored patterns"
