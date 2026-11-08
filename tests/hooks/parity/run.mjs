@@ -7,14 +7,15 @@
 // golden/*.json was recorded from the PYTHON implementation (v2.34.0) before the Node port. `compare`
 // runs with NO python3 on PATH, which also proves the ported hooks no longer need it.
 //
-// cases/*.mjs export { hook, helper?, cases: [{ name, stdin|stdin_b64, env, setup[], after[] }] }.
+// cases/*.mjs export { hook, helper?, cases: [{ name, stdin|stdin_b64, env, files{}, setup[], after[] }] }.
 // A spec with helper:true runs helpers/<hook> instead of a plugin hook: tiny wrappers around the json
 // one-liners the hooks used (quote, emit-block); they run the python line against a python hooks dir
 // (record) and hook-io against the ported one (compare).
 // Each case runs in a fresh sandbox (cwd) with a fixed environment and a PATH made only of symlinks to
 // the tools in TOOLS (+ node, + python3 when recording). Placeholders in stdin/env/setup/after:
 // @SANDBOX@ @TASK@. `after` stdout is captured as `state` (resulting files). Output is normalised
-// (sandbox path, task id, dates/timestamps, git hashes, path-hash project ids, bash NUL warning).
+// (sandbox path, task id, dates/timestamps, git hashes, path-hash project ids, bash NUL warning); a case with
+// keepDates:true keeps dates and timestamps verbatim (the action log renders them and they are what is compared).
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs';
@@ -41,9 +42,9 @@ const only = opt('--only');
 const goldenDir = path.join(here, 'golden');
 const withPython = mode === 'record';
 
-const TOOLS = `bash sh git grep egrep sed cat wc tr head tail find date stat mkdir mktemp touch sha256sum cut
+const TOOLS = `bash sh git grep egrep sed cat wc tr head tail find date stat mkdir mktemp touch cut
   basename dirname readlink ln rm rmdir cp mv env sleep timeout awk sort uniq ls chmod id uname expr tee xargs seq od
-  true false test printf echo`.split(/\s+/);
+  true false test printf echo truncate gzip zcat flock sha256sum`.split(/\s+/);
 const GIT_ENV = {
   GIT_CONFIG_GLOBAL: '/dev/null',
   GIT_CONFIG_NOSYSTEM: '1',
@@ -76,8 +77,10 @@ function normalise(buf, ctx) {
   // project ids fall back to sha256(<abs project dir>)[:16]: mask only when it equals that exact hash
   for (const [label, dir] of ctx.dirs) s = s.replaceAll(`scaffold:${h16(dir)}`, `scaffold:@HASH:${label}@`);
   s = s.replaceAll(ctx.hooksDir, '@HOOKS@').replaceAll(ctx.sandbox, '@SANDBOX@').replaceAll(ctx.task, '@TASK@');
-  s = s.replace(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/g, '@TS@');
-  s = s.replace(/\d{4}-\d{2}-\d{2}/g, '@DATE@');
+  if (!ctx.keepDates) {
+    s = s.replace(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/g, '@TS@');
+    s = s.replace(/\d{4}-\d{2}-\d{2}/g, '@DATE@');
+  }
   s = s.replace(/\b[0-9a-f]{40}\b/g, '@SHA@').replace(/HEAD is now at [0-9a-f]+/g, 'HEAD is now at @H@');
   return s;
 }
@@ -106,6 +109,12 @@ function runCase(hookFile, c, idx, helper) {
     const aux = { ...base, TASK: task, SANDBOX: sandbox };
     const sh = (lines) =>
       spawnSync('bash', ['-c', sub(lines.join('\n'))], { cwd: sandbox, env: aux, encoding: 'buffer', timeout: 30000 });
+    // files: { relPath: string | Buffer } written under the sandbox before setup (strings get the placeholders; big or binary inputs)
+    for (const [rel, content] of Object.entries(c.files ?? {})) {
+      const f = path.join(sandbox, sub(rel));
+      fs.mkdirSync(path.dirname(f), { recursive: true });
+      fs.writeFileSync(f, typeof content === 'string' ? sub(content) : content);
+    }
     if (c.setup?.length) {
       const r = sh(c.setup);
       if (r.status !== 0) throw new Error(`setup failed for ${hookFile}/${c.name} (${r.status}): ${r.stderr}`);
@@ -126,7 +135,7 @@ function runCase(hookFile, c, idx, helper) {
     });
     const dirs = [['cwd', sandbox]];
     if (env.CLAUDE_PROJECT_DIR) dirs.unshift(['projdir', env.CLAUDE_PROJECT_DIR]);
-    const ctx = { sandbox, task, dirs, hooksDir };
+    const ctx = { sandbox, task, dirs, hooksDir, keepDates: c.keepDates === true };
     const state = c.after?.length ? sh(c.after).stdout : Buffer.alloc(0);
     return {
       code: r.status ?? `signal:${r.signal}`,

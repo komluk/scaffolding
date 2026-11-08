@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.38.0] - 2026-11-08
+
+Third step of removing Python from the plugin runtime: the episodic action log now runs on Node.
+
+### Changed
+- `hooks/lib/action_log.py` and `hooks/lib/action_log_lib/*.py` are replaced by `hooks/lib/action-log.mjs` plus `hooks/lib/action-log/{extract,records,redact,render,targets,py,argparse,usage,limits}.mjs`
+  (plain ESM, `node:` built-ins only, Node >= 22). `hooks/action-log.sh` no longer calls `python3`; without `node` it does nothing and prints
+  `scaffolding: node not found, action-log not enforced` on stderr (exit 0). `tests/hooks/action_log_fixtures.py` became `tests/hooks/action-log-fixtures.mjs` (byte-identical output).
+- Same CLI contract as before: `platform --task-dir D --conv-dir D [--force] [--agent A]`, `local ...`, `render --conv-dir D`, `backfill ROOT`; same stdout
+  (`render` prints the timeline path, then `calls=N errors=E`), exit code always 0, fail-open warnings on stderr. Same log format, paths, `O_APPEND` single-line
+  writes, `umask 002`, caps (5000 records / 2 MB per run), rotation (gzip beyond 50 MB per conversation), and redaction. Locked in by 175 golden cases recorded from the Python
+  original (`tests/hooks/parity/cases/action-log.mjs`: platform / local / render / backfill / argparse usage and the Stop / SessionEnd shim) and by a differential fuzz against it
+  (`tests/hooks/parity/fuzz-action-log.mjs --old <checkout of 2.37.0>/hooks`).
+- Redaction: python and JS regexes differ (`\w` / `\b` / `\d` / `\s` are Unicode in python, `(?i)` also folds `İ ı ſ K`, atomic groups). The generic rules are rebuilt with the python meaning; the vendored
+  `secret-patterns.json` patterns are converted at load time (`pyRegex`: Unicode classes, `(?>...)` atomic group of `IBAN_SPACED` -> lookahead + backreference). A test asserts that all 25 compile,
+  so a pattern can no longer be skipped silently.
+- **Backend (scaffolding.tool) must switch with this version**: `app/backend-node/src/execution/actionLog.ts` has to spawn
+  `process.execPath` with `[<plugin>/hooks/lib/action-log.mjs, platform|render, ...]` instead of `python3 -I <plugin>/hooks/lib/action_log.py ...` (same arguments, stdin, stdout, exit codes).
+  Pin the backend to plugin >= 2.38.0 in the same change; an old backend with this plugin simply produces no action log (fail-open).
+
+### Differences from the Python implementation
+- Rotated `.jsonl.gz` files hold the same content but different deflate bytes (zlib version), and carry no file name in the gzip header.
+- Code points that exist only in Unicode 17 (Node 24) and not in 16 (CPython 3.14) count as word characters in redaction.
+- Warning text on stderr (`action-log: <cmd> failed: ...`) quotes the JS exception message instead of the Python one.
+
 ## [2.37.0] - 2026-11-07
 
 ### Security

@@ -4,7 +4,7 @@
 # Reads the CLI transcript (transcript_path from stdin) and appends ONE metadata-only,
 # redacted JSONL line per tool call to .scaffolding/conversations/<session_id>/actions/,
 # then re-renders conversations/<id>/timeline.md. Never stores tool output, file
-# contents, prompts or MCP results (see hooks/lib/action_log.py). Incremental via a
+# contents, prompts or MCP results (see hooks/lib/action-log.mjs). Incremental via a
 # byte cursor, so only new lines are parsed. Always exits 0 and never blocks.
 #
 # DEFAULT OFF (opt-in): a plugin update never starts logging by itself. Enable with
@@ -14,7 +14,7 @@
 # Skips when: not opted in, SCAFFOLDING_TASK_ID set (platform run — the backend
 # extracts post-run), SCAFFOLDING_ACTION_LOG=off (hard off, wins over opt-in),
 # .scaffolding/.noactionlog exists, no .scaffolding/conversations/, or the lock is
-# busy (next Stop catches up).
+# busy (next Stop catches up). Needs node >= 22; without node it does nothing.
 set +e
 
 INPUT=$(cat 2>/dev/null)
@@ -30,21 +30,13 @@ case "$(printf '%s' "${ACTION_LOG_ENABLED:-}" | tr '[:upper:]' '[:lower:]')" in
 esac
 [ -d "$SC/conversations" ] || exit 0
 
-LIB="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib/action_log.py"
+LIB="${BASH_SOURCE[0]%/*}"; [[ "$LIB" == "${BASH_SOURCE[0]}" ]] && LIB=.; LIB="$LIB/lib/action-log.mjs"
 [ -f "$LIB" ] || exit 0
-command -v python3 >/dev/null 2>&1 || exit 0
+command -v node >/dev/null 2>&1 || { echo "scaffolding: node not found, action-log not enforced" >&2; exit 0; }
 
-# transcript_path / session_id / hook event come from stdin JSON; only UUID-ish ids are accepted.
-FIELDS=$(printf '%s' "$INPUT" | python3 -I -c '
-import json, re, sys
-try:
-    d = json.load(sys.stdin)
-except Exception:
-    sys.exit(0)
-sid, tp = d.get("session_id"), d.get("transcript_path")
-if isinstance(sid, str) and re.fullmatch(r"[A-Za-z0-9-]{8,64}", sid) and isinstance(tp, str) and tp.endswith(".jsonl"):
-    print(sid); print(tp); print("1" if d.get("hook_event_name") == "SessionEnd" else "0")
-' 2>/dev/null)
+# transcript_path / session_id / hook event come from stdin JSON; only UUID-ish ids are accepted
+# (the three lines are printed only for a valid session_id and a *.jsonl transcript_path).
+FIELDS=$(printf '%s' "$INPUT" | node "$LIB" hook-fields 2>/dev/null)
 SID=$(printf '%s\n' "$FIELDS" | sed -n 1p)
 TP=$(printf '%s\n' "$FIELDS" | sed -n 2p)
 FINAL=$(printf '%s\n' "$FIELDS" | sed -n 3p)
@@ -57,8 +49,8 @@ ARGS=(local --transcript "$TP" --session-id "$SID" --conv-dir "$CONV" --project-
 [ "$FINAL" = "1" ] && ARGS+=(--final)
 
 run() {
-    timeout 5 python3 -I "$LIB" "${ARGS[@]}" 2>/dev/null
-    timeout 5 python3 -I "$LIB" render --conv-dir "$CONV" >/dev/null 2>&1
+    timeout 5 node "$LIB" "${ARGS[@]}" 2>/dev/null
+    timeout 5 node "$LIB" render --conv-dir "$CONV" >/dev/null 2>&1
 }
 
 if command -v flock >/dev/null 2>&1; then

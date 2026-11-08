@@ -193,7 +193,7 @@ the last position.
 | `.scaffolding/.noactionlog` | absent | Per-repo sentinel. Its presence skips `action-log.sh` (override; wins over opt-in) |
 | `SCAFFOLDING_TASK_ID` | unset | When set (platform run), `action-log.sh` always skips (wins over opt-in) |
 
-The local action log is **off by default**. Enable it with `ACTION_LOG_ENABLED=1` or by creating `.scaffolding/.actionlog`. The skip mechanisms (`SCAFFOLDING_ACTION_LOG=off`, `.noactionlog`, `SCAFFOLDING_TASK_ID`) override any opt-in.
+The local action log needs `node` >= 22 and `timeout` (logic: `hooks/lib/action-log.mjs`); without node the hook does nothing. It is **off by default**. Enable it with `ACTION_LOG_ENABLED=1` or by creating `.scaffolding/.actionlog`. The skip mechanisms (`SCAFFOLDING_ACTION_LOG=off`, `.noactionlog`, `SCAFFOLDING_TASK_ID`) override any opt-in.
 
 ## Opt-in: memory recall (UserPromptSubmit)
 
