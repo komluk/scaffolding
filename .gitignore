@@ -5,7 +5,8 @@
 .vscode/
 *~
 *.swp
-.claude/
+.claude/*
+!.claude/settings.json
 # All of .scaffolding/ is ignored in this plugin repo (dev scaffolding). The
 # auto-ingest runtime artefacts below live in *user* projects, not here; listed
 # explicitly to document that .ingest-* are ephemeral (log.md is NOT ignored —

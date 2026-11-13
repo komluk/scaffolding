@@ -1,0 +1,5 @@
+{
+  "env": {
+    "ANTHROPIC_CUSTOM_HEADERS": "x-litellm-spend-logs-metadata: {\"project_id\":\"scaffold:882ad6adb274d679\",\"project_dir\":\"scaffolding\",\"source\":\"claude-code\"}"
+  }
+}
