@@ -49,6 +49,13 @@ export default [
       pid('CLAUDE_PROJECT_DIR unset: uses PWD', ['git init -q .'], { CLAUDE_PROJECT_DIR: null }, { after: ['cat .scaffolding/project-id'] }),
       pid('existing project-id is overwritten', [...git('https://h/a/b.git'), 'mkdir -p proj/.scaffolding; echo stale > proj/.scaffolding/project-id']),
       pid('unwritable .scaffolding: output still emitted', [...git('https://h/a/b.git'), 'mkdir -p proj/.scaffolding; chmod 555 proj/.scaffolding']),
+      pid('pinned file wins over the remote', [...git('https://h/a/b.git'), "printf '{\"project_id\": \"scaffold:aaaaaaaaaaaaaaaa\"}\\n' > proj/.scaffolding.json"]),
+      pid('pinned file equal to the derived id: no note', [...git('https://h/a/b.git'), "printf '{\"project_id\":\"scaffold:'$(printf '%s' a/b | sha256sum | cut -c1-16)'\"}\\n' > proj/.scaffolding.json"]),
+      pid('pinned file read from a subdirectory cwd', [...git('https://h/a/b.git'), 'mkdir -p proj/sub', "printf '{\"project_id\": \"scaffold:aaaaaaaaaaaaaaaa\"}\\n' > proj/.scaffolding.json"], { CLAUDE_PROJECT_DIR: '@SANDBOX@/proj/sub' }, { after: ['cat proj/sub/.scaffolding/project-id'] }),
+      pid('pinned file with two matches: derived + note', [...git('https://h/a/b.git'), "printf '{\"project_id\": \"scaffold:aaaaaaaaaaaaaaaa\"}\\n{\"project_id\": \"scaffold:bbbbbbbbbbbbbbbb\"}\\n' > proj/.scaffolding.json"]),
+      pid('pinned file with bad hex: derived + note', [...git('https://h/a/b.git'), "printf '{\"project_id\": \"scaffold:AAAAAAAAAAAAAAAA\"}\\n' > proj/.scaffolding.json"]),
+      pid('pinned file is a symlink: derived + note', [...git('https://h/a/b.git'), "printf '{\"project_id\": \"scaffold:aaaaaaaaaaaaaaaa\"}\\n' > real.json", 'ln -s ../real.json proj/.scaffolding.json']),
+      pid('pinned file over 4096 bytes: derived + note', [...git('https://h/a/b.git'), "{ printf '{\"project_id\": \"scaffold:aaaaaaaaaaaaaaaa\", \"pad\": \"'; head -c 5000 /dev/zero | tr '\\\\0' x; printf '\"}\\n'; } > proj/.scaffolding.json"]),
     ],
   },
   {

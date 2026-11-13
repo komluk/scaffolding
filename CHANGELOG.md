@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.40.0] - 2026-11-13
+
+A committed `.scaffolding.json` can now pin a repo's memory `project_id`, so every clone and device (and the platform) uses one id even after a repo is renamed or moved.
+
+### Added
+- `hooks/memory-project-id.sh` reads `<repo root>/.scaffolding.json` (`{"project_id": "scaffold:<16 hex>"}`) first; a valid file wins over the id derived from the remote.
+  The file must be a regular file (not a symlink), at most 4096 bytes, with exactly one match of `"project_id"\s*:\s*"scaffold:[0-9a-f]{16}"` (a regex over the bytes, not a JSON parser,
+  so bash and TypeScript consumers cannot disagree). The repo root comes from `git rev-parse --show-toplevel`, so a subdirectory cwd works.
+  A missing file keeps the previous derivation unchanged. An unusable file (symlink, oversize, 0 or 2+ matches) is ignored with a one-line note in the injected context;
+  a valid file that differs from the derived id adds a note too (file copied from a template?). The `.scaffolding/project-id` cache is still written, so `memory-recall.sh` and `memory-ingest.sh` are unchanged.
+- `/init-scaffolding` writes `.scaffolding.json` with the derived `owner/repo` id when it is missing (skipped without an `owner/repo` remote) and tells you to commit it.
+- This repo's own `.scaffolding.json` (`scaffold:882ad6adb274d679`).
+
+### Changed
+- Parity golden `memory-project-id.sh` re-recorded: 7 new cases; the only change to an existing case is the line number in the unwritable-`.scaffolding` stderr.
+
 ## [2.39.0] - 2026-11-08
 
 Last step of removing Python from the plugin: `memory-recall`, the Copilot tooling and the test scripts now run on Node, the remaining

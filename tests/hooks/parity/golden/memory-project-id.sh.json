@@ -98,7 +98,49 @@
  "unwritable .scaffolding: output still emitted": {
   "code": 0,
   "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"memory project_id = scaffold:c14cddc033f64b9d. When the mcp__memory__* tools are available, ALWAYS pass project_id=\\\"scaffold:c14cddc033f64b9d\\\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices).\"}}\n",
-  "stderr": "@HOOKS@/memory-project-id.sh: line 31: @SANDBOX@/proj/.scaffolding/project-id: Permission denied\n",
+  "stderr": "@HOOKS@/memory-project-id.sh: line 62: @SANDBOX@/proj/.scaffolding/project-id: Permission denied\n",
   "state": ".\n./.scaffolding\n"
+ },
+ "pinned file wins over the remote": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"memory project_id = scaffold:aaaaaaaaaaaaaaaa. When the mcp__memory__* tools are available, ALWAYS pass project_id=\\\"scaffold:aaaaaaaaaaaaaaaa\\\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices). Note: .scaffolding.json pins scaffold:aaaaaaaaaaaaaaaa, the remote derives scaffold:c14cddc033f64b9d; if this repo was created from a template or copied, fix the file.\"}}\n",
+  "stderr": "",
+  "state": ".\n./.scaffolding\n./.scaffolding.json\n./.scaffolding/project-id\nscaffold:aaaaaaaaaaaaaaaa\n"
+ },
+ "pinned file equal to the derived id: no note": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"memory project_id = scaffold:c14cddc033f64b9d. When the mcp__memory__* tools are available, ALWAYS pass project_id=\\\"scaffold:c14cddc033f64b9d\\\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices).\"}}\n",
+  "stderr": "",
+  "state": ".\n./.scaffolding\n./.scaffolding.json\n./.scaffolding/project-id\nscaffold:c14cddc033f64b9d\n"
+ },
+ "pinned file read from a subdirectory cwd": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"memory project_id = scaffold:aaaaaaaaaaaaaaaa. When the mcp__memory__* tools are available, ALWAYS pass project_id=\\\"scaffold:aaaaaaaaaaaaaaaa\\\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices). Note: .scaffolding.json pins scaffold:aaaaaaaaaaaaaaaa, the remote derives scaffold:c14cddc033f64b9d; if this repo was created from a template or copied, fix the file.\"}}\n",
+  "stderr": "",
+  "state": "scaffold:aaaaaaaaaaaaaaaa\n"
+ },
+ "pinned file with two matches: derived + note": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"memory project_id = scaffold:c14cddc033f64b9d. When the mcp__memory__* tools are available, ALWAYS pass project_id=\\\"scaffold:c14cddc033f64b9d\\\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices). Note: ignored .scaffolding.json (needs exactly one \\\"project_id\\\": \\\"scaffold:<16 hex>\\\" entry); using the id derived from the remote.\"}}\n",
+  "stderr": "",
+  "state": ".\n./.scaffolding\n./.scaffolding.json\n./.scaffolding/project-id\nscaffold:c14cddc033f64b9d\n"
+ },
+ "pinned file with bad hex: derived + note": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"memory project_id = scaffold:c14cddc033f64b9d. When the mcp__memory__* tools are available, ALWAYS pass project_id=\\\"scaffold:c14cddc033f64b9d\\\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices). Note: ignored .scaffolding.json (needs exactly one \\\"project_id\\\": \\\"scaffold:<16 hex>\\\" entry); using the id derived from the remote.\"}}\n",
+  "stderr": "",
+  "state": ".\n./.scaffolding\n./.scaffolding.json\n./.scaffolding/project-id\nscaffold:c14cddc033f64b9d\n"
+ },
+ "pinned file is a symlink: derived + note": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"memory project_id = scaffold:c14cddc033f64b9d. When the mcp__memory__* tools are available, ALWAYS pass project_id=\\\"scaffold:c14cddc033f64b9d\\\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices). Note: ignored .scaffolding.json (symlink, not a regular file, or larger than 4096 bytes); using the id derived from the remote.\"}}\n",
+  "stderr": "",
+  "state": ".\n./.scaffolding\n./.scaffolding.json\n./.scaffolding/project-id\nscaffold:c14cddc033f64b9d\n"
+ },
+ "pinned file over 4096 bytes: derived + note": {
+  "code": 0,
+  "stdout": "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"memory project_id = scaffold:c14cddc033f64b9d. When the mcp__memory__* tools are available, ALWAYS pass project_id=\\\"scaffold:c14cddc033f64b9d\\\" to semantic_search, semantic_recall, and semantic_store so memory stays isolated per project (and shared across your devices). Note: ignored .scaffolding.json (symlink, not a regular file, or larger than 4096 bytes); using the id derived from the remote.\"}}\n",
+  "stderr": "",
+  "state": ".\n./.scaffolding\n./.scaffolding.json\n./.scaffolding/project-id\nscaffold:c14cddc033f64b9d\n"
  }
 }
