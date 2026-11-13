@@ -20,7 +20,8 @@ into the project so Claude respects the agent delegation rules on every session.
 4. Installs the routing protocol in `$CWD/CLAUDE.md` — never overwrites an existing file: left alone if it already has the protocol or an `@...CLAUDE.md` import, otherwise the protocol is appended (a new file is created if absent)
 5. Copies `settings.json` to `$CWD/.claude/settings.json` — always overwrites with latest from plugin
 6. Copies `hooks/*.sh` to `$CWD/.claude/hooks/` — always overwrites with latest from plugin
-7. Reports what was copied
+7. Writes `.scaffolding.json` (pinned memory `project_id`) at the repo root when missing and there is an `owner/repo` remote
+8. Reports what was copied
 
 ## Steps
 
@@ -143,12 +144,39 @@ chmod +x "$CWD/.claude/hooks/"*.sh
 echo "COPIED: hooks/ -> $CWD/.claude/hooks/ (all hook scripts)"
 ```
 
-### 7. Report result
+### 7. Pin the memory project_id in .scaffolding.json (only if missing)
+
+`.scaffolding.json` at the repo root pins the memory / correlation `project_id` for every clone and device (the
+SessionStart hook `memory-project-id.sh` reads it first and falls back to the remote-derived id). It is committed,
+unlike `.scaffolding/`. The id written is the one the hook derives today: `sha256("owner/repo", lowercase)[:16]`.
+Never overwrite an existing file. Without an `owner/repo` slug (no remote, or a single-segment remote) skip it:
+a path-derived id is not portable.
+
+```bash
+if [ -e .scaffolding.json ] || [ -L .scaffolding.json ]; then
+  echo "SKIPPED: .scaffolding.json already exists (left unchanged)"
+else
+  remote="$(git config --get remote.origin.url 2>/dev/null || true)"
+  slug="$(printf '%s' "$remote" | sed -E 's#[/:]+$##; s#\.git$##; s#^.*[:/]([^/:]+/[^/:]+)$#\1#' | tr '[:upper:]' '[:lower:]')"
+  case "$slug" in
+    */*)
+      if command -v sha256sum >/dev/null 2>&1; then h="$(printf '%s' "$slug" | sha256sum | cut -c1-16)"
+      else h="$(printf '%s' "$slug" | shasum -a 256 | cut -c1-16)"; fi
+      printf '{"project_id": "scaffold:%s"}\n' "$h" > .scaffolding.json
+      echo "CREATED: .scaffolding.json (scaffold:$h) — commit it"
+      ;;
+    *) echo "SKIPPED: .scaffolding.json — no owner/repo remote (a path id is not portable); re-run after adding origin" ;;
+  esac
+fi
+```
+
+### 8. Report result
 
 Print a summary listing each action: CREATED/UPDATED/COPIED or SKIPPED, and its destination path.
 
 After initializing, inform the user:
 - `.scaffolding/` directory structure is ready for agent memory, conversations, and specs
+- If `.scaffolding.json` was created, tell the user to **commit it** (it is not ignored); it pins the memory `project_id` so every clone and device shares one scope
 - `.gitignore` has been updated to exclude `.scaffolding/` and `.claude/worktrees/` from version control
 - CLAUDE.md in the project root carries the routing protocol (created, appended, or already present/imported and left untouched)
 - settings.json is now in `.claude/` — hooks and agent permissions are active

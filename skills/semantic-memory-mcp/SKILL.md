@@ -50,7 +50,8 @@ Manual calls are for *targeted* mid-task queries and explicit stores.
 - Use `semantic_recall` when you want a quick formatted summary
 - **Always pass `project_id`** so results are scoped to the current repository.
   The `memory-project-id` SessionStart hook injects the value to use (a
-  `scaffold:<hash>` derived from the git remote); pass that exact value to
+  `scaffold:<hash>`: the id pinned in the repo-root `.scaffolding.json`, else
+  derived from the git remote); pass that exact value to
   every `semantic_search` / `semantic_recall` / `semantic_store` call. If no
   `project_id` is provided in session context, the backend uses a shared
   `default` namespace. Note: `project_id` (this section's mem0 axis) is distinct
