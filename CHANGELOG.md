@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.41.0] - 2026-11-15
+
+LSP entries no longer error on hosts that lack the language server binary.
+
+### Fixed
+- Claude Code printed `Language server "plugin:scaffolding:<name>" couldn't start: its program "<bin>" wasn't found` the first time a file of that type was touched on a machine without the language server installed (the 16 `lspServers` entries target the scaffolding.tool session containers, where each command is a shim on PATH).
+  Every `lspServers` entry now runs `node ${CLAUDE_PLUGIN_ROOT}/lsp/launch.js <program> [args...]`. When `<program>` is on PATH the launcher runs it unchanged (stdio inherited, SIGTERM/SIGINT forwarded, exit status propagated).
+  When it is not, the launcher answers as a no-op LSP server: `initialize` gets empty capabilities with `serverInfo.name` "<program> (not installed)", `shutdown` gets `null`, any other request gets `-32601`, notifications are ignored, and it exits 0 on `exit` or stdin EOF. Only protocol messages go to stdout; one line goes to stderr.
+- `hooks/lib/refactor-guard.mjs` looks through the launcher: an `lspServers` entry whose command is `node ${CLAUDE_PLUGIN_ROOT}/lsp/launch.js <program>` counts as covering its extensions only when `<program>` is on PATH, as before (otherwise `node` would always be found and the guard would wrongly treat the language as covered).
+
+### Added
+- `lsp/launch.js` (Node >= 22, no dependencies) and `tests/hooks/test-lsp-launcher.sh` (+ `lsp-client.mjs`): missing-program handshake, present-program args/stdio/exit code/SIGTERM, and a check that every `lspServers` entry routes through the launcher.
+
 ## [2.40.0] - 2026-11-13
 
 A committed `.scaffolding.json` can now pin a repo's memory `project_id`, so every clone and device (and the platform) uses one id even after a repo is renamed or moved.
