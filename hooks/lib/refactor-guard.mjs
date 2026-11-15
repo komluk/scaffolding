@@ -91,6 +91,14 @@ function symbols(text, ext) {
 
 // ---- LSP coverage
 let serversCache;
+/** The program an lspServers entry really needs: entries run through `node <plugin>/lsp/launch.js <program> ...` (which falls back to a no-op server), so `node` is always on PATH and says nothing about the language server. */
+function serverProgram(s) {
+  const command = mget(s, 'command', '');
+  if (command !== 'node') return command;
+  const args = mget(s, 'args');
+  if (Array.isArray(args) && typeof args[0] === 'string' && /(^|\/)lsp\/launch\.js$/.test(args[0]) && typeof args[1] === 'string') return args[1];
+  return command;
+}
 function lspCovers(ext) {
   const force = process.env.REFACTOR_GUARD_LSP;
   if (force === 'on' || force === 'off') return force === 'on';
@@ -115,7 +123,7 @@ function lspCovers(ext) {
       need(typeof map === 'string', 'TypeError: argument of type is not iterable');
       has = map.includes(ext);
     }
-    if (has && pyWhich(mget(s, 'command', ''))) return true;
+    if (has && pyWhich(serverProgram(s))) return true;
   }
   return false;
 }

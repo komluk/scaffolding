@@ -1,6 +1,6 @@
 {
   "name": "scaffolding",
-  "version": "2.40.0",
+  "version": "2.41.0",
   "description": "13 agents, 39 skills, 21 commands, 20 hooks — spec-driven, multi-agent orchestration for Claude Code with per-phase model tiers, opt-in lifecycle hooks, and optional cross-device semantic memory.",
   "author": {
     "name": "komluk",
@@ -19,46 +19,46 @@
   ],
   "lspServers": {
     "bash": {
-      "command": "bash-language-server",
-      "args": ["start"],
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/lsp/launch.js", "bash-language-server", "start"],
       "extensionToLanguage": {
         ".sh": "shellscript",
         ".bash": "shellscript"
       }
     },
     "yaml": {
-      "command": "yaml-language-server",
-      "args": ["--stdio"],
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/lsp/launch.js", "yaml-language-server", "--stdio"],
       "extensionToLanguage": {
         ".yaml": "yaml",
         ".yml": "yaml"
       }
     },
     "terraform": {
-      "command": "terraform-ls",
-      "args": ["serve"],
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/lsp/launch.js", "terraform-ls", "serve"],
       "extensionToLanguage": {
         ".tf": "terraform",
         ".tfvars": "terraform-vars"
       }
     },
     "dockerfile": {
-      "command": "docker-langserver",
-      "args": ["--stdio"],
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/lsp/launch.js", "docker-langserver", "--stdio"],
       "extensionToLanguage": {
         ".dockerfile": "dockerfile"
       }
     },
     "json": {
-      "command": "vscode-json-language-server",
-      "args": ["--stdio"],
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/lsp/launch.js", "vscode-json-language-server", "--stdio"],
       "extensionToLanguage": {
         ".json": "json"
       }
     },
     "typescript": {
-      "command": "typescript-language-server",
-      "args": ["--stdio"],
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/lsp/launch.js", "typescript-language-server", "--stdio"],
       "extensionToLanguage": {
         ".ts": "typescript",
         ".tsx": "typescriptreact",
@@ -76,75 +76,75 @@
       }
     },
     "python": {
-      "command": "pyright-langserver",
-      "args": ["--stdio"],
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/lsp/launch.js", "pyright-langserver", "--stdio"],
       "extensionToLanguage": {
         ".py": "python",
         ".pyi": "python"
       }
     },
     "csharp": {
-      "command": "csharp-ls",
-      "args": [],
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/lsp/launch.js", "csharp-ls"],
       "extensionToLanguage": {
         ".cs": "csharp",
         ".csx": "csharp"
       }
     },
     "rust": {
-      "command": "rust-analyzer",
-      "args": [],
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/lsp/launch.js", "rust-analyzer"],
       "extensionToLanguage": {
         ".rs": "rust"
       }
     },
     "go": {
-      "command": "gopls",
-      "args": ["serve"],
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/lsp/launch.js", "gopls", "serve"],
       "extensionToLanguage": {
         ".go": "go"
       }
     },
     "dart": {
-      "command": "dart-language-server",
-      "args": [],
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/lsp/launch.js", "dart-language-server"],
       "extensionToLanguage": {
         ".dart": "dart"
       }
     },
     "markdown": {
-      "command": "marksman",
-      "args": ["server"],
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/lsp/launch.js", "marksman", "server"],
       "extensionToLanguage": {
         ".md": "markdown",
         ".markdown": "markdown"
       }
     },
     "toml": {
-      "command": "taplo",
-      "args": ["lsp", "stdio"],
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/lsp/launch.js", "taplo", "lsp", "stdio"],
       "extensionToLanguage": {
         ".toml": "toml"
       }
     },
     "sql": {
-      "command": "postgres-language-server",
-      "args": ["lsp-proxy"],
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/lsp/launch.js", "postgres-language-server", "lsp-proxy"],
       "extensionToLanguage": {
         ".sql": "sql"
       }
     },
     "html": {
-      "command": "vscode-html-language-server",
-      "args": ["--stdio"],
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/lsp/launch.js", "vscode-html-language-server", "--stdio"],
       "extensionToLanguage": {
         ".html": "html",
         ".htm": "html"
       }
     },
     "css": {
-      "command": "vscode-css-language-server",
-      "args": ["--stdio"],
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/lsp/launch.js", "vscode-css-language-server", "--stdio"],
       "extensionToLanguage": {
         ".css": "css",
         ".scss": "scss",
