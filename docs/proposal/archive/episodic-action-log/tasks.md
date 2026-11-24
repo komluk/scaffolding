@@ -1,3 +1,5 @@
+Status: shipped (plugin 2.21.0, platform actionLog.ts). The Python implementation described here was later ported to Node in 2.38.0; checkboxes below are historical.
+
 # Episodic action log: tasks
 
 Design: `design.md` (same dir). Order = dependency order. Each group is one PR.
